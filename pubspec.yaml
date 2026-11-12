@@ -1,0 +1,29 @@
+name: wasli_customer
+description: "Wasli customer app: order from the car at the restaurant."
+# A private app, never published to pub.dev.
+publish_to: 'none'
+
+# <version>+<build number>. The build number becomes the Android versionCode and the iOS CFBundleVersion.
+version: 0.1.0+1
+
+environment:
+  flutter: 3.47.9
+  sdk: ^3.13.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Path URL strategy on the web (usePathUrlStrategy); part of the Flutter SDK.
+  flutter_web_plugins:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^11.0.0
+
+flutter:
+  # The flavor a plain `flutter run` uses. The environments are `staging` and `production`.
+  default-flavor: staging
+
+  uses-material-design: true
