@@ -1,3 +1,4 @@
+aalihaidar
 adbdevices
 adbrestart
 alihaidar
@@ -38,9 +39,11 @@ keygen
 keysize
 keytool
 koalaman
+fils
 ltrimstr
 myapp
 oneline
+onrender
 passwordless
 pbxproj
 pnpm
@@ -49,6 +52,8 @@ publickey
 pubspec
 repomix
 rhysd
+riverpod
+rubik
 shellcheck
 sshkey
 storetype
@@ -57,6 +62,7 @@ temurin
 tolower
 toupper
 userprofile
+wasli
 xcodeproj
 yourcompany
 zizmor
