@@ -103,8 +103,7 @@ Branch: `feat/initial-app`. Everything below goes into one reviewable pull reque
 - [x] `LICENSE`: proprietary, all rights reserved (same text as the restaurant app)
 - [x] `SECURITY.md`, `CONTRIBUTING.md`, `.github/CODE_OF_CONDUCT.md`: rewritten for this app
 - [x] Delete `CHANGELOG.md` (the changelog is the GitHub Releases page)
-- [ ] `.github/PULL_REQUEST_TEMPLATE.md`: its checklist still describes the template repository ("zero-code template",
-  `release.yml`, the `flutter-devcontainer` match); rewrite it for this app (do the same in the restaurant repo)
+- [x] `.github/PULL_REQUEST_TEMPLATE.md`: rewritten for this app (the restaurant repo did the same)
 - [x] `package.json` `name` becomes `wasli-customer-flutter`
 - [x] `scripts/welcome.sh`: banner title and link
 - [x] `.cspell/project-words.txt`: add the project's own words (`wasli`, `fils`, …)
@@ -193,7 +192,7 @@ when their feature starts: `flutter_map`, `latlong2`, `geolocator`, `record`, `f
 
 - [ ] `app/`: `bootstrap()`, `ProviderScope`, global error zone, `go_router` with path URLs and a `/r/<slug>` route (slug
   shape validated), app shell, session state (auth, locale, config)
-- [ ] `core/config`: `AppEnvironment` reads `APP_ENV` (then the flavor); unknown counts as staging; unit tested
+- [x] `core/config`: `AppEnvironment` reads `APP_ENV` (then the flavor); unknown counts as staging; unit tested
 - [ ] `core/error`: sealed `Failure`, parser for the one error body (`type`, `errors[].code/detail/attr`), mapping by
   `code` (unknown code and non-JSON body become a generic failure of the HTTP status), with tests
 - [ ] `core/network`: Dio factory with timeouts, interceptors for the auth header (`Customer <token>`, never on the
