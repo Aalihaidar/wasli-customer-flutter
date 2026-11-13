@@ -120,6 +120,9 @@ so until this block is done the post-merge **Build** run on `develop` is red (no
 "Staging" is created. Do this block before the first signed APK is needed (`docs/android-signing.md` sections 1 and 3).
 Create the two GitHub environments with their branch restriction **before** adding any secret: an environment GitHub
 creates on the fly from a workflow run has no branch restriction.
+**Plan limit (2026-11-13):** environment-scoped secrets and branch restrictions need a paid plan on a private
+repository, so decide with the owner how the signing secrets are stored (repository secrets and a `build.yml` change)
+before doing this block.
 
 - [ ] Two keystores (staging key and production upload key) in `.signing/` with distinctive aliases, key property files
   `android/key.staging.properties` and `android/key.production.properties` kept local, both keystores and passwords backed
@@ -149,24 +152,33 @@ yet").
 
 ## Phase 3: GitHub repository settings
 
-Do this after the first pull request has run, because a ruleset can only require a check that has reported once
-(`docs/github-setup.md`).
+**Decided (owner, 2026-11-13): the repository is private and stays on the Free plan (no GitHub Pro).** On a private
+repository the Free plan has no rulesets or branch protection, no environment protection rules and no secret scanning or
+CodeQL, so only the settings below apply. `develop` and `main` are protected by discipline (topic branch, pull request,
+merge commit, the local `pre-push` hook), and **CI passed** is advisory. `.github/rulesets/` stays in the repository,
+unused; import it if the plan ever changes (`docs/github-setup.md` section 5). Settings are changed in the GitHub web
+interface by the owner; the assistant only reads them with `gh`.
 
-- [ ] Settings → General: default branch `develop`; template repository **off**; merge commits **on**, squash and rebase
-  **off**; suggest updating branches, auto-merge and delete head branches **on**; wiki, projects and discussions **off**;
-  release immutability **on** if offered
-- [ ] Settings → Actions → General: allowed actions (GitHub-created plus `raven-actions/actionlint@*`,
-  `zizmorcore/zizmor-action@*`, `google/osv-scanner-action/*`), require full-SHA pinning, read-only workflow permissions,
-  Actions may not create or approve pull requests, fork pull requests need approval and get no secrets
-- [ ] Settings → Code security: dependency graph, Dependabot alerts and security updates, secret scanning with push
-  protection, private vulnerability reporting, CodeQL default setup (language: Actions)
-- [ ] Import the three rulesets: `main-protect`, `develop-protect`, `tags-protect` (`.github/rulesets/`)
-- [ ] Verify the protection: pushes to `main` and `develop` are rejected; a pull request from a topic branch into `main`
-  fails **Verify source branch**; a commit message such as `Fixed stuff` fails **Commit messages**
-- [ ] Merge the scaffold pull request with **Create a merge commit**; the draft release "Staging" appears once the signed
-  build exists (see "Before the merge: Android signing" in Phase 2)
+- [x] Settings → General: default branch `develop`; template repository off; merge commits on, squash and rebase off;
+  delete head branches on; wiki, projects and discussions off
+- [x] Settings → General: "Always suggest updating pull request branches" on (auto-merge stays off: it needs required
+  checks, which need a paid plan on a private repository)
+- [x] Settings → Actions → General: allow GitHub-created actions plus `raven-actions/actionlint@*`,
+  `zizmorcore/zizmor-action@*`, `google/osv-scanner-action/*`; require full-SHA pinning; artifact and log retention 30
+  days; workflow permissions read-only and no PR approval by Actions (already so)
+- [x] Settings → Advanced Security: dependency graph, Dependabot alerts, Dependabot security updates, grouped security
+  updates (secret scanning, push protection, CodeQL and private vulnerability reporting are not available on a private
+  Free repository)
+- ~~Import the three rulesets~~ not available on the Free plan (private repository); kept in `.github/rulesets/`
+- ~~Environments `staging` and `production` restricted to their branch~~ not available on the Free plan; the `staging`
+  environment that a CI run created on its own stays unrestricted and holds no secret. Revisit with the Android signing
+  block below
+- [x] Merge the scaffold pull request with **Create a merge commit** (PR #1) and the first `core/config` pull request
+  (PR #2)
 - [ ] Repository variable `BACKEND_REPO` (and secret `BACKEND_READ_TOKEN`, read-only, because the backend is private) to
-  enable the weekly backend contract check
+  enable the weekly backend contract check (with Phase 4)
+- [ ] Watch the Actions minutes (the Free plan includes a monthly quota for private repositories; the web, APK and
+  AAB builds run on every pull request)
 
 ## Phase 4: Backend contract and generated client (D1, backend v0.1.0)
 

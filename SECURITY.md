@@ -33,15 +33,15 @@ Only the latest release of the app and the latest commit on `develop` are suppor
 
 ## Reporting a vulnerability
 
-**Please do not open a public issue for a security vulnerability.**
+**Please do not open an issue or a pull request for a security vulnerability.**
 
-Report it privately through GitHub:
-**Security → Report a vulnerability** on this repository (private vulnerability reporting). Include:
+This repository is private. Report the vulnerability directly to the repository owner, through the channel you already
+use with them, and not in any issue, pull request or comment. Include:
 
 - A description of the vulnerability and its potential impact
 - Steps to reproduce (a minimal example is ideal), using invented data only: never send real customer or restaurant
   data
 - A suggested fix, if you have one
 
-Expect an initial response within **5 business days**. Once the report is confirmed, a fix will be prioritized and a
-GitHub Security Advisory published when a patch is available.
+Expect an initial response within **5 business days**. Once the report is confirmed, a fix will be prioritized and
+released.
