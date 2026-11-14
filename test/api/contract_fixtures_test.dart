@@ -83,29 +83,33 @@ void main() {
       expect(profile.toJson(), json);
     });
 
-    test(
-      'GET /restaurants/nearby (200) with restaurants and no nearest',
-      () {
-        final json = readApiFixture('restaurants_nearby_200');
-        final nearby = NearbyResponse$Response.fromJson(json);
+    test('GET /restaurants/nearby (200) with restaurants: no nearest key', () {
+      final json = readApiFixture('restaurants_nearby_200');
+      final nearby = NearbyResponse$Response.fromJson(json);
 
-        expect(nearby.restaurants, hasLength(2));
-        expect(nearby.restaurants.first.distanceM, 120);
-        expect(nearby.restaurants.last.logoUrl, isNull);
-        expect(nearby.toJson(), json);
-      },
-      // The contract says `nearest` is null when restaurants are found, but the generated client declares it
-      // non-nullable and throws DisallowedNullValueException. Remove the skip when the contract or the generator
-      // yields a nullable field (steps.md, "Backend requests").
-      skip: 'the generated client rejects "nearest": null',
-    );
+      expect(nearby.restaurants, hasLength(2));
+      expect(nearby.restaurants.first.distanceM, 120);
+      expect(nearby.restaurants.last.logoUrl, isNull);
+      expect(nearby.nearest, isNull);
+      expect(nearby.toJson(), json);
+    });
 
-    test('GET /restaurants/nearby (200) with no restaurants and the nearest one', () {
+    test('GET /restaurants/nearby (200) with no restaurants in range: the nearest one', () {
       final json = readApiFixture('restaurants_nearby_200_empty');
       final nearby = NearbyResponse$Response.fromJson(json);
 
       expect(nearby.restaurants, isEmpty);
-      expect(nearby.nearest.parkingLot.radiusM, 150);
+      expect(nearby.nearest, isNotNull);
+      expect(nearby.nearest!.parkingLot.radiusM, 150);
+      expect(nearby.toJson(), json);
+    });
+
+    test('GET /restaurants/nearby (200) with no visible restaurant at all: no nearest key', () {
+      final json = readApiFixture('restaurants_nearby_200_none_visible');
+      final nearby = NearbyResponse$Response.fromJson(json);
+
+      expect(nearby.restaurants, isEmpty);
+      expect(nearby.nearest, isNull);
       expect(nearby.toJson(), json);
     });
 
