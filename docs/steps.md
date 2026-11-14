@@ -209,8 +209,12 @@ release with its `openapi.yaml` asset, the pin moves to that tag in a pull reque
   (config, customer accounts, `restaurants/nearby`, `restaurants/{slug}`); it writes `api/openapi.yaml` and
   `api/BACKEND_VERSION`, and `scripts/generate-api.sh` generates `lib/api`. `info.version` in the pinned file reads `0.1.0`
 - [x] `lib/api/**` is excluded from analysis (since Phase 2); `flutter analyze --fatal-infos` reports nothing
-- [ ] Commit `api/` and `lib/api` together; the **API client is current** job is green
-- [ ] Per-endpoint fixtures with invented values taken from the contract examples
+- [x] Commit `api/` and `lib/api` together; the **API client is current** job is green (PR #6)
+- [x] Per-endpoint fixtures with invented values (`test/support/fixtures/api/`): one per success response of the pinned
+  contract, the error bodies the contract gives examples for, and the empty `restaurants/nearby` case; the contract has
+  no success examples, so those values are invented from the schemas. `test/api/contract_fixtures_test.dart` parses each
+  one with the generated models and checks that `toJson()` returns the same JSON. **One test is skipped:** the generated
+  client rejects `"nearest": null` in `GET /restaurants/nearby` (see "Backend requests")
 - [ ] **Backend:** when the backend publishes `v0.1.0` with its `openapi.yaml` asset, run `scripts/sync-api.sh v0.1.0`
   in a pull request of its own and compare the diff with the commit pin (it should be empty or explained)
 
@@ -375,6 +379,11 @@ is a draft, pin the agreed backend commit (Phase 4).
 
 - [ ] Phone verified before the first order for an email-only customer: refusal status and error code, and how the app
   starts the verification (it reuses `me/contact` and `me/contact/verify`)
+- [ ] `GET /restaurants/nearby`: `nearest` is `null` whenever restaurants are found (the contract marks it
+  `allOf` + `nullable: true`), but `swagger_parser` 2.1.1 generates a non-nullable field with `disallowNullValue`, so the
+  generated client throws on the normal response. Decide with the backend: a contract form the generator reads as
+  `T?` (the `oneOf` forms tried generate a union class with a null case, not `T?`), or a newer generator, or another
+  way to read this one response. Remove the skip in `test/api/contract_fixtures_test.dart` once it is fixed
 - [ ] Order type (`car`, `dine_in`, `delivery`) in the conversation and order model, before D2 freezes it
 - [ ] Token expiry and rotation, per-device tokens
 - [ ] HttpOnly cookie session for the web once a custom domain exists

@@ -1,0 +1,25 @@
+{
+  "restaurants": [
+    {
+      "slug": "demo-cafe",
+      "name_en": "Demo Cafe",
+      "name_ar": "مقهى تجريبي",
+      "logo_url": "https://media.example.com/logos/demo-cafe.png",
+      "latitude": 25.2048,
+      "longitude": 55.2708,
+      "distance_m": 120,
+      "is_open": true
+    },
+    {
+      "slug": "sample-grill",
+      "name_en": "Sample Grill",
+      "name_ar": "مشويات تجريبية",
+      "logo_url": null,
+      "latitude": 25.2051,
+      "longitude": 55.2712,
+      "distance_m": 340,
+      "is_open": false
+    }
+  ],
+  "nearest": null
+}

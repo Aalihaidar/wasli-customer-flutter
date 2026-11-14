@@ -1,0 +1,19 @@
+{
+  "restaurants": [],
+  "nearest": {
+    "slug": "demo-cafe",
+    "name_en": "Demo Cafe",
+    "name_ar": "مقهى تجريبي",
+    "logo_url": null,
+    "latitude": 25.2048,
+    "longitude": 55.2708,
+    "distance_m": 2400,
+    "is_open": true,
+    "parking_lot": {
+      "name": "Demo Plaza parking",
+      "latitude": 25.2046,
+      "longitude": 55.2706,
+      "radius_m": 150
+    }
+  }
+}
