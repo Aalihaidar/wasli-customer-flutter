@@ -213,10 +213,14 @@ release with its `openapi.yaml` asset, the pin moves to that tag in a pull reque
 - [x] `lib/api/**` is excluded from analysis (since Phase 2); `flutter analyze --fatal-infos` reports nothing
 - [x] Commit `api/` and `lib/api` together; the **API client is current** job is green (PR #6)
 - [x] Per-endpoint fixtures with invented values (`test/support/fixtures/api/`): one per success response of the pinned
-  contract, the error bodies the contract gives examples for, and the empty `restaurants/nearby` case; the contract has
+  contract, the error bodies the contract gives examples for, and the three `restaurants/nearby` cases (restaurants found,
+  none in range with `nearest`, none visible at all); the contract has
   no success examples, so those values are invented from the schemas. `test/api/contract_fixtures_test.dart` parses each
-  one with the generated models and checks that `toJson()` returns the same JSON. **One test is skipped:** the generated
-  client rejects `"nearest": null` in `GET /restaurants/nearby` (see "Backend requests")
+  one with the generated models and checks that `toJson()` returns the same JSON. No test is skipped since the pin at
+  backend `develop` `ac60db8` (below)
+- [x] Pin backend `develop` `ac60db8d722bb9eb4b88ff17fe0ac9607484b0fb` (backend PR #53): `nearest` is an optional property
+  (absent, not `null`, when restaurants are found or none is visible) and the client generates `NearestRestaurant?`; the
+  fixtures and tests follow it (2026-11-14, agreed with the backend, rounds 1-7)
 - [ ] **Backend:** when the backend publishes `v0.1.0` with its `openapi.yaml` asset, run `scripts/sync-api.sh v0.1.0`
   in a pull request of its own and compare the diff with the commit pin (it should be empty or explained)
 
@@ -381,14 +385,13 @@ is a draft, pin the agreed backend commit (Phase 4).
 
 ## Backend requests (API request issues in the backend repository, with invented example values)
 
-- [ ] Phone verified before the first order for an email-only customer: refusal status and error code, and how the app
-  starts the verification (it reuses `me/contact` and `me/contact/verify`)
-- [ ] `GET /restaurants/nearby`: `nearest` is `null` whenever restaurants are found (the contract marks it
-  `allOf` + `nullable: true`), but `swagger_parser` 2.1.1 generates a non-nullable field with `disallowNullValue`, so the
-  generated client throws on the normal response. Decide with the backend: a contract form the generator reads as
-  `T?` (the `oneOf` forms tried generate a union class with a null case, not `T?`), or a newer generator, or another
-  way to read this one response. Remove the skip in `test/api/contract_fixtures_test.dart` once it is fixed
-- [ ] Order type (`car`, `dine_in`, `delivery`) in the conversation and order model, before D2 freezes it
+- [x] Phone verified before the first order for an email-only customer: agreed with the backend (2026-11-14): `403
+  phone_not_verified` at `confirm` in `review`, built with D2; the app reuses `me/contact` and `me/contact/verify`
+- [x] `GET /restaurants/nearby`: `nearest` is an optional property (agreed 2026-11-14, merged in backend PR #53, pinned
+  here at `ac60db8`); the client reads it as `NearestRestaurant?` and the test is no longer skipped. Rule: no nullable
+  object references in the contract
+- [x] Order type (`car`, `dine_in`, `delivery`) in the conversation and order model: agreed (2026-11-14), an
+  `x-extensible-enum` string, only `car` at first, the app always sends `car`; built with D2
 - [ ] Token expiry and rotation, per-device tokens
 - [ ] HttpOnly cookie session for the web once a custom domain exists
 - [ ] `min_app_version` in `/config` before any native app ships

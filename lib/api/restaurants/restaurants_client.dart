@@ -80,7 +80,7 @@ abstract class RestaurantsClient {
 
   /// List the restaurants around a point
   ///
-  /// Visible restaurants (active, subscription not suspended) whose parking lot is in range of the point (within the lot's radius of its centre), nearest first. `distance_m` is the distance to the restaurant itself. When none is in range, `restaurants` is empty and `nearest` holds the closest active restaurant. This list is polled and is not paginated. No token is needed.
+  /// Visible restaurants (active, subscription not suspended) whose parking lot is in range of the point (within the lot's radius of its centre), nearest first. `distance_m` is the distance to the restaurant itself. When none is in range, `restaurants` is empty and `nearest` holds the closest active restaurant, so the app can say how far it is. `nearest` is absent when `restaurants` is not empty and when no restaurant is visible at all. This list is polled and is not paginated. No token is needed.
   @GET('/api/v1/restaurants/nearby')
   Future<NearbyResponse$Response> restaurantsNearby({
     @Extras()

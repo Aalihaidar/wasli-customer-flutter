@@ -9,22 +9,15 @@ part 'nearby_response_response.g.dart';
 
 @JsonSerializable(explicitToJson: true, includeIfNull: true, disallowUnrecognizedKeys: false)
 class NearbyResponse$Response {
-  const NearbyResponse$Response({
-    required this.restaurants,
-
-    /// Only when `restaurants` is empty: the closest active restaurant, so the app can say how far it is. `null` otherwise.
-    required this.nearest,
-    this.additionalProperties = const {},
-  });
+  const NearbyResponse$Response({required this.restaurants, this.nearest, this.additionalProperties = const {}});
 
   factory NearbyResponse$Response.fromJson(Map<String, Object?> json) => _$NearbyResponse$ResponseFromJson(json);
 
   @JsonKey(required: true, disallowNullValue: true)
   final List<NearbyRestaurant$Response> restaurants;
 
-  /// Only when `restaurants` is empty: the closest active restaurant, so the app can say how far it is. `null` otherwise.
-  @JsonKey(required: true, disallowNullValue: true)
-  final NearestRestaurant$Response nearest;
+  @JsonKey(disallowNullValue: true, includeIfNull: false)
+  final NearestRestaurant$Response? nearest;
 
   static const _knownKeys = <String>{"restaurants", "nearest"};
 

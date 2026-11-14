@@ -7,16 +7,14 @@ part of 'nearby_response_response.dart';
 // **************************************************************************
 
 NearbyResponse$Response _$NearbyResponse$ResponseFromJson(Map<String, dynamic> json) {
-  $checkKeys(
-    json,
-    requiredKeys: const ['restaurants', 'nearest'],
-    disallowNullValues: const ['restaurants', 'nearest'],
-  );
+  $checkKeys(json, requiredKeys: const ['restaurants'], disallowNullValues: const ['restaurants', 'nearest']);
   return NearbyResponse$Response(
     restaurants: (json['restaurants'] as List<dynamic>)
         .map((e) => NearbyRestaurant$Response.fromJson(e as Map<String, dynamic>))
         .toList(),
-    nearest: NearestRestaurant$Response.fromJson(json['nearest'] as Map<String, dynamic>),
+    nearest: json['nearest'] == null
+        ? null
+        : NearestRestaurant$Response.fromJson(json['nearest'] as Map<String, dynamic>),
     additionalProperties: NearbyResponse$Response._extras(json, 'additionalProperties') == null
         ? const {}
         : NearbyResponse$Response._readExtras(NearbyResponse$Response._extras(json, 'additionalProperties')),
@@ -25,5 +23,5 @@ NearbyResponse$Response _$NearbyResponse$ResponseFromJson(Map<String, dynamic> j
 
 Map<String, dynamic> _$NearbyResponse$ResponseToJson(NearbyResponse$Response instance) => <String, dynamic>{
   'restaurants': instance.restaurants.map((e) => e.toJson()).toList(),
-  'nearest': instance.nearest.toJson(),
+  'nearest': ?instance.nearest?.toJson(),
 };

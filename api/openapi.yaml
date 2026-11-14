@@ -794,7 +794,9 @@ paths:
         parking lot is in range of the point (within the lot's radius of its centre),
         nearest first. `distance_m` is the distance to the restaurant itself. When
         none is in range, `restaurants` is empty and `nearest` holds the closest active
-        restaurant. This list is polled and is not paginated. No token is needed.
+        restaurant, so the app can say how far it is. `nearest` is absent when `restaurants`
+        is not empty and when no restaurant is visible at all. This list is polled
+        and is not paginated. No token is needed.
       summary: List the restaurants around a point
       parameters:
       - in: query
@@ -1304,13 +1306,8 @@ components:
           items:
             $ref: '#/components/schemas/NearbyRestaurant'
         nearest:
-          allOf:
-          - $ref: '#/components/schemas/NearestRestaurant'
-          nullable: true
-          description: 'Only when `restaurants` is empty: the closest active restaurant,
-            so the app can say how far it is. `null` otherwise.'
+          $ref: '#/components/schemas/NearestRestaurant'
       required:
-      - nearest
       - restaurants
     NearbyRestaurant:
       type: object
