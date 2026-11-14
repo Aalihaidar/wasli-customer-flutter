@@ -175,8 +175,13 @@ interface by the owner; the assistant only reads them with `gh`.
   block below
 - [x] Merge the scaffold pull request with **Create a merge commit** (PR #1) and the first `core/config` pull request
   (PR #2)
-- [ ] Repository variable `BACKEND_REPO` (and secret `BACKEND_READ_TOKEN`, read-only, because the backend is private) to
-  enable the weekly backend contract check (with Phase 4)
+- [x] Repository variable `BACKEND_REPO` and secret `BACKEND_READ_TOKEN` (fine-grained, read-only Contents on the
+  backend repository only) added by the owner, 2026-11-13, to enable the weekly backend contract check. They cannot be
+  read through the API, so the first manual run is the proof (next step)
+- [ ] Run **Actions → Backend contract → Run workflow** once: green, summary "no published release yet" while the
+  backend's `v0.1.0` is a draft. If the workflow is missing from the Actions list, it is registered by the next push
+  that touches `backend-contract.yml` (this change does)
+- [ ] Note the expiry date of `BACKEND_READ_TOKEN` and renew it before then (`docs/consuming-the-api.md` section 4)
 - [ ] Watch the Actions minutes (the Free plan includes a monthly quota for private repositories; the web, APK and
   AAB builds run on every pull request)
 
@@ -184,8 +189,12 @@ interface by the owner; the assistant only reads them with `gh`.
 
 Branch: `feat/api-client`. Backend: needs the published release.
 
+Status 2026-11-13: the backend's `v0.1.0` release is still a draft with no `openapi.yaml` asset, so
+`scripts/sync-api.sh v0.1.0` cannot download it and the weekly contract check sees no published release. Publish it with
+the asset in the backend repository, or pin a commit with `scripts/sync-api.sh --commit <sha>` until then.
+
 - [x] `gh` is logged in for the account that can read the private backend repository
-- [ ] `api/BACKEND_REPO` with the backend repository (`OWNER/REPO`)
+- [x] `api/BACKEND_REPO` with the backend repository (`OWNER/REPO`)
 - [ ] `flutter pub add dio retrofit json_annotation`
 - [ ] `flutter pub add --dev build_runner json_serializable retrofit_generator swagger_parser`
 - [ ] Check whether `swagger_parser.yaml` can generate only this app's endpoints; otherwise generate the whole client

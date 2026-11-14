@@ -135,6 +135,10 @@ Actions**):
 A public backend needs no token. If the backend cannot be read, the run fails (red) instead of
 reporting "up to date". You can also start it by hand from **Actions → Backend contract**.
 
+A fine-grained token expires. When it does, the run turns red with "Cannot read ...": create a new
+token with the same read-only *Contents* access to the backend repository only, and replace the
+`BACKEND_READ_TOKEN` secret. Note the expiry date of the current token somewhere you will see it.
+
 ## 5. Where the app finds the server
 
 ### Never hard-code the base URL
