@@ -178,9 +178,9 @@ interface by the owner; the assistant only reads them with `gh`.
 - [x] Repository variable `BACKEND_REPO` and secret `BACKEND_READ_TOKEN` (fine-grained, read-only Contents on the
   backend repository only) added by the owner, 2026-11-13, to enable the weekly backend contract check. They cannot be
   read through the API, so the first manual run is the proof (next step)
-- [ ] Run **Actions → Backend contract → Run workflow** once: green, summary "no published release yet" while the
-  backend's releases are drafts (the workflow reached `develop` with PR #4 and has not run yet). The check stays quiet
-  until the backend publishes a release, so a contract pinned by commit raises no issue in the meantime
+- [x] Run **Actions → Backend contract → Run workflow** once: green (2026-11-14), summary "no published release yet" while
+  the backend's releases are drafts, which also proves `BACKEND_READ_TOKEN` can read the private backend. The check stays
+  quiet until the backend publishes a release, so a contract pinned by commit raises no issue in the meantime
 - [ ] Note the expiry date of `BACKEND_READ_TOKEN` and renew it before then (`docs/consuming-the-api.md` section 4)
 - [ ] Watch the Actions minutes (the Free plan includes a monthly quota for private repositories; the web, APK and
   AAB builds run on every pull request)
@@ -229,8 +229,10 @@ when their feature starts: `flutter_map`, `latlong2`, `geolocator`, `record`, `f
 - [ ] `app/`: `bootstrap()`, `ProviderScope`, global error zone, `go_router` with path URLs and a `/r/<slug>` route (slug
   shape validated), app shell, session state (auth, locale, config)
 - [x] `core/config`: `AppEnvironment` reads `APP_ENV` (then the flavor); unknown counts as staging; unit tested
-- [ ] `core/error`: sealed `Failure`, parser for the one error body (`type`, `errors[].code/detail/attr`), mapping by
-  `code` (unknown code and non-JSON body become a generic failure of the HTTP status), with tests
+- [x] `core/error`: sealed `Failure`, parser for the one error body (`type`, `errors[].code/detail/attr`), mapping by
+  `code` (unknown code and non-JSON body become a generic failure of the HTTP status), with tests. `failureFromDioException`
+  is the single pipeline from the HTTP client to the repositories (it reads `Retry-After` and `X-Request-ID`); the chat
+  codes join the `ApiErrorCode` list with the conversation endpoints (Phase 9)
 - [ ] `core/network`: Dio factory with timeouts, interceptors for the auth header (`Customer <token>`, never on the
   public endpoints), `X-Request-ID` capture, locale, and **redacted** logging (no tokens, bodies or query strings); GET
   retry with backoff; `429` honours `Retry-After`; a `401` clears the session once
