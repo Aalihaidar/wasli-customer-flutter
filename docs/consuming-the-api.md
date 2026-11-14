@@ -45,11 +45,13 @@ flowchart LR
    ```
 
    `pubspec.lock` pins the exact versions. If you prefer `freezed` or `dart_mappable` models,
-   set `json_serializer` in `swagger_parser.yaml` and follow the package's README for the extra
-   packages and its `build.yaml`.
+   set `generation.serializer` in `swagger_parser.yaml` and follow the package's README for the
+   extra packages and its `build.yaml`.
 
-3. **Check `swagger_parser.yaml`.** The template ships it at the repository root: contract in
-   `api/openapi.yaml`, client in `lib/api`, Dart with `json_serializable`, one root client.
+3. **Check `swagger_parser.yaml`.** It sits at the repository root: contract in `api/openapi.yaml`,
+   client in `lib/api`, Retrofit clients with `json_serializable` models, one root `Api` class. Its
+   `generation` section follows the `swagger_parser` 2.x layout; check the package's configuration
+   reference when upgrading it.
 
 4. **Keep the analyzer quiet about generated code**, if `flutter analyze --fatal-infos`
    reports lints inside it. In `analysis_options.yaml`:
