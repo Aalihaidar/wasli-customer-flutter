@@ -181,7 +181,9 @@ interface by the owner; the assistant only reads them with `gh`.
 - [x] Run **Actions → Backend contract → Run workflow** once: green (2026-11-14), summary "no published release yet" while
   the backend's releases are drafts, which also proves `BACKEND_READ_TOKEN` can read the private backend. The check stays
   quiet until the backend publishes a release, so a contract pinned by commit raises no issue in the meantime
-- [ ] Note the expiry date of `BACKEND_READ_TOKEN` and renew it before then (`docs/consuming-the-api.md` section 4)
+- [x] `BACKEND_READ_TOKEN` was created without an expiry date (owner, 2026-11-14), so there is no date to note or renew.
+  If it is ever revoked or replaced, the weekly run turns red with "Cannot read ..." and the secret is replaced with a new
+  read-only token (`docs/consuming-the-api.md` section 4)
 - [ ] Watch the Actions minutes (the Free plan includes a monthly quota for private repositories; the web, APK and
   AAB builds run on every pull request)
 
