@@ -77,7 +77,7 @@ Branch: `feat/initial-app`. Everything below goes into one reviewable pull reque
 - [x] Strict `analysis_options.yaml` (`strict-casts`, `strict-inference`, `strict-raw-types`, formatter width 120, the
   chosen lint set, `lib/api/**` excluded)
 - [ ] Folder structure under `lib/`: `app/`, `core/`, `theme/`, `api/`, `features/` (git does not track empty folders, so
-  each one appears with its first file; `app/` exists)
+  each one appears with its first file; `app/` and `core/` exist)
 - [x] Boundary check for the folder rules (`core`, `theme` and `api` never import `features` or `app`; features never
   import each other's `data` or `presentation`; `domain` is pure Dart): `scripts/check-boundaries.sh`, run by the
   pre-commit hook and by the CI job "Folder boundaries"
@@ -134,9 +134,9 @@ before doing this block.
 
 ### Merge
 
-- [ ] Commit (Conventional Commits), push, open the pull request into `develop` with the template filled in
-- [ ] **CI passed** is green; `build.yml` produced the web, APK and App Bundle test builds (staging)
-- [ ] Merged with **Create a merge commit**
+- [x] Commit (Conventional Commits), push, open the pull request into `develop` with the template filled in (PR #1)
+- [x] **CI passed** is green; `build.yml` produced the web, APK and App Bundle test builds (staging)
+- [x] Merged with **Create a merge commit**
 - [ ] The signed staging build succeeds and fills the draft release "Staging"; check the signature with `apksigner`
   (waits for the signing block above)
 
@@ -179,29 +179,38 @@ interface by the owner; the assistant only reads them with `gh`.
   backend repository only) added by the owner, 2026-11-13, to enable the weekly backend contract check. They cannot be
   read through the API, so the first manual run is the proof (next step)
 - [ ] Run **Actions → Backend contract → Run workflow** once: green, summary "no published release yet" while the
-  backend's `v0.1.0` is a draft. If the workflow is missing from the Actions list, it is registered by the next push
-  that touches `backend-contract.yml` (this change does)
+  backend's releases are drafts (the workflow reached `develop` with PR #4 and has not run yet). The check stays quiet
+  until the backend publishes a release, so a contract pinned by commit raises no issue in the meantime
 - [ ] Note the expiry date of `BACKEND_READ_TOKEN` and renew it before then (`docs/consuming-the-api.md` section 4)
 - [ ] Watch the Actions minutes (the Free plan includes a monthly quota for private repositories; the web, APK and
   AAB builds run on every pull request)
 
 ## Phase 4: Backend contract and generated client (D1, backend v0.1.0)
 
-Branch: `feat/api-client`. Backend: needs the published release.
+Branch: `feat/api-client`. Backend: the contract is pinned by commit while the release is a draft.
 
-Status 2026-11-13: the backend's `v0.1.0` release is still a draft with no `openapi.yaml` asset, so
-`scripts/sync-api.sh v0.1.0` cannot download it and the weekly contract check sees no published release. Publish it with
-the asset in the backend repository, or pin a commit with `scripts/sync-api.sh --commit <sha>` until then.
+**Decided (owner, 2026-11-14): the backend keeps `v0.1.0` as a draft until the whole backend is finished, and this app
+builds against a pinned commit meanwhile.** A draft has no `openapi.yaml` asset (and no tag), so `scripts/sync-api.sh v0.1.0`
+cannot download it, and the weekly contract check sees no published release and stays quiet. The app pins the backend's
+`openapi/schema.yaml` at one commit of the backend's `develop` branch with `scripts/sync-api.sh --commit <sha>`; the script
+records the full SHA in `api/BACKEND_VERSION`, and a commit never changes, so the pin is as stable as a tag. The same
+applies to the later contracts (`v0.2.0`, `v0.3.0`, `v1.0.0`) until the backend publishes its releases. Moving to a
+different contract is always a pull request that changes `api/` and `lib/api` together. When the backend publishes a
+release with its `openapi.yaml` asset, the pin moves to that tag in a pull request of its own.
 
 - [x] `gh` is logged in for the account that can read the private backend repository
 - [x] `api/BACKEND_REPO` with the backend repository (`OWNER/REPO`)
 - [ ] `flutter pub add dio retrofit json_annotation`
 - [ ] `flutter pub add --dev build_runner json_serializable retrofit_generator swagger_parser`
 - [ ] Check whether `swagger_parser.yaml` can generate only this app's endpoints; otherwise generate the whole client
-- [ ] `scripts/sync-api.sh v0.1.0` (writes `api/openapi.yaml`, `api/BACKEND_VERSION`, generates `lib/api`)
+- [ ] `scripts/sync-api.sh --commit <sha>` with the sha of the backend `develop` commit that carries the `v0.1.0` contract
+  (config, customer accounts, `restaurants/nearby`, `restaurants/{slug}`); it writes `api/openapi.yaml` and
+  `api/BACKEND_VERSION` and generates `lib/api`. Check that `info.version` in the pinned file reads `0.1.0`
 - [ ] Exclude `lib/api/**` from analysis if `flutter analyze --fatal-infos` reports generated code
 - [ ] Commit `api/` and `lib/api` together; the **API client is current** job is green
 - [ ] Per-endpoint fixtures with invented values taken from the contract examples
+- [ ] **Backend:** when the backend publishes `v0.1.0` with its `openapi.yaml` asset, run `scripts/sync-api.sh v0.1.0`
+  in a pull request of its own and compare the diff with the commit pin (it should be empty or explained)
 
 ## Phase 5: App foundation (`lib/core`, `lib/theme`, `lib/app`)
 
@@ -282,9 +291,10 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
 
 ## Phase 9: Conversation and order (backend D2, release v0.2.0)
 
-Backend: needs the `v0.2.0` contract. Pin it with a pull request of its own (`/pin-api`), then build.
+Backend: needs the `v0.2.0` contract. Pin it with a pull request of its own (`/pin-api`), then build. While the release
+is a draft, pin the agreed backend commit (Phase 4).
 
-- [ ] Pin `v0.2.0`, regenerate `lib/api`, fix what the compiler reports
+- [ ] Pin `v0.2.0` (or its commit), regenerate `lib/api`, fix what the compiler reports
 - [ ] Order channel modelled as a sealed domain type (`car` now; `dineIn` and `delivery` later); no "car" or "parking"
   words in shared code
 - [ ] Chat shell: open or resume a conversation, append messages by `seq`, poll `?after_seq=` only while visible, stop 10
@@ -309,7 +319,7 @@ Backend: needs the `v0.2.0` contract. Pin it with a pull request of its own (`/p
 
 ## Phase 10: Restaurant answers and polish (backend D3 and D4, releases v0.3.0 and v1.0.0)
 
-- [ ] Pin `v0.3.0`; accepted and rejected results appear in the chat; show staging to restaurant managers
+- [ ] Pin `v0.3.0` (or its commit); accepted and rejected results appear in the chat; show staging to restaurant managers
 - [ ] Optional `ready` status when the backend offers it
 - [ ] Arabic and English complete, RTL checked on every screen at compact, medium and expanded widths
 - [ ] "Pretend I'm 2 km away" in the chat menu (staging only)
