@@ -1,0 +1,12 @@
+{
+  "token": "demo-token-not-a-real-token",
+  "customer": {
+    "id": "3f2b8c1e-7a4d-4e6b-9c1a-5d2e8f0b1a11",
+    "full_name": "Sara Demo",
+    "locale": "en",
+    "email": "sara@example.com",
+    "email_verified": true,
+    "phone": null,
+    "phone_verified": false
+  }
+}

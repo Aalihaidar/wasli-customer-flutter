@@ -1,0 +1,12 @@
+{
+  "token": "demo-token-not-a-real-token",
+  "customer": {
+    "id": "7c1d9e24-5b3a-4f08-8e6d-2a9b4c7d0e22",
+    "full_name": "سارة تجريبية",
+    "locale": "ar",
+    "email": "sara@example.com",
+    "email_verified": true,
+    "phone": "+971500000000",
+    "phone_verified": true
+  }
+}

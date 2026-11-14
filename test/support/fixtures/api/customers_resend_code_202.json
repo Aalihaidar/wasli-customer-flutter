@@ -1,0 +1,6 @@
+{
+  "identifier": "+971500000000",
+  "channel": "sms",
+  "code_expires_in_seconds": 600,
+  "resend_available_in_seconds": 60
+}
