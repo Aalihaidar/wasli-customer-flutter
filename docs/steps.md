@@ -200,13 +200,15 @@ release with its `openapi.yaml` asset, the pin moves to that tag in a pull reque
 
 - [x] `gh` is logged in for the account that can read the private backend repository
 - [x] `api/BACKEND_REPO` with the backend repository (`OWNER/REPO`)
-- [ ] `flutter pub add dio retrofit json_annotation`
-- [ ] `flutter pub add --dev build_runner json_serializable retrofit_generator swagger_parser`
-- [ ] Check whether `swagger_parser.yaml` can generate only this app's endpoints; otherwise generate the whole client
-- [ ] `scripts/sync-api.sh --commit <sha>` with the sha of the backend `develop` commit that carries the `v0.1.0` contract
+- [x] `flutter pub add dio retrofit json_annotation`
+- [x] `flutter pub add --dev build_runner json_serializable retrofit_generator swagger_parser`
+- [x] `swagger_parser.yaml` rewritten for `swagger_parser` 2.x (the template's keys belong to the 1.x series) and it can
+  generate only this app's endpoints: `operation_filters` excludes the staff paths (`/api/v1/auth/**`, `/api/v1/staff/**`)
+  and `prune_unused_models` drops the models only they use. Enums keep an `Unknown` case (`unknown_enum_values: preserve`)
+- [x] `scripts/sync-api.sh --commit <sha>` with the sha of the backend `develop` commit that carries the `v0.1.0` contract
   (config, customer accounts, `restaurants/nearby`, `restaurants/{slug}`); it writes `api/openapi.yaml` and
-  `api/BACKEND_VERSION` and generates `lib/api`. Check that `info.version` in the pinned file reads `0.1.0`
-- [ ] Exclude `lib/api/**` from analysis if `flutter analyze --fatal-infos` reports generated code
+  `api/BACKEND_VERSION`, and `scripts/generate-api.sh` generates `lib/api`. `info.version` in the pinned file reads `0.1.0`
+- [x] `lib/api/**` is excluded from analysis (since Phase 2); `flutter analyze --fatal-infos` reports nothing
 - [ ] Commit `api/` and `lib/api` together; the **API client is current** job is green
 - [ ] Per-endpoint fixtures with invented values taken from the contract examples
 - [ ] **Backend:** when the backend publishes `v0.1.0` with its `openapi.yaml` asset, run `scripts/sync-api.sh v0.1.0`
