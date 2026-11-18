@@ -228,7 +228,8 @@ release with its `openapi.yaml` asset, the pin moves to that tag in a pull reque
 
 Each block is its own small pull request (`feat/core-network`, `feat/theme`, …). No product screens yet.
 
-Packages (confirm each when adding): `flutter_riverpod`, `go_router`, `intl`, `uuid`, `flutter_localizations`. Later, only
+Packages (confirm each when adding): `material_ui` (added with Flutter 3.50, which deprecates
+`package:flutter/material.dart`), `flutter_riverpod`, `go_router`, `intl`, `uuid`, `flutter_localizations`. Later, only
 when their feature starts: `flutter_map`, `latlong2`, `geolocator`, `record`, `flutter_secure_storage`,
 `shared_preferences` (non-sensitive settings only, never tokens).
 
@@ -405,3 +406,8 @@ is a draft, pin the agreed backend commit (Phase 4).
 - [ ] Conventional Commit messages; pull request into `develop` with the template filled in; merge commit
 - [ ] A change to `api/openapi.yaml` includes the regenerated `lib/api`
 - [ ] This file updated when the plan changes
+- [ ] Every doc the change affects (`README.md`, `docs/`, this file, `CONTRIBUTING.md`, `.env.example`) is updated in the
+  same branch and pull request
+- [ ] After a Flutter update: `scripts/pin-image.sh <tag>` (pins `environment: flutter:` and `pubspec.lock`), the Android
+  Gradle Plugin, Kotlin plugin and Gradle wrapper at least at the versions the new Flutter requires
+  (`android/settings.gradle.kts`, `android/gradle/wrapper/gradle-wrapper.properties`), and the README stack table
