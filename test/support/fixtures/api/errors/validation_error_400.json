@@ -1,0 +1,15 @@
+{
+  "type": "validation_error",
+  "errors": [
+    {
+      "code": "password_too_common",
+      "detail": "This password is too common.",
+      "attr": "password"
+    },
+    {
+      "code": "required",
+      "detail": "This field is required.",
+      "attr": "full_name"
+    }
+  ]
+}

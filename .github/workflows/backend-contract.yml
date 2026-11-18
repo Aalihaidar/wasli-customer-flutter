@@ -13,6 +13,10 @@
 # BACKEND_READ_TOKEN, a fine-grained token with read-only "Contents" access to
 # that one repository; a public backend needs nothing.
 #
+# The token expires (a fine-grained token has an expiry date). When it does, the run
+# fails on purpose with "Cannot read ..." instead of reporting "up to date": create
+# a new token with the same read-only access and replace the secret.
+#
 # Not part of "CI passed": it depends on another repository's state. It uses only
 # actions/checkout and the preinstalled GitHub CLI.
 name: Backend contract

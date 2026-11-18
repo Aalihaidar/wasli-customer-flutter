@@ -1,0 +1,85 @@
+{
+  "slug": "demo-cafe",
+  "name_en": "Demo Cafe",
+  "name_ar": "مقهى تجريبي",
+  "logo_url": "https://media.example.com/logos/demo-cafe.png",
+  "brand_colour": "#1A73E8",
+  "latitude": 25.2048,
+  "longitude": 55.2708,
+  "currency": "AED",
+  "parking_lot": {
+    "name": "Demo Plaza parking",
+    "latitude": 25.2046,
+    "longitude": 55.2706,
+    "radius_m": 150
+  },
+  "menu_images": [
+    {
+      "image_url": "https://media.example.com/menus/demo-cafe-1.jpg",
+      "caption_en": "Hot drinks",
+      "caption_ar": "المشروبات الساخنة"
+    },
+    {
+      "image_url": null,
+      "caption_en": "",
+      "caption_ar": ""
+    }
+  ],
+  "menu": [
+    {
+      "id": "a1b2c3d4-0001-4a5b-8c9d-0e1f2a3b4c01",
+      "name_en": "Drinks",
+      "name_ar": "المشروبات",
+      "items": [
+        {
+          "id": "a1b2c3d4-0002-4a5b-8c9d-0e1f2a3b4c02",
+          "name_en": "Latte",
+          "name_ar": "لاتيه",
+          "description_en": "Espresso with steamed milk",
+          "description_ar": "إسبريسو مع حليب مبخر",
+          "price_minor": 1250,
+          "image_url": "https://media.example.com/items/latte.jpg",
+          "is_available": true,
+          "option_groups": [
+            {
+              "id": "a1b2c3d4-0003-4a5b-8c9d-0e1f2a3b4c03",
+              "name_en": "Size",
+              "name_ar": "الحجم",
+              "min_select": 1,
+              "max_select": 1,
+              "options": [
+                {
+                  "id": "a1b2c3d4-0004-4a5b-8c9d-0e1f2a3b4c04",
+                  "name_en": "Regular",
+                  "name_ar": "عادي",
+                  "price_delta_minor": 0,
+                  "is_available": true,
+                  "is_default": true
+                },
+                {
+                  "id": "a1b2c3d4-0005-4a5b-8c9d-0e1f2a3b4c05",
+                  "name_en": "Large",
+                  "name_ar": "كبير",
+                  "price_delta_minor": 200,
+                  "is_available": true,
+                  "is_default": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "a1b2c3d4-0006-4a5b-8c9d-0e1f2a3b4c06",
+          "name_en": "Iced tea",
+          "name_ar": "شاي مثلج",
+          "description_en": "",
+          "description_ar": "",
+          "price_minor": 900,
+          "image_url": null,
+          "is_available": false,
+          "option_groups": []
+        }
+      ]
+    }
+  ]
+}

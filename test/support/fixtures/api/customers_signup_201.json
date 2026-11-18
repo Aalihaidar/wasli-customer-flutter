@@ -1,0 +1,6 @@
+{
+  "identifier": "sara@example.com",
+  "channel": "email",
+  "code_expires_in_seconds": 600,
+  "resend_available_in_seconds": 60
+}

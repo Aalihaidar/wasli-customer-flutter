@@ -69,16 +69,20 @@ if [ -n "$not_executable" ]; then
   fail "Not executable in Git. Run: git update-index --chmod=+x <file>"
 fi
 
-# ── 3. Dart format (whole project, nothing is rewritten) ──────────────────────
+# ── 3. Import boundaries between the folders under lib/ ───────────────────────
+echo "▸ import boundaries"
+bash scripts/check-boundaries.sh || fail "An import breaks the folder rules (see above)."
+
+# ── 4. Dart format (whole project, nothing is rewritten) ──────────────────────
 echo "▸ dart format"
 dart format --output=none --set-exit-if-changed . >/dev/null \
   || fail "Dart files are not formatted. Run: dart format ."
 
-# ── 4. Static analysis (infos are errors, as in CI) ───────────────────────────
+# ── 5. Static analysis (infos are errors, as in CI) ───────────────────────────
 echo "▸ flutter analyze --fatal-infos"
 flutter analyze --fatal-infos || fail "flutter analyze reported issues."
 
-# ── 5. Tests (skipped without a test/ folder, as in CI) ───────────────────────
+# ── 6. Tests (skipped without a test/ folder, as in CI) ───────────────────────
 if [ -d "test" ]; then
   echo "▸ flutter test"
   flutter test || fail "Tests failed."
