@@ -153,7 +153,8 @@ next to it. A line is ticked in the pull request that comes after the event, bec
 - [x] (a) The pull request that introduced the rules shows Build running, including the two Android jobs (its
   workflow file is in the paths), which proves the `detect` step and its `pull-requests: read` permission (2026-11-19,
   PR #13: Detect, Web, APK and AAB passed; signed, iOS and draft release skipped)
-- [ ] (b) A docs-only pull request shows no Build run (CI and PR labels only)
+- [x] (b) A docs-only pull request shows no Build run (CI and PR labels only) (2026-11-19, PR #14: CI and PR labels
+  ran, no Build; its merge into `develop` started no run either, which repeats (d))
 - [ ] (c) A Dart-only pull request (under `lib/` or `test/`) shows the web build and skips the two Android jobs
 - [x] (d) The merge into `develop` starts no Build run (2026-11-19, merge of PR #13: no run on `2809d17`)
 - [ ] (e) Build → Run workflow from `develop` with `staging` works and refreshes the draft "Staging"
