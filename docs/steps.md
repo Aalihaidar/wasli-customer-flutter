@@ -112,33 +112,37 @@ Branch: `feat/initial-app`. Everything below goes into one reviewable pull reque
   jobs of `ci.yml` (and their entries in `CI passed`), and `.github/workflows/bootstrap-main.yml` (`main` exists)
 - [x] Keep or trim `docs/` (kept: the template guides stay useful as reference)
 
-### Android signing (deferred by the owner, 2026-11-12)
+### Android signing (done 2026-11-18)
 
-Not done for the first merge. Pull request builds use the debug key and need no secret, so the PR and its merge are not
-blocked. The signed build runs on every push to `develop` or `main` and stops with a message naming the missing secret,
-so until this block is done the post-merge **Build** run on `develop` is red (not a required check) and no draft release
-"Staging" is created. Do this block before the first signed APK is needed (`docs/android-signing.md` sections 1 and 3).
-Create the two GitHub environments with their branch restriction **before** adding any secret: an environment GitHub
-creates on the fly from a workflow run has no branch restriction.
-**Plan limit (2026-11-13):** environment-scoped secrets and branch restrictions need a paid plan on a private
-repository, so decide with the owner how the signing secrets are stored (repository secrets and a `build.yml` change)
-before doing this block.
+Deferred at the first merge (2026-11-12) and completed on 2026-11-18. Pull request builds use the debug key and need no
+secret. The signed build runs after a merge into `main` and on a manual run, and stops with a message naming a missing secret
+(`docs/android-signing.md` sections 1 and 3).
+**Plan limit (2026-11-13):** the repository is private on the GitHub Free plan, so the two environments exist but have
+no branch restriction and no protection rules; the secrets are scoped to the environment that uses them, and the
+`staging` and `production` keys are separate.
 
-- [ ] Two keystores (staging key and production upload key) in `.signing/` with distinctive aliases, key property files
-  `android/key.staging.properties` and `android/key.production.properties` kept local, both keystores and passwords backed
-  up in a password manager
-- [ ] GitHub environments `staging` (only `develop`) and `production` (only `main`), administrator bypass off, created
-  **before** the first workflow that uses them
-- [ ] In each environment the secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_STORE_PASSWORD`, `ANDROID_KEY_PASSWORD`,
-  `ANDROID_KEY_ALIAS` and the variable `ANDROID_CERT_SHA256` (the key's public SHA-256 fingerprint)
+- [x] Two keystores (staging key, alias `wasli-customer-staging`, and production upload key, alias
+  `wasli-customer-upload`) in `.signing/`, kept local, with both keystores and passwords backed up in a password manager
+- [x] GitHub environments `staging` and `production` (no branch restriction and no administrator-bypass setting: not
+  available on the Free plan)
+- [x] In each environment the secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_STORE_PASSWORD`, `ANDROID_KEY_PASSWORD`,
+  `ANDROID_KEY_ALIAS` and the variable `ANDROID_CERT_SHA256` (the key's public SHA-256 fingerprint); verified by the
+  signed **Build** runs on `develop` and `main`, whose "Verify the signature" step compares every APK and the App Bundle
+  with that fingerprint
 
 ### Merge
 
 - [x] Commit (Conventional Commits), push, open the pull request into `develop` with the template filled in (PR #1)
 - [x] **CI passed** is green; `build.yml` produced the web, APK and App Bundle test builds (staging)
 - [x] Merged with **Create a merge commit**
-- [ ] The signed staging build succeeds and fills the draft release "Staging"; check the signature with `apksigner`
-  (waits for the signing block above)
+- [x] The signed staging build succeeds and fills the draft release "Staging"; the signature is checked with `apksigner`
+  by the build (2026-11-18; the production build on `main` also filled the draft release `v0.1.0`)
+- [x] Build once per purpose (branch `ci/build-once-per-purpose`, owner decision 2026-11-19): a pull request into
+  `develop` builds the web app, and the Android test builds only when it changes `android/`, `pubspec.yaml`,
+  `pubspec.lock`, the Build workflow or the setup-flutter action; a merge into `develop` and a pull request into `main`
+  build nothing (CI checks the release pull request); a merge into `main` makes the signed production build and the
+  draft release `v<version>`; a manual run builds the chosen environment, staging only from `develop` and production
+  only from `main`; the Labels workflow runs on `develop` only
 
 ### iOS flavors (needs a Mac)
 
@@ -170,9 +174,8 @@ interface by the owner; the assistant only reads them with `gh`.
   updates (secret scanning, push protection, CodeQL and private vulnerability reporting are not available on a private
   Free repository)
 - ~~Import the three rulesets~~ not available on the Free plan (private repository); kept in `.github/rulesets/`
-- ~~Environments `staging` and `production` restricted to their branch~~ not available on the Free plan; the `staging`
-  environment that a CI run created on its own stays unrestricted and holds no secret. Revisit with the Android signing
-  block below
+- ~~Environments `staging` and `production` restricted to their branch~~ not available on the Free plan; both
+  environments stay unrestricted; they now hold the Android signing secrets (see "Android signing" above)
 - [x] Merge the scaffold pull request with **Create a merge commit** (PR #1) and the first `core/config` pull request
   (PR #2)
 - [x] Repository variable `BACKEND_REPO` and secret `BACKEND_READ_TOKEN` (fine-grained, read-only Contents on the
@@ -184,8 +187,9 @@ interface by the owner; the assistant only reads them with `gh`.
 - [x] `BACKEND_READ_TOKEN` was created without an expiry date (owner, 2026-11-14), so there is no date to note or renew.
   If it is ever revoked or replaced, the weekly run turns red with "Cannot read ..." and the secret is replaced with a new
   read-only token (`docs/consuming-the-api.md` section 4)
-- [ ] Watch the Actions minutes (the Free plan includes a monthly quota for private repositories; the web, APK and
-  AAB builds run on every pull request)
+- [ ] Watch the Actions minutes (the Free plan includes a monthly quota for private repositories; the web build runs
+  on every pull request that changes an app file, the APK and AAB test builds only when it changes `android/` or
+  `pubspec.*`, and a merge into `develop` builds nothing)
 
 ## Phase 4: Backend contract and generated client (D1, backend v0.1.0)
 
@@ -353,8 +357,9 @@ is a draft, pin the agreed backend commit (Phase 4).
 - [ ] Phone verification and the cash or card question, as agreed with the backend
 - [ ] Privacy policy, terms and the font licence text reachable from the app
 - [ ] Minimum-version check from `/config` (`min_app_version`)
-- [ ] First production release: raise `version:` in `pubspec.yaml`, release pull request `develop` → `main`, test the
-  production build, merge, publish the draft release `v<version>`
+- [ ] First production release: raise `version:` in `pubspec.yaml`, run a manual staging build and test the signed
+  files, release pull request `develop` → `main` (CI only), merge, check the signed production build that runs once
+  on `main`, publish the draft release `v<version>`
 - [ ] Rollback rehearsed: redeploy the previous release tag
 
 ## Phase 12: Mobile apps (near future)
