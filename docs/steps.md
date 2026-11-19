@@ -144,6 +144,23 @@ no branch restriction and no protection rules; the secrets are scoped to the env
   draft release `v<version>`; a manual run builds the chosen environment, staging only from `develop` and production
   only from `main`; the Labels workflow runs on `develop` only
 
+### Check the build rules in practice
+
+The build rules above are proven by real runs, not by reading the workflow. Tick each line when the event has
+happened and the run was read (`gh run list` / `gh run view`), and write the date and the run or pull request number
+next to it. A line is ticked in the pull request that comes after the event, because the result is not known before.
+
+- [x] (a) The pull request that introduced the rules shows Build running, including the two Android jobs (its
+  workflow file is in the paths), which proves the `detect` step and its `pull-requests: read` permission (2026-11-19,
+  PR #13: Detect, Web, APK and AAB passed; signed, iOS and draft release skipped)
+- [ ] (b) A docs-only pull request shows no Build run (CI and PR labels only)
+- [ ] (c) A Dart-only pull request (under `lib/` or `test/`) shows the web build and skips the two Android jobs
+- [x] (d) The merge into `develop` starts no Build run (2026-11-19, merge of PR #13: no run on `2809d17`)
+- [ ] (e) Build → Run workflow from `develop` with `staging` works and refreshes the draft "Staging"
+- [ ] (f) `production` from `develop`, or `staging` from a topic branch, fails at once with the "Wrong branch" message
+- [ ] (g) The release pull request (`develop` → `main`) runs CI only
+- [ ] (h) The merge into `main` runs exactly one Build and refreshes the draft release `v<version>`
+
 ### iOS flavors (needs a Mac)
 
 Branch: `feat/ios-flavors`. Xcode schemes cannot be created in the Linux container (`docs/environments.md`, "Not set up
