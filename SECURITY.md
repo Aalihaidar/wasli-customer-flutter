@@ -35,8 +35,13 @@ Only the latest release of the app and the latest commit on `develop` are suppor
 
 **Please do not open an issue or a pull request for a security vulnerability.**
 
-This repository is private. Report the vulnerability directly to the repository owner, through the channel you already
-use with them, and not in any issue, pull request or comment. Include:
+Report it privately, never in a public place (issue, pull request, discussion or comment):
+
+- If the **Report a vulnerability** button is shown on the Security tab of this repository, use it (GitHub private
+  vulnerability reporting).
+- Otherwise, contact the repository owner directly, through the channel you already use with them.
+
+Include:
 
 - A description of the vulnerability and its potential impact
 - Steps to reproduce (a minimal example is ideal), using invented data only: never send real customer or restaurant
