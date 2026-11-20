@@ -89,6 +89,9 @@ void main() {
 
       expect(nearby.restaurants, hasLength(2));
       expect(nearby.restaurants.first.distanceM, 120);
+      expect(nearby.restaurants.first.serviceRadiusM, 500);
+      expect(nearby.restaurants.last.serviceRadiusM, isNull);
+      expect(nearby.restaurants.last.toJson().containsKey('service_radius_m'), isFalse);
       expect(nearby.restaurants.last.logoUrl, isNull);
       expect(nearby.nearest, isNull);
       expect(nearby.toJson(), json);
@@ -100,7 +103,7 @@ void main() {
 
       expect(nearby.restaurants, isEmpty);
       expect(nearby.nearest, isNotNull);
-      expect(nearby.nearest!.parkingLot.radiusM, 150);
+      expect(nearby.nearest!.serviceRadiusM, 500);
       expect(nearby.toJson(), json);
     });
 
@@ -121,6 +124,15 @@ void main() {
       expect(restaurant.currency, 'AED');
       expect(restaurant.menu.single.items.first.priceMinor, 1250);
       expect(restaurant.menu.single.items.last.isAvailable, isFalse);
+      expect(restaurant.serviceRadiusM, 500);
+      expect(restaurant.toJson(), json);
+    });
+
+    test('GET /restaurants/{slug} (200) without a service distance: the key is absent', () {
+      final json = Map<String, Object?>.of(readApiFixture('restaurants_retrieve_200'))..remove('service_radius_m');
+      final restaurant = RestaurantDetail$Response.fromJson(json);
+
+      expect(restaurant.serviceRadiusM, isNull);
       expect(restaurant.toJson(), json);
     });
   });

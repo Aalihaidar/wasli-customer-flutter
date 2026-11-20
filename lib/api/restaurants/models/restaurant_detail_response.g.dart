@@ -18,7 +18,6 @@ RestaurantDetail$Response _$RestaurantDetail$ResponseFromJson(Map<String, dynami
       'latitude',
       'longitude',
       'currency',
-      'parking_lot',
       'menu_images',
       'menu',
     ],
@@ -30,7 +29,7 @@ RestaurantDetail$Response _$RestaurantDetail$ResponseFromJson(Map<String, dynami
       'latitude',
       'longitude',
       'currency',
-      'parking_lot',
+      'service_radius_m',
       'menu_images',
       'menu',
     ],
@@ -44,7 +43,7 @@ RestaurantDetail$Response _$RestaurantDetail$ResponseFromJson(Map<String, dynami
     latitude: json['latitude'] as num,
     longitude: json['longitude'] as num,
     currency: json['currency'] as String,
-    parkingLot: RestaurantDetailParkingLot$Response.fromJson(json['parking_lot'] as Map<String, dynamic>),
+    serviceRadiusM: RestaurantDetail$Response._read_serviceRadiusM(json['service_radius_m']),
     menuImages: (json['menu_images'] as List<dynamic>)
         .map((e) => MenuImage$Response.fromJson(e as Map<String, dynamic>))
         .toList(),
@@ -66,7 +65,7 @@ Map<String, dynamic> _$RestaurantDetail$ResponseToJson(RestaurantDetail$Response
   'latitude': instance.latitude,
   'longitude': instance.longitude,
   'currency': instance.currency,
-  'parking_lot': instance.parkingLot.toJson(),
+  'service_radius_m': ?RestaurantDetail$Response._write_serviceRadiusM(instance.serviceRadiusM),
   'menu_images': instance.menuImages.map((e) => e.toJson()).toList(),
   'menu': instance.menu.map((e) => e.toJson()).toList(),
 };

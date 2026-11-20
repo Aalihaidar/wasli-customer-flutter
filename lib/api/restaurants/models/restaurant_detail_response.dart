@@ -4,7 +4,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'menu_category_response.dart';
 import 'menu_image_response.dart';
-import 'restaurant_detail_parking_lot_response.dart';
 
 part 'restaurant_detail_response.g.dart';
 
@@ -13,6 +12,8 @@ class RestaurantDetail$Response {
   const RestaurantDetail$Response({
     required this.slug,
     required this.nameEn,
+
+    /// The Arabic name, or the English name when there is no Arabic one.
     required this.nameAr,
     required this.logoUrl,
 
@@ -21,7 +22,9 @@ class RestaurantDetail$Response {
     required this.latitude,
     required this.longitude,
     required this.currency,
-    required this.parkingLot,
+
+    /// Metres from the restaurant that it serves cars. Absent when the restaurant sets no limit.
+    this.serviceRadiusM,
     required this.menuImages,
     required this.menu,
     this.additionalProperties = const {},
@@ -35,6 +38,7 @@ class RestaurantDetail$Response {
   @JsonKey(name: "name_en", required: true, disallowNullValue: true)
   final String nameEn;
 
+  /// The Arabic name, or the English name when there is no Arabic one.
   @JsonKey(name: "name_ar", required: true, disallowNullValue: true)
   final String nameAr;
 
@@ -54,8 +58,15 @@ class RestaurantDetail$Response {
   @JsonKey(required: true, disallowNullValue: true)
   final String currency;
 
-  @JsonKey(name: "parking_lot", required: true, disallowNullValue: true)
-  final RestaurantDetailParkingLot$Response parkingLot;
+  /// Metres from the restaurant that it serves cars. Absent when the restaurant sets no limit.
+  @JsonKey(
+    name: "service_radius_m",
+    disallowNullValue: true,
+    includeIfNull: false,
+    fromJson: RestaurantDetail$Response._read_serviceRadiusM,
+    toJson: RestaurantDetail$Response._write_serviceRadiusM,
+  )
+  final int? serviceRadiusM;
 
   @JsonKey(name: "menu_images", required: true, disallowNullValue: true)
   final List<MenuImage$Response> menuImages;
@@ -72,7 +83,7 @@ class RestaurantDetail$Response {
     "latitude",
     "longitude",
     "currency",
-    "parking_lot",
+    "service_radius_m",
     "menu_images",
     "menu",
   };
@@ -83,6 +94,10 @@ class RestaurantDetail$Response {
     includeToJson: false,
   )
   final Map<String, Object?> additionalProperties;
+
+  static int? _read_serviceRadiusM(Object? value) => value == null ? null : value as int;
+
+  static Object? _write_serviceRadiusM(int? value) => value;
 
   static Object? _extras(Map map, String _) => {
     for (final entry in map.entries)

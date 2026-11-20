@@ -7,12 +7,7 @@
   "latitude": 25.2048,
   "longitude": 55.2708,
   "currency": "AED",
-  "parking_lot": {
-    "name": "Demo Plaza parking",
-    "latitude": 25.2046,
-    "longitude": 55.2706,
-    "radius_m": 150
-  },
+  "service_radius_m": 500,
   "menu_images": [
     {
       "image_url": "https://media.example.com/menus/demo-cafe-1.jpg",

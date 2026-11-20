@@ -2,26 +2,29 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-import 'nearest_restaurant_parking_lot_response.dart';
-
 part 'nearest_restaurant_response.g.dart';
 
+/// The closest restaurant when none serves the point: the same fields as a nearby entry.
 @JsonSerializable(explicitToJson: true, includeIfNull: true, disallowUnrecognizedKeys: false)
 class NearestRestaurant$Response {
   const NearestRestaurant$Response({
     required this.slug,
     required this.nameEn,
+
+    /// The Arabic name, or the English name when there is no Arabic one.
     required this.nameAr,
     required this.logoUrl,
     required this.latitude,
     required this.longitude,
+
+    /// Metres from the restaurant that it serves cars. Absent when the restaurant sets no limit.
+    this.serviceRadiusM,
 
     /// Metres from the customer to the restaurant.
     required this.distanceM,
 
     /// True while the restaurant's site is online and can take an order.
     required this.isOpen,
-    required this.parkingLot,
     this.additionalProperties = const {},
   });
 
@@ -33,6 +36,7 @@ class NearestRestaurant$Response {
   @JsonKey(name: "name_en", required: true, disallowNullValue: true)
   final String nameEn;
 
+  /// The Arabic name, or the English name when there is no Arabic one.
   @JsonKey(name: "name_ar", required: true, disallowNullValue: true)
   final String nameAr;
 
@@ -44,6 +48,16 @@ class NearestRestaurant$Response {
 
   @JsonKey(required: true, disallowNullValue: true)
   final num longitude;
+
+  /// Metres from the restaurant that it serves cars. Absent when the restaurant sets no limit.
+  @JsonKey(
+    name: "service_radius_m",
+    disallowNullValue: true,
+    includeIfNull: false,
+    fromJson: NearestRestaurant$Response._read_serviceRadiusM,
+    toJson: NearestRestaurant$Response._write_serviceRadiusM,
+  )
+  final int? serviceRadiusM;
 
   /// Metres from the customer to the restaurant.
   @JsonKey(
@@ -59,9 +73,6 @@ class NearestRestaurant$Response {
   @JsonKey(name: "is_open", required: true, disallowNullValue: true)
   final bool isOpen;
 
-  @JsonKey(name: "parking_lot", required: true, disallowNullValue: true)
-  final NearestRestaurantParkingLot$Response parkingLot;
-
   static const _knownKeys = <String>{
     "slug",
     "name_en",
@@ -69,9 +80,9 @@ class NearestRestaurant$Response {
     "logo_url",
     "latitude",
     "longitude",
+    "service_radius_m",
     "distance_m",
     "is_open",
-    "parking_lot",
   };
 
   @JsonKey(
@@ -80,6 +91,10 @@ class NearestRestaurant$Response {
     includeToJson: false,
   )
   final Map<String, Object?> additionalProperties;
+
+  static int? _read_serviceRadiusM(Object? value) => value == null ? null : value as int;
+
+  static Object? _write_serviceRadiusM(int? value) => value;
 
   static int _read_distanceM(Object? value) => value as int;
 

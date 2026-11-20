@@ -9,6 +9,8 @@ class MenuImage$Response {
   const MenuImage$Response({
     required this.imageUrl,
     required this.captionEn,
+
+    /// The Arabic text, or the English text when there is no Arabic one.
     required this.captionAr,
     this.additionalProperties = const {},
   });
@@ -21,6 +23,7 @@ class MenuImage$Response {
   @JsonKey(name: "caption_en", required: true, disallowNullValue: true)
   final String captionEn;
 
+  /// The Arabic text, or the English text when there is no Arabic one.
   @JsonKey(name: "caption_ar", required: true, disallowNullValue: true)
   final String captionAr;
 

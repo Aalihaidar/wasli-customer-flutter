@@ -10,7 +10,16 @@ NearbyRestaurant$Response _$NearbyRestaurant$ResponseFromJson(Map<String, dynami
   $checkKeys(
     json,
     requiredKeys: const ['slug', 'name_en', 'name_ar', 'logo_url', 'latitude', 'longitude', 'distance_m', 'is_open'],
-    disallowNullValues: const ['slug', 'name_en', 'name_ar', 'latitude', 'longitude', 'distance_m', 'is_open'],
+    disallowNullValues: const [
+      'slug',
+      'name_en',
+      'name_ar',
+      'latitude',
+      'longitude',
+      'service_radius_m',
+      'distance_m',
+      'is_open',
+    ],
   );
   return NearbyRestaurant$Response(
     slug: json['slug'] as String,
@@ -19,6 +28,7 @@ NearbyRestaurant$Response _$NearbyRestaurant$ResponseFromJson(Map<String, dynami
     logoUrl: json['logo_url'] as String?,
     latitude: json['latitude'] as num,
     longitude: json['longitude'] as num,
+    serviceRadiusM: NearbyRestaurant$Response._read_serviceRadiusM(json['service_radius_m']),
     distanceM: NearbyRestaurant$Response._read_distanceM(json['distance_m']),
     isOpen: json['is_open'] as bool,
     additionalProperties: NearbyRestaurant$Response._extras(json, 'additionalProperties') == null
@@ -34,6 +44,7 @@ Map<String, dynamic> _$NearbyRestaurant$ResponseToJson(NearbyRestaurant$Response
   'logo_url': instance.logoUrl,
   'latitude': instance.latitude,
   'longitude': instance.longitude,
+  'service_radius_m': ?NearbyRestaurant$Response._write_serviceRadiusM(instance.serviceRadiusM),
   'distance_m': ?NearbyRestaurant$Response._write_distanceM(instance.distanceM),
   'is_open': instance.isOpen,
 };
