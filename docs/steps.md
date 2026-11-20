@@ -117,8 +117,8 @@ Branch: `feat/initial-app`. Everything below goes into one reviewable pull reque
 Deferred at the first merge (2026-11-12) and completed on 2026-11-18. Pull request builds use the debug key and need no
 secret. The signed build runs after a merge into `main` and on a manual run, and stops with a message naming a missing secret
 (`docs/android-signing.md` sections 1 and 3).
-**Plan limit (2026-11-13):** the repository is private on the GitHub Free plan, so the two environments exist but have
-no branch restriction and no protection rules; the secrets are scoped to the environment that uses them, and the
+**Plan limit (2026-11-13):** the repository is meant to be private on the GitHub Free plan, where the two environments
+have no branch restriction and no protection rules (while it is public, a restriction is possible: see Phase 3); the secrets are scoped to the environment that uses them, and the
 `staging` and `production` keys are separate.
 
 - [x] Two keystores (staging key, alias `wasli-customer-staging`, and production upload key, alias
@@ -174,24 +174,37 @@ yet").
 
 ## Phase 3: GitHub repository settings
 
-**Decided (owner, 2026-11-13): the repository is private and stays on the Free plan (no GitHub Pro).** On a private
-repository the Free plan has no rulesets or branch protection, no environment protection rules and no secret scanning or
-CodeQL, so only the settings below apply. `develop` and `main` are protected by discipline (topic branch, pull request,
-merge commit, the local `pre-push` hook), and **CI passed** is advisory. `.github/rulesets/` stays in the repository,
-unused; import it if the plan ever changes (`docs/github-setup.md` section 5). Settings are changed in the GitHub web
-interface by the owner; the assistant only reads them with `gh`.
+**Decided (owner, 2026-11-13): the repository stays on the Free plan (no GitHub Pro).** The repository is meant to be
+private. On a private repository the Free plan has no rulesets or branch protection, no environment protection rules and
+no secret scanning or CodeQL, so only the settings below apply. `develop` and `main` are then protected by discipline
+(topic branch, pull request, merge commit, the local `pre-push` hook), and **CI passed** is advisory. `.github/rulesets/`
+holds the three rulesets (`docs/github-setup.md` section 5).
+
+**Temporarily public (owner, 2026-11-20).** The monthly Actions minutes of the Free plan for private repositories ran
+out, so the repository was made public, where Actions minutes are free. It goes back to private later (owner's
+decision, no date yet). While it is public, the three rulesets are active (no bypass actors, `CI passed` required), secret
+scanning with push protection, Dependabot security updates and private vulnerability reporting are available, and
+`SECURITY.md` works in both states. When the repository is private again, the rulesets, secret scanning and CodeQL
+stop applying and the discipline above is the only protection; run **check repo** after the switch and read the
+result. Settings are changed in the GitHub web interface by the owner; the assistant only reads them with `gh`.
+
+- [ ] While the repository is public: Settings → Advanced Security → turn on **Private vulnerability reporting**
+- [ ] When the repository is made private again: run **check repo**, then set the expectations of the Free plan again
+  (rulesets and secret scanning not enforced), and check that `SECURITY.md` still reads correctly
 
 - [x] Settings → General: default branch `develop`; template repository off; merge commits on, squash and rebase off;
   delete head branches on; wiki, projects and discussions off
-- [x] Settings → General: "Always suggest updating pull request branches" on (auto-merge stays off: it needs required
-  checks, which need a paid plan on a private repository)
+- [x] Settings → General: "Always suggest updating pull request branches" on; "Allow auto-merge" on (owner decision,
+  2026-11-20; auto-merge only waits for the required `CI passed` check, which the rulesets enforce while the repository
+  is public)
 - [x] Settings → Actions → General: allow GitHub-created actions plus `raven-actions/actionlint@*`,
   `zizmorcore/zizmor-action@*`, `google/osv-scanner-action/*`; require full-SHA pinning; artifact and log retention 30
   days; workflow permissions read-only and no PR approval by Actions (already so)
 - [x] Settings → Advanced Security: dependency graph, Dependabot alerts, Dependabot security updates, grouped security
-  updates (secret scanning, push protection, CodeQL and private vulnerability reporting are not available on a private
-  Free repository)
-- ~~Import the three rulesets~~ not available on the Free plan (private repository); kept in `.github/rulesets/`
+  updates, secret scanning and push protection (secret scanning, push protection, CodeQL and private vulnerability
+  reporting are available only while the repository is public)
+- [x] The three rulesets (`main-protect`, `develop-protect`, `tags-protect`) are in place and active while the repository
+  is public; on a private Free repository they are not available (kept in `.github/rulesets/`)
 - ~~Environments `staging` and `production` restricted to their branch~~ not available on the Free plan; both
   environments stay unrestricted; they now hold the Android signing secrets (see "Android signing" above)
 - [x] Merge the scaffold pull request with **Create a merge commit** (PR #1) and the first `core/config` pull request
@@ -205,9 +218,12 @@ interface by the owner; the assistant only reads them with `gh`.
 - [x] `BACKEND_READ_TOKEN` was created without an expiry date (owner, 2026-11-14), so there is no date to note or renew.
   If it is ever revoked or replaced, the weekly run turns red with "Cannot read ..." and the secret is replaced with a new
   read-only token (`docs/consuming-the-api.md` section 4)
-- [ ] Watch the Actions minutes (the Free plan includes a monthly quota for private repositories; the web build runs
-  on every pull request that changes an app file, the APK and AAB test builds only when it changes `android/` or
-  `pubspec.*`, and a merge into `develop` builds nothing)
+- [ ] Watch the Actions minutes (the Free plan includes a monthly quota for private repositories, and it ran out on
+  2026-11-20, which is why the repository is public for now; the web build runs on every pull request that changes an
+  app file, the APK and AAB test builds only when it changes `android/` or `pubspec.*`, and a merge into `develop`
+  builds nothing). Before going private again, decide how to stay inside the quota
+- [ ] Environment `production` (and `staging`): restrict **Deployment branches and tags** to `main` (and `develop`) while
+  the repository is public, since the signing secrets live there
 
 ## Phase 4: Backend contract and generated client (D1, backend v0.1.0)
 
