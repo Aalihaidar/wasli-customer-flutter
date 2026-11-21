@@ -9,6 +9,8 @@ class Option$Response {
   const Option$Response({
     required this.id,
     required this.nameEn,
+
+    /// The Arabic name, or the English name when there is no Arabic one.
     required this.nameAr,
 
     /// In fils, added to the item's price: 200 is +2.00 AED.
@@ -26,6 +28,7 @@ class Option$Response {
   @JsonKey(name: "name_en", required: true, disallowNullValue: true)
   final String nameEn;
 
+  /// The Arabic name, or the English name when there is no Arabic one.
   @JsonKey(name: "name_ar", required: true, disallowNullValue: true)
   final String nameAr;
 

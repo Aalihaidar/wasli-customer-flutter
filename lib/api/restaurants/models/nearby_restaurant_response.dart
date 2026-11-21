@@ -9,10 +9,15 @@ class NearbyRestaurant$Response {
   const NearbyRestaurant$Response({
     required this.slug,
     required this.nameEn,
+
+    /// The Arabic name, or the English name when there is no Arabic one.
     required this.nameAr,
     required this.logoUrl,
     required this.latitude,
     required this.longitude,
+
+    /// Metres from the restaurant that it serves cars. Absent when the restaurant sets no limit.
+    this.serviceRadiusM,
 
     /// Metres from the customer to the restaurant.
     required this.distanceM,
@@ -30,6 +35,7 @@ class NearbyRestaurant$Response {
   @JsonKey(name: "name_en", required: true, disallowNullValue: true)
   final String nameEn;
 
+  /// The Arabic name, or the English name when there is no Arabic one.
   @JsonKey(name: "name_ar", required: true, disallowNullValue: true)
   final String nameAr;
 
@@ -41,6 +47,16 @@ class NearbyRestaurant$Response {
 
   @JsonKey(required: true, disallowNullValue: true)
   final num longitude;
+
+  /// Metres from the restaurant that it serves cars. Absent when the restaurant sets no limit.
+  @JsonKey(
+    name: "service_radius_m",
+    disallowNullValue: true,
+    includeIfNull: false,
+    fromJson: NearbyRestaurant$Response._read_serviceRadiusM,
+    toJson: NearbyRestaurant$Response._write_serviceRadiusM,
+  )
+  final int? serviceRadiusM;
 
   /// Metres from the customer to the restaurant.
   @JsonKey(
@@ -63,6 +79,7 @@ class NearbyRestaurant$Response {
     "logo_url",
     "latitude",
     "longitude",
+    "service_radius_m",
     "distance_m",
     "is_open",
   };
@@ -73,6 +90,10 @@ class NearbyRestaurant$Response {
     includeToJson: false,
   )
   final Map<String, Object?> additionalProperties;
+
+  static int? _read_serviceRadiusM(Object? value) => value == null ? null : value as int;
+
+  static Object? _write_serviceRadiusM(int? value) => value;
 
   static int _read_distanceM(Object? value) => value as int;
 

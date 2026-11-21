@@ -188,7 +188,8 @@ scanning with push protection, Dependabot security updates and private vulnerabi
 stop applying and the discipline above is the only protection; run **check repo** after the switch and read the
 result. Settings are changed in the GitHub web interface by the owner; the assistant only reads them with `gh`.
 
-- [ ] While the repository is public: Settings → Advanced Security → turn on **Private vulnerability reporting**
+- [x] While the repository is public: Settings → Advanced Security → turn on **Private vulnerability reporting** (on,
+  read 2026-11-20; CodeQL default setup for the language Actions is on too, first runs green)
 - [ ] When the repository is made private again: run **check repo**, then set the expectations of the Free plan again
   (rulesets and secret scanning not enforced), and check that `SECURITY.md` still reads correctly
 
@@ -222,8 +223,9 @@ result. Settings are changed in the GitHub web interface by the owner; the assis
   2026-11-20, which is why the repository is public for now; the web build runs on every pull request that changes an
   app file, the APK and AAB test builds only when it changes `android/` or `pubspec.*`, and a merge into `develop`
   builds nothing). Before going private again, decide how to stay inside the quota
-- [ ] Environment `production` (and `staging`): restrict **Deployment branches and tags** to `main` (and `develop`) while
-  the repository is public, since the signing secrets live there
+- [x] Environment `production` (and `staging`): restrict **Deployment branches and tags** to `main` (and `develop`) while
+  the repository is public, since the signing secrets live there (`production` -> `main`, `staging` -> `develop`, read
+  2026-11-20; read it again when the repository goes private)
 
 ## Phase 4: Backend contract and generated client (D1, backend v0.1.0)
 
@@ -259,6 +261,12 @@ release with its `openapi.yaml` asset, the pin moves to that tag in a pull reque
 - [x] Pin backend `develop` `ac60db8d722bb9eb4b88ff17fe0ac9607484b0fb` (backend PR #53): `nearest` is an optional property
   (absent, not `null`, when restaurants are found or none is visible) and the client generates `NearestRestaurant?`; the
   fixtures and tests follow it (2026-11-14, agreed with the backend, rounds 1-7)
+- [x] Pin backend `develop` `2e64e02b05d127f4ea353d14775931ae9279f7c8` (backend PR #75, 2026-11-20): the parking lot is
+  gone; `service_radius_m` (integer metres) is an optional property, absent and never `null`, on the restaurant detail,
+  on every nearby entry and on `nearest`. A restaurant is listed when the customer is within the platform search distance
+  of it and within its own service distance when it sets one. The pin also carries backend PR #73 (descriptions only:
+  `name_ar` and `description_ar` fall back to the English text). The fixtures and tests cover `service_radius_m`
+  present and absent (agreed with the backend, rounds 6-8)
 - [ ] **Backend:** when the backend publishes `v0.1.0` with its `openapi.yaml` asset, run `scripts/sync-api.sh v0.1.0`
   in a pull request of its own and compare the diff with the commit pin (it should be empty or explained)
 
@@ -322,8 +330,10 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
   and permanently denied (system settings, QR hint, staging simulate button); never re-prompt in a loop
 - [ ] Start screen: map (loaded on demand, deferred import) with the position and a marker per nearby restaurant, bottom
   sheet with logo, name, distance, nearest first; polled with the lifecycle-aware poller
-- [ ] Empty state from `nearest` (distance and parking lot) or the message with the QR hint
-- [ ] Staging helper "Simulate: I'm at the restaurant" (`source = simulated`), hidden in production
+- [ ] Empty state from `nearest` (name and distance, and "serves cars within N m" only when `service_radius_m` is
+  present) or the message with the QR hint
+- [ ] Staging helper "Simulate: I'm at the restaurant" sends the restaurant's own latitude and longitude from `nearest`
+  (`source = simulated`), hidden in production
 - [ ] `/r/<slug>` route resolves through `GET /restaurants/{slug}`; `404` shows the not-found state
 - [ ] **Decide** the map tile provider (OpenStreetMap is for staging only; a keyed provider before the pilot)
 - [ ] Voice recording spike with `record` (WAV 16 kHz mono, 30 s): Chrome on Android and Safari on iPhone; report sizes
@@ -365,8 +375,8 @@ is a draft, pin the agreed backend commit (Phase 4).
 - [ ] Order status from `GET /orders/{id}`; polling shows what the server decides, the app decides nothing
 - [ ] Phone-verification gate before the first order for an email-only customer (**Backend**: needs the agreed error code)
 - [ ] Error mapping for the chat codes (`invalid_action_for_state`, `conversation_expired`, `audio_too_large`,
-  `audio_too_long`, `unsupported_audio_format`, `ai_unavailable`, `transcription_failed`, `item_unavailable`,
-  `outside_parking_lot`)
+  `audio_too_long`, `unsupported_audio_format`, `ai_unavailable`, `transcription_failed`, `item_unavailable`; no code
+  for the distance in the first version, an order is never refused for it)
 - [ ] Tests: merge by `seq`, polling rules, retry with the same id, every message kind, composer states, recorder with a
   fake, item picker, RTL smoke test, an integration test sign-up to order placed against a fake server
 

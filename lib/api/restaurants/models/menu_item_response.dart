@@ -11,8 +11,12 @@ class MenuItem$Response {
   const MenuItem$Response({
     required this.id,
     required this.nameEn,
+
+    /// The Arabic name, or the English name when there is no Arabic one.
     required this.nameAr,
     required this.descriptionEn,
+
+    /// The Arabic text, or the English text when there is no Arabic one.
     required this.descriptionAr,
 
     /// In fils: 1250 is 12.50 AED.
@@ -31,12 +35,14 @@ class MenuItem$Response {
   @JsonKey(name: "name_en", required: true, disallowNullValue: true)
   final String nameEn;
 
+  /// The Arabic name, or the English name when there is no Arabic one.
   @JsonKey(name: "name_ar", required: true, disallowNullValue: true)
   final String nameAr;
 
   @JsonKey(name: "description_en", required: true, disallowNullValue: true)
   final String descriptionEn;
 
+  /// The Arabic text, or the English text when there is no Arabic one.
   @JsonKey(name: "description_ar", required: true, disallowNullValue: true)
   final String descriptionAr;
 

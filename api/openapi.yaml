@@ -724,8 +724,8 @@ paths:
   /api/v1/restaurants/{slug}:
     get:
       operationId: restaurants_retrieve
-      description: The restaurant's names, logo, brand colour, position and parking
-        lot, the menu images the chat sends, and the structured menu (categories,
+      description: The restaurant's names, logo, brand colour, position and service
+        distance, the menu images the chat sends, and the structured menu (categories,
         items, option groups and options with their availability) that the item picker
         uses. A restaurant that is not active or whose subscription is suspended is
         a `404`. No token is needed.
@@ -790,13 +790,14 @@ paths:
   /api/v1/restaurants/nearby:
     get:
       operationId: restaurants_nearby
-      description: Visible restaurants (active, subscription not suspended) whose
-        parking lot is in range of the point (within the lot's radius of its centre),
-        nearest first. `distance_m` is the distance to the restaurant itself. When
-        none is in range, `restaurants` is empty and `nearest` holds the closest active
-        restaurant, so the app can say how far it is. `nearest` is absent when `restaurants`
-        is not empty and when no restaurant is visible at all. This list is polled
-        and is not paginated. No token is needed.
+      description: 'Visible restaurants (active, subscription not suspended) that
+        serve the point, nearest first: the customer is within the platform search
+        distance of the restaurant and, when the restaurant sets a service distance
+        (`service_radius_m`), within that too. `distance_m` is the distance to the
+        restaurant itself. When none is in range, `restaurants` is empty and `nearest`
+        holds the closest active restaurant, so the app can say how far it is. `nearest`
+        is absent when `restaurants` is not empty and when no restaurant is visible
+        at all. This list is polled and is not paginated. No token is needed.'
       summary: List the restaurants around a point
       parameters:
       - in: query
@@ -1224,6 +1225,8 @@ components:
         name_ar:
           type: string
           readOnly: true
+          description: The Arabic name, or the English name when there is no Arabic
+            one.
         items:
           type: array
           items:
@@ -1248,6 +1251,8 @@ components:
         caption_ar:
           type: string
           readOnly: true
+          description: The Arabic text, or the English text when there is no Arabic
+            one.
       required:
       - caption_ar
       - caption_en
@@ -1265,12 +1270,16 @@ components:
         name_ar:
           type: string
           readOnly: true
+          description: The Arabic name, or the English name when there is no Arabic
+            one.
         description_en:
           type: string
           readOnly: true
         description_ar:
           type: string
           readOnly: true
+          description: The Arabic text, or the English text when there is no Arabic
+            one.
         price_minor:
           type: integer
           readOnly: true
@@ -1318,6 +1327,8 @@ components:
           type: string
         name_ar:
           type: string
+          description: The Arabic name, or the English name when there is no Arabic
+            one.
         logo_url:
           type: string
           format: uri
@@ -1329,6 +1340,10 @@ components:
         longitude:
           type: number
           format: double
+        service_radius_m:
+          type: integer
+          description: Metres from the restaurant that it serves cars. Absent when
+            the restaurant sets no limit.
         distance_m:
           type: integer
           description: Metres from the customer to the restaurant.
@@ -1347,6 +1362,8 @@ components:
       - slug
     NearestRestaurant:
       type: object
+      description: 'The closest restaurant when none serves the point: the same fields
+        as a nearby entry.'
       properties:
         slug:
           type: string
@@ -1354,6 +1371,8 @@ components:
           type: string
         name_ar:
           type: string
+          description: The Arabic name, or the English name when there is no Arabic
+            one.
         logo_url:
           type: string
           format: uri
@@ -1365,6 +1384,10 @@ components:
         longitude:
           type: number
           format: double
+        service_radius_m:
+          type: integer
+          description: Metres from the restaurant that it serves cars. Absent when
+            the restaurant sets no limit.
         distance_m:
           type: integer
           description: Metres from the customer to the restaurant.
@@ -1372,10 +1395,6 @@ components:
           type: boolean
           description: True while the restaurant's site is online and can take an
             order.
-        parking_lot:
-          allOf:
-          - $ref: '#/components/schemas/ParkingLot'
-          readOnly: true
       required:
       - distance_m
       - is_open
@@ -1384,7 +1403,6 @@ components:
       - longitude
       - name_ar
       - name_en
-      - parking_lot
       - slug
     Option:
       type: object
@@ -1399,6 +1417,8 @@ components:
         name_ar:
           type: string
           readOnly: true
+          description: The Arabic name, or the English name when there is no Arabic
+            one.
         price_delta_minor:
           type: integer
           readOnly: true
@@ -1429,6 +1449,8 @@ components:
         name_ar:
           type: string
           readOnly: true
+          description: The Arabic name, or the English name when there is no Arabic
+            one.
         min_select:
           type: integer
           readOnly: true
@@ -1447,28 +1469,6 @@ components:
       - name_ar
       - name_en
       - options
-    ParkingLot:
-      type: object
-      properties:
-        name:
-          type: string
-          readOnly: true
-        latitude:
-          type: number
-          format: double
-          readOnly: true
-        longitude:
-          type: number
-          format: double
-          readOnly: true
-        radius_m:
-          type: integer
-          readOnly: true
-      required:
-      - latitude
-      - longitude
-      - name
-      - radius_m
     PasswordResetConfirmRequest:
       type: object
       properties:
@@ -1535,6 +1535,8 @@ components:
         name_ar:
           type: string
           readOnly: true
+          description: The Arabic name, or the English name when there is no Arabic
+            one.
         logo_url:
           type: string
           format: uri
@@ -1554,10 +1556,10 @@ components:
         currency:
           type: string
           readOnly: true
-        parking_lot:
-          allOf:
-          - $ref: '#/components/schemas/ParkingLot'
-          readOnly: true
+        service_radius_m:
+          type: integer
+          description: Metres from the restaurant that it serves cars. Absent when
+            the restaurant sets no limit.
         menu_images:
           type: array
           items:
@@ -1578,7 +1580,6 @@ components:
       - menu_images
       - name_ar
       - name_en
-      - parking_lot
       - slug
     SentCode:
       type: object

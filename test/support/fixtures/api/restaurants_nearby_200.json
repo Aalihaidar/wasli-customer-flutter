@@ -7,6 +7,7 @@
       "logo_url": "https://media.example.com/logos/demo-cafe.png",
       "latitude": 25.2048,
       "longitude": 55.2708,
+      "service_radius_m": 500,
       "distance_m": 120,
       "is_open": true
     },

@@ -7,13 +7,8 @@
     "logo_url": null,
     "latitude": 25.2048,
     "longitude": 55.2708,
+    "service_radius_m": 500,
     "distance_m": 2400,
-    "is_open": true,
-    "parking_lot": {
-      "name": "Demo Plaza parking",
-      "latitude": 25.2046,
-      "longitude": 55.2706,
-      "radius_m": 150
-    }
+    "is_open": true
   }
 }

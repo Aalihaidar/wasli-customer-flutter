@@ -41,7 +41,7 @@ abstract class RestaurantsClient {
 
   /// Read a restaurant and its menu
   ///
-  /// The restaurant's names, logo, brand colour, position and parking lot, the menu images the chat sends, and the structured menu (categories, items, option groups and options with their availability) that the item picker uses. A restaurant that is not active or whose subscription is suspended is a `404`. No token is needed.
+  /// The restaurant's names, logo, brand colour, position and service distance, the menu images the chat sends, and the structured menu (categories, items, option groups and options with their availability) that the item picker uses. A restaurant that is not active or whose subscription is suspended is a `404`. No token is needed.
   @GET('/api/v1/restaurants/{slug}')
   Future<RestaurantDetail$Response> restaurantsRetrieve({
     @Extras()
@@ -80,7 +80,7 @@ abstract class RestaurantsClient {
 
   /// List the restaurants around a point
   ///
-  /// Visible restaurants (active, subscription not suspended) whose parking lot is in range of the point (within the lot's radius of its centre), nearest first. `distance_m` is the distance to the restaurant itself. When none is in range, `restaurants` is empty and `nearest` holds the closest active restaurant, so the app can say how far it is. `nearest` is absent when `restaurants` is not empty and when no restaurant is visible at all. This list is polled and is not paginated. No token is needed.
+  /// Visible restaurants (active, subscription not suspended) that serve the point, nearest first: the customer is within the platform search distance of the restaurant and, when the restaurant sets a service distance (`service_radius_m`), within that too. `distance_m` is the distance to the restaurant itself. When none is in range, `restaurants` is empty and `nearest` holds the closest active restaurant, so the app can say how far it is. `nearest` is absent when `restaurants` is not empty and when no restaurant is visible at all. This list is polled and is not paginated. No token is needed.
   @GET('/api/v1/restaurants/nearby')
   Future<NearbyResponse$Response> restaurantsNearby({
     @Extras()

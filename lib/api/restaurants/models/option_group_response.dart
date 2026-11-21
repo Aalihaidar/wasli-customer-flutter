@@ -11,6 +11,8 @@ class OptionGroup$Response {
   const OptionGroup$Response({
     required this.id,
     required this.nameEn,
+
+    /// The Arabic name, or the English name when there is no Arabic one.
     required this.nameAr,
     required this.minSelect,
     required this.maxSelect,
@@ -26,6 +28,7 @@ class OptionGroup$Response {
   @JsonKey(name: "name_en", required: true, disallowNullValue: true)
   final String nameEn;
 
+  /// The Arabic name, or the English name when there is no Arabic one.
   @JsonKey(name: "name_ar", required: true, disallowNullValue: true)
   final String nameAr;
 
