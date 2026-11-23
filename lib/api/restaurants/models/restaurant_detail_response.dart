@@ -26,6 +26,8 @@ class RestaurantDetail$Response {
     /// Metres from the restaurant that it serves cars. Absent when the restaurant sets no limit.
     this.serviceRadiusM,
     required this.menuImages,
+
+    /// The categories a customer sees, depth first: a category is followed by its subcategories (the ones whose `parent_id` is its id), and each level is in display order. A menu has up to three levels. A hidden category hides everything inside it.
     required this.menu,
     this.additionalProperties = const {},
   });
@@ -71,6 +73,7 @@ class RestaurantDetail$Response {
   @JsonKey(name: "menu_images", required: true, disallowNullValue: true)
   final List<MenuImage$Response> menuImages;
 
+  /// The categories a customer sees, depth first: a category is followed by its subcategories (the ones whose `parent_id` is its id), and each level is in display order. A menu has up to three levels. A hidden category hides everything inside it.
   @JsonKey(required: true, disallowNullValue: true)
   final List<MenuCategory$Response> menu;
 

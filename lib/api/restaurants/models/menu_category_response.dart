@@ -10,6 +10,9 @@ part 'menu_category_response.g.dart';
 class MenuCategory$Response {
   const MenuCategory$Response({
     required this.id,
+
+    /// The id of the category this one is inside (a subcategory). Absent for a top-level category.
+    this.parentId,
     required this.nameEn,
 
     /// The Arabic name, or the English name when there is no Arabic one.
@@ -23,6 +26,10 @@ class MenuCategory$Response {
   @JsonKey(required: true, disallowNullValue: true)
   final String id;
 
+  /// The id of the category this one is inside (a subcategory). Absent for a top-level category.
+  @JsonKey(name: "parent_id", disallowNullValue: true, includeIfNull: false)
+  final String? parentId;
+
   @JsonKey(name: "name_en", required: true, disallowNullValue: true)
   final String nameEn;
 
@@ -33,7 +40,7 @@ class MenuCategory$Response {
   @JsonKey(required: true, disallowNullValue: true)
   final List<MenuItem$Response> items;
 
-  static const _knownKeys = <String>{"id", "name_en", "name_ar", "items"};
+  static const _knownKeys = <String>{"id", "parent_id", "name_en", "name_ar", "items"};
 
   @JsonKey(readValue: MenuCategory$Response._extras, fromJson: MenuCategory$Response._readExtras, includeToJson: false)
   final Map<String, Object?> additionalProperties;

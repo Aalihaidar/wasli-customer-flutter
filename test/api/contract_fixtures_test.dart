@@ -122,10 +122,23 @@ void main() {
 
       expect(restaurant.slug, 'demo-cafe');
       expect(restaurant.currency, 'AED');
-      expect(restaurant.menu.single.items.first.priceMinor, 1250);
-      expect(restaurant.menu.single.items.last.isAvailable, isFalse);
+      expect(restaurant.menu.first.items.first.priceMinor, 1250);
+      expect(restaurant.menu.first.items.last.isAvailable, isFalse);
       expect(restaurant.serviceRadiusM, 500);
       expect(restaurant.toJson(), json);
+    });
+
+    test('GET /restaurants/{slug} (200) nested menu: a subcategory has parent_id, a top-level one has no key', () {
+      final json = readApiFixture('restaurants_retrieve_200');
+      final restaurant = RestaurantDetail$Response.fromJson(json);
+      final top = restaurant.menu.first;
+      final sub = restaurant.menu.last;
+
+      expect(restaurant.menu, hasLength(2));
+      expect(top.parentId, isNull);
+      expect(top.toJson().containsKey('parent_id'), isFalse);
+      expect(sub.parentId, top.id);
+      expect(sub.toJson()['parent_id'], top.id);
     });
 
     test('GET /restaurants/{slug} (200) without a service distance: the key is absent', () {
