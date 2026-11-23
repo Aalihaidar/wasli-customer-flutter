@@ -69,3 +69,6 @@ flutter-template-code.xml
 # ── Local tooling ─────────────────────────────────────────────────────────────
 .claude/
 CLAUDE.md
+
+# Localization code generated from l10n/*.arb by `flutter gen-l10n` (l10n.yaml)
+lib/core/l10n/generated/

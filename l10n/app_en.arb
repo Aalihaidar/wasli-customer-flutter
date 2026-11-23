@@ -1,0 +1,19 @@
+{
+  "@@locale": "en",
+  "appTitle": "Wasli",
+  "@appTitle": {
+    "description": "The name of the app, shown in the browser tab and the task switcher. A brand name: it stays in Latin letters in every language."
+  },
+  "languageSwitchLabel": "Language",
+  "@languageSwitchLabel": {
+    "description": "Accessibility label of the control that switches the language of the app."
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "The name of English, written in English. Every language is named in its own language so that a customer finds theirs, so this text is the same in every translation."
+  },
+  "languageArabic": "العربية",
+  "@languageArabic": {
+    "description": "The name of Arabic, written in Arabic. Every language is named in its own language so that a customer finds theirs, so this text is the same in every translation."
+  }
+}

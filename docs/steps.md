@@ -327,8 +327,18 @@ request of the theme block; the blocks that use them follow.
   digits always; unit tested in both languages
 - [ ] `core/polling`: lifecycle-aware `Poller` (visible, idle, back-off, `Retry-After`) with tests
 - [ ] `core/logging`: logger interface without personal data and a crash-report hook (the service is decided later)
-- [ ] Localisation: ARB files `en` and `ar` in `l10n/`, locale controller, RTL, directionality helpers, every label from
-  ARB
+- [x] Localisation (`feat/localization`): ARB files `en` and `ar` in `l10n/` (a description on every message, Arabic keeps the
+  same keys and placeholders, tested), `flutter gen-l10n` through `l10n.yaml` (generated code in `lib/core/l10n/generated`, not
+  committed, produced by `flutter pub get`), `AppLocales` (supported languages, device resolution, direction), the
+  `localeProvider` controller (starts from the device, English when it has none of ours), `isolateLeftToRight` for prices and
+  plates inside Arabic text, and the app wired with the delegates of `material_ui` (`GlobalMaterialLocalizations.delegates`,
+  which also covers Cupertino, so Flutter does not warn about Arabic), the per-language theme and a language switch on the
+  placeholder page. Tests: both languages, RTL, the switch, 200 % text, the Arabic Material strings. The language is not
+  stored yet: it is saved with the account (`locale` of the profile) in Phase 6. The Arabic labels are a first translation
+  and need the owner's review
+- [ ] First-load measurement after localisation: release web build `main.dart.js` 2.23 MB (652 KB gzip), up from 1.84 MB
+  (549 KB gzip) with the theme; the increase is Riverpod, `intl` and the Material strings that `flutter_localizations` ships
+  for every language. Look at it again before the first-load gate (deferred loading, or fewer locales)
 - [x] `theme/` (`feat/theme`): Ink & Mustard tokens (`WasliColors`, spacing, radius, motion, elevation, layout), the
   `ColorScheme` derived from them, `WasliTextStyles` (Rubik, the design's type scale), component themes (buttons, input,
   card, top bar, dialog, sheet, snack bar, divider, progress), light and dark; `WasliTheme.light/dark(locale)` and
