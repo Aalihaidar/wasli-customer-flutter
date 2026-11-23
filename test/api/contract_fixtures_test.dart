@@ -150,6 +150,121 @@ void main() {
     });
   });
 
+  group('chat fixtures', () {
+    test('POST /restaurants/{slug}/conversations (201): welcome, a menu image, the first question', () {
+      final json = readApiFixture('conversations_open_201');
+      final chat = Chat$Response.fromJson(json);
+
+      expect(chat.conversation.restaurantSlug, 'demo-cafe');
+      expect(chat.conversation.state.value, 'ordering');
+      expect(chat.conversation.orderType.value, 'car');
+      expect(chat.conversation.aiAvailable, isTrue);
+      expect(chat.conversation.expiresAt, DateTime.utc(2026, 11, 23, 12));
+      expect(chat.messages.map((m) => m.seq), [1, 2, 3]);
+      expect(chat.messages.map((m) => m.kind.value), ['text', 'image', 'text']);
+      expect(chat.messages[1].imageUrl, 'https://media.example.com/menus/demo-cafe-1.jpg');
+      expect(chat.messages[0].imageUrl, isNull);
+      expect(chat.toJson(), json);
+    });
+
+    test('GET /conversations/{id}/messages (200): the conversation can be Arabic with the assistant down', () {
+      final json = readApiFixture('conversations_messages_list_200');
+      final chat = Chat$Response.fromJson(json);
+
+      expect(chat.conversation.locale.value, 'ar');
+      expect(chat.conversation.aiAvailable, isFalse);
+      expect(chat.messages.map((m) => m.sender.value), ['customer', 'bot']);
+      expect(chat.messages.last.kind.value, 'order_summary');
+      expect(chat.toJson(), json);
+    });
+
+    test('POST /conversations/{id}/messages (201): the customer message and the bot reply', () {
+      final json = readApiFixture('conversations_messages_create_201');
+      final chat = Chat$Response.fromJson(json);
+
+      expect(chat.conversation.state.value, 'ask_car');
+      expect(chat.messages.first.sender.value, 'customer');
+      expect(chat.messages.first.payload, {'action': 'confirm'});
+      expect(chat.messages.last.sender.value, 'bot');
+      expect(chat.toJson(), json);
+    });
+
+    test('a value the server adds later (kind, state, order type) is read, not rejected', () {
+      final json = Map<String, Object?>.of(readApiFixture('conversations_open_201'));
+      final conversation = Map<String, Object?>.of(json['conversation']! as Map<String, Object?>)
+        ..['state'] = 'archived'
+        ..['order_type'] = 'drive_through';
+      final messages = (json['messages']! as List<Object?>)
+          .cast<Map<String, Object?>>()
+          .map(Map<String, Object?>.of)
+          .toList();
+      messages.first['kind'] = 'carousel';
+      final chat = Chat$Response.fromJson({...json, 'conversation': conversation, 'messages': messages});
+
+      expect(chat.conversation.state.value, 'archived');
+      expect(chat.conversation.orderType.value, 'drive_through');
+      expect(chat.messages.first.kind.value, 'carousel');
+    });
+
+    test('a message that is missing a required key is rejected, not guessed', () {
+      final json = Map<String, Object?>.of(readApiFixture('conversations_open_201'));
+      final messages = (json['messages']! as List<Object?>)
+          .cast<Map<String, Object?>>()
+          .map(Map<String, Object?>.of)
+          .toList();
+      messages.first.remove('seq');
+
+      expect(() => Chat$Response.fromJson({...json, 'messages': messages}), throwsA(anything));
+    });
+  });
+
+  group('chat requests', () {
+    test('opening a conversation sends the car order type and does not start a new one by default', () {
+      expect(const OpenConversationRequest().toJson(), {'start_new': false, 'order_type': 'car'});
+      expect(const OpenConversationRequest(locale: LocaleEnum.ar, startNew: true).toJson(), {
+        'locale': 'ar',
+        'start_new': true,
+        'order_type': 'car',
+      });
+    });
+
+    test('a typed message carries the id and the text, and no action key', () {
+      const request = SendMessageRequest(clientMessageId: '5f1e2d3c-0000-4a5b-8c9d-0e1f2a3b4c20', text: 'Latte');
+
+      expect(request.toJson(), {'client_message_id': '5f1e2d3c-0000-4a5b-8c9d-0e1f2a3b4c20', 'text': 'Latte'});
+    });
+
+    test('a button carries the id and the action, and no text key', () {
+      const request = SendMessageRequest(
+        clientMessageId: '5f1e2d3c-0000-4a5b-8c9d-0e1f2a3b4c21',
+        action: ActionEnum.confirm,
+      );
+
+      expect(request.toJson(), {'client_message_id': '5f1e2d3c-0000-4a5b-8c9d-0e1f2a3b4c21', 'action': 'confirm'});
+    });
+
+    test('the item picker sends item ids, quantities and option ids, never a price', () {
+      const request = SendMessageRequest(
+        clientMessageId: '5f1e2d3c-0000-4a5b-8c9d-0e1f2a3b4c22',
+        action: ActionEnum.setLines,
+        lines: [
+          PickedLineRequest(
+            itemId: 'a1b2c3d4-0002-4a5b-8c9d-0e1f2a3b4c02',
+            quantity: 2,
+            optionIds: ['a1b2c3d4-0005-4a5b-8c9d-0e1f2a3b4c05'],
+            note: 'no sugar',
+          ),
+        ],
+      );
+      final json = request.toJson();
+      final line = (json['lines']! as List<Object?>).single! as Map<String, Object?>;
+
+      expect(json['action'], 'set_lines');
+      expect(line.keys.toSet(), {'item_id', 'quantity', 'option_ids', 'note'});
+      expect(line['quantity'], 2);
+    });
+  });
+
   group('error fixtures keep the one error body', () {
     const names = [
       'throttled_429',
