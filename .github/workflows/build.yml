@@ -55,10 +55,13 @@
 #     never in a release, because the symbols would undo the obfuscation for
 #     everyone who can read the release.
 #
-# An unsigned iOS compile check is available as an opt-in job (repository
-# variable BUILD_IOS=true). It cannot run until the iOS flavors (Xcode schemes)
-# exist, because pubspec.yaml sets a default flavor; iOS signing and App Store
-# upload are not set up.
+#   - An unsigned iOS compile check runs once the iOS flavors exist (Xcode schemes
+#     named staging and production under ios/Runner.xcodeproj), because
+#     pubspec.yaml sets a default flavor. The repository decides, not a setting:
+#     committing the schemes switches the job on. In a pull request it runs only
+#     when ios/, pubspec.* or the build setup changed (a macOS minute costs ten
+#     Linux minutes on a private repository); it always runs on a manual run and
+#     after a merge into main. iOS signing and App Store upload are not set up.
 #
 # Copied into every generated project, so it skips cleanly until the project has
 # a pubspec.yaml and a pubspec.lock; nothing here needs editing in a project.
@@ -128,7 +131,9 @@ jobs:
     outputs:
       ready: ${{ steps.check.outputs.ready }}
       environment: ${{ steps.environment.outputs.environment }}
-      android_changed: ${{ steps.android-scope.outputs.android_changed }}
+      android_changed: ${{ steps.native-scope.outputs.android_changed }}
+      ios_changed: ${{ steps.native-scope.outputs.ios_changed }}
+      ios_flavors: ${{ steps.ios-project.outputs.ios_flavors }}
       flutter_version: ${{ steps.flutter-version.outputs.version }}
       flavors: ${{ steps.project.outputs.flavors }}
       google_services: ${{ steps.project.outputs.google_services }}
@@ -143,6 +148,7 @@ jobs:
             pubspec.lock
             android/app/build.gradle
             android/app/build.gradle.kts
+            ios/Runner.xcodeproj/xcshareddata/xcschemes/
           sparse-checkout-cone-mode: false
           persist-credentials: false
 
@@ -186,15 +192,16 @@ jobs:
           echo "environment=$target" >> "$GITHUB_OUTPUT"
           echo "Building for: $target"
 
-      # Pull requests only. The Android test builds are the slowest part of a pull
-      # request build, and Dart-only changes rarely break them: format, analyze
-      # (with the web-library lint), test and the web build cover the Dart code, and
-      # the signed build after the merge into main, or a manual staging run, catches
-      # the rest. On any other event the value is not used. If the file list cannot
-      # be read, the safe answer is to build. Values reach the script through env:,
-      # never inline.
-      - name: Decide whether the Android test builds are needed
-        id: android-scope
+      # Pull requests only. The Android and iOS test builds are the slowest part of
+      # a pull request build, and Dart-only changes rarely break them: format,
+      # analyze (with the web-library lint), test and the web build cover the Dart
+      # code, and the signed build after the merge into main, or a manual staging
+      # run, catches the rest. A platform's builds run when that platform's folder,
+      # pubspec.*, this workflow or the Flutter setup action changed. On any other
+      # event the values are not used. If the file list cannot be read, the safe
+      # answer is to build. Values reach the script through env:, never inline.
+      - name: Decide whether the native test builds are needed
+        id: native-scope
         env:
           EVENT_NAME: ${{ github.event_name }}
           GH_TOKEN: ${{ github.token }}
@@ -202,19 +209,27 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           android_changed=true
+          ios_changed=true
           if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            shared='pubspec\.(yaml|lock)$|\.github/workflows/build\.yml$|\.github/actions/setup-flutter/'
             if files="$(gh api --paginate "repos/${GH_REPO}/pulls/${PR_NUMBER}/files?per_page=100" --jq '.[].filename')"; then
-              if grep -Eq '^(android/|pubspec\.(yaml|lock)$|\.github/workflows/build\.yml$|\.github/actions/setup-flutter/)' <<< "$files"; then
+              if grep -Eq "^(android/|${shared})" <<< "$files"; then
                 android_changed=true
               else
                 android_changed=false
               fi
+              if grep -Eq "^(ios/|${shared})" <<< "$files"; then
+                ios_changed=true
+              else
+                ios_changed=false
+              fi
             else
-              echo "::warning::The files of the pull request could not be listed; the Android test builds run to be safe."
+              echo "::warning::The files of the pull request could not be listed; the Android and iOS test builds run to be safe."
             fi
           fi
           echo "android_changed=$android_changed" >> "$GITHUB_OUTPUT"
-          echo "android_changed=$android_changed"
+          echo "ios_changed=$ios_changed" >> "$GITHUB_OUTPUT"
+          echo "android_changed=$android_changed ios_changed=$ios_changed"
 
       # A project pins its Flutter version in pubspec.yaml (environment: flutter:
       # 3.x.y), so CI keeps building with it. Without a pin, the newest stable
@@ -287,6 +302,22 @@ jobs:
             echo "file_prefix=$file_prefix"
           } >> "$GITHUB_OUTPUT"
           echo "flavors=$flavors google_services=$google_services application_id=${application_id:-none} file_prefix=$file_prefix"
+
+      # The iOS flavors exist when the Xcode project has shared schemes named
+      # staging and production, which Flutter needs for `--flavor`. The files in
+      # the repository switch the iOS job on; no setting does.
+      - name: Read the iOS configuration
+        id: ios-project
+        run: |
+          schemes="ios/Runner.xcodeproj/xcshareddata/xcschemes"
+          ios_flavors=false
+          if [[ -f "${schemes}/staging.xcscheme" && -f "${schemes}/production.xcscheme" ]]; then
+            ios_flavors=true
+          else
+            echo "No staging and production Xcode schemes yet, so the iOS test build is skipped."
+          fi
+          echo "ios_flavors=$ios_flavors" >> "$GITHUB_OUTPUT"
+          echo "ios_flavors=$ios_flavors"
 
   # ── Web ──────────────────────────────────────────────────────────────────
   build-web:
@@ -775,18 +806,22 @@ jobs:
 
           echo "Draft release ${title} ${action} (release ${id}, build ${BUILD_NUMBER}). The production draft is published from the Releases page when the version is final." >> "$GITHUB_STEP_SUMMARY"
 
-  # ── iOS (opt-in) ─────────────────────────────────────────────────────────
-  # Needs the iOS flavors (Xcode schemes named staging and production) first,
-  # because pubspec.yaml sets a default flavor; add them with the iOS work.
-  # An unsigned compile check of the iOS app on a macOS runner. macOS minutes
-  # cost more than Linux ones on private repositories, so it is off until you
-  # set the repository variable BUILD_IOS to "true" (Settings → Secrets and
-  # variables → Actions → Variables). The result is not installable: signing
-  # and App Store upload are added per project.
+  # ── iOS ──────────────────────────────────────────────────────────────────
+  # An unsigned compile check of the iOS app on a macOS runner. It needs the iOS
+  # flavors (Xcode schemes named staging and production), because pubspec.yaml
+  # sets a default flavor, so it is skipped until those files are committed;
+  # the repository decides, no variable does. macOS minutes cost more than Linux
+  # ones on private repositories, so in a pull request it runs only when ios/,
+  # pubspec.* or the build setup changed (the same rule as the Android test
+  # builds); a manual run and a push to main always build it. The result is not
+  # installable: signing and App Store upload are added per project.
   build-ios:
     name: iOS (${{ needs.detect.outputs.environment }})
     needs: detect
-    if: needs.detect.outputs.ready == 'true' && vars.BUILD_IOS == 'true'
+    if: >-
+      needs.detect.outputs.ready == 'true' &&
+      needs.detect.outputs.ios_flavors == 'true' &&
+      (github.event_name != 'pull_request' || needs.detect.outputs.ios_changed == 'true')
     runs-on: macos-15
     timeout-minutes: 45
     steps:

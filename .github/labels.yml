@@ -1,5 +1,5 @@
 # Repository labels — synced automatically by .github/workflows/labels.yml.
-# Edit here, never directly on GitHub.
+# Edit here, never directly on GitHub: the sync is exact, so a label that is not in this file is deleted.
 
 # ── Dependency management ─────────────────────────────────────
 - name: "dependencies"
