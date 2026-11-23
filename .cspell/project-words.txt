@@ -40,6 +40,7 @@ keysize
 keytool
 koalaman
 fils
+lerp
 ltrimstr
 myapp
 oneline
@@ -63,6 +64,7 @@ tolower
 toupper
 userprofile
 wasli
+wght
 xcodeproj
 yourcompany
 zizmor
