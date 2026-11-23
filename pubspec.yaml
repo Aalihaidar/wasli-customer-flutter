@@ -43,6 +43,9 @@ flutter:
 
   uses-material-design: true
 
+  # Generates the localization code from l10n/*.arb (see l10n.yaml) on pub get, run, test and build.
+  generate: true
+
   assets:
     # The licence of the bundled font, shown on the app's licence page.
     - assets/fonts/Rubik-OFL.txt

@@ -72,7 +72,9 @@ The commit hooks run the same four checks. Fix what they report; do not bypass t
 - Dart files are `snake_case.dart`, lines are at most 120 characters, indentation is 2 spaces, and `very_good_analysis`
   is the lint set (`analysis_options.yaml`).
 - Public APIs have doc comments. No `// ignore` without a reason, no `TODO` without an issue number.
-- No hard-coded UI strings (ARB files for `en` and `ar`), no raw colours or magic numbers (use the theme tokens),
+- No hard-coded UI strings: labels live in `l10n/app_en.arb` (the template, a description on every message) and
+  `l10n/app_ar.arb` (same keys), read as `context.l10n.<key>`; `flutter pub get` regenerates the code into
+  `lib/core/l10n/generated`, which is never committed. No raw colours or magic numbers (use the theme tokens),
   directional APIs only (`EdgeInsetsDirectional`), and every new screen is checked in both text directions and at
   compact, medium and expanded widths.
 - Tests use invented data, never call the real backend, and use deterministic clocks.
