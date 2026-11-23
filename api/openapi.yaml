@@ -1219,6 +1219,11 @@ components:
           type: string
           format: uuid
           readOnly: true
+        parent_id:
+          type: string
+          format: uuid
+          description: The id of the category this one is inside (a subcategory).
+            Absent for a top-level category.
         name_en:
           type: string
           readOnly: true
@@ -1570,6 +1575,10 @@ components:
           items:
             $ref: '#/components/schemas/MenuCategory'
           readOnly: true
+          description: 'The categories a customer sees, depth first: a category is
+            followed by its subcategories (the ones whose `parent_id` is its id),
+            and each level is in display order. A menu has up to three levels. A hidden
+            category hides everything inside it.'
       required:
       - brand_colour
       - currency

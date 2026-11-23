@@ -267,6 +267,11 @@ release with its `openapi.yaml` asset, the pin moves to that tag in a pull reque
   of it and within its own service distance when it sets one. The pin also carries backend PR #73 (descriptions only:
   `name_ar` and `description_ar` fall back to the English text). The fixtures and tests cover `service_radius_m`
   present and absent (agreed with the backend, rounds 6-8)
+- [x] Pin backend `develop` `e371ed7826ef49897406e2b49a65a3dfb9a27e31` (backend PR #77, 2026-11-21): a restaurant's menu can
+  have subcategories, up to three levels. The `menu` list stays flat and in depth-first order, and each category has an
+  optional `parent_id` (absent for a top-level category, never `null`). Additive: nothing is removed or made required. The pin
+  also carries backend PR #76 (documentation only). The restaurant detail fixture has a subcategory and a test checks
+  `parent_id` present and absent (agreed with the backend, round 9)
 - [ ] **Backend:** when the backend publishes `v0.1.0` with its `openapi.yaml` asset, run `scripts/sync-api.sh v0.1.0`
   in a pull request of its own and compare the diff with the commit pin (it should be empty or explained)
 
