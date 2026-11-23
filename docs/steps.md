@@ -77,7 +77,7 @@ Branch: `feat/initial-app`. Everything below goes into one reviewable pull reque
 - [x] Strict `analysis_options.yaml` (`strict-casts`, `strict-inference`, `strict-raw-types`, formatter width 120, the
   chosen lint set, `lib/api/**` excluded)
 - [ ] Folder structure under `lib/`: `app/`, `core/`, `theme/`, `api/`, `features/` (git does not track empty folders, so
-  each one appears with its first file; `app/` and `core/` exist)
+  each one appears with its first file; `app/`, `core/` and `theme/` exist)
 - [x] Boundary check for the folder rules (`core`, `theme` and `api` never import `features` or `app`; features never
   import each other's `data` or `presentation`; `domain` is pure Dart): `scripts/check-boundaries.sh`, run by the
   pre-commit hook and by the CI job "Folder boundaries"
@@ -278,6 +278,8 @@ Packages (confirm each when adding): `material_ui` (added with Flutter 3.50, whi
 `package:flutter/material.dart`), `flutter_riverpod`, `go_router`, `intl`, `uuid`, `flutter_localizations`. Later, only
 when their feature starts: `flutter_map`, `latlong2`, `geolocator`, `record`, `flutter_secure_storage`,
 `shared_preferences` (non-sensitive settings only, never tokens).
+`flutter_riverpod`, `go_router`, `intl`, `uuid` and `flutter_localizations` (SDK) were added on 2026-11-23, in the pull
+request of the theme block; the blocks that use them follow.
 
 - [ ] `app/`: `bootstrap()`, `ProviderScope`, global error zone, `go_router` with path URLs and a `/r/<slug>` route (slug
   shape validated), app shell, session state (auth, locale, config)
@@ -300,9 +302,16 @@ when their feature starts: `flutter_map`, `latlong2`, `geolocator`, `record`, `f
 - [ ] `core/logging`: logger interface without personal data and a crash-report hook (the service is decided later)
 - [ ] Localisation: ARB files `en` and `ar` in `l10n/`, locale controller, RTL, directionality helpers, every label from
   ARB
-- [ ] `theme/`: Ink & Mustard tokens, `ColorScheme`, `ThemeExtension`, Rubik subset typography, component themes, light
-  and dark
-- [ ] Responsive helpers: compact (below 600), medium (600 to 839), expanded (840 and up), content max width 560
+- [x] `theme/` (`feat/theme`): Ink & Mustard tokens (`WasliColors`, spacing, radius, motion, elevation, layout), the
+  `ColorScheme` derived from them, `WasliTextStyles` (Rubik, the design's type scale), component themes (buttons, input,
+  card, top bar, dialog, sheet, snack bar, divider, progress), light and dark; `WasliTheme.light/dark(locale)` and
+  `context.wasli` / `context.wasliText`. Tests check every token against the design page, the contrast pairs (4.5:1 text,
+  3:1 outlines) in both themes, the type scale, and a component gallery in light/dark, English/Arabic and at 200 % text
+- [ ] Rubik **subset**: the bundled file is the full variable font (360 KB); subset it to Latin and Arabic with Western
+  digits and re-measure the first load (Phase 5, performance gate). First measurement with the theme: release web build
+  `main.dart.js` 1.84 MB (549 KB gzip), Rubik 360 KB
+- [x] Responsive helpers: `WindowSizeClass` (compact below 600, medium 600 to 839, expanded 840 and up) and the content
+  max width 560 in `WasliLayout`
 - [ ] `core/widgets`: loading, error with request id, empty state, responsive page frame
 - [ ] `GET /config` on start (without a token), with the "waking up the server" message after 3 s
 - [ ] Repositories in each feature's `data/` map DTOs to domain types; no generated type leaves `data/`

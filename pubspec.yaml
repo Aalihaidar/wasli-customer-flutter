@@ -14,12 +14,19 @@ dependencies:
   dio: ^5.11.1
   flutter:
     sdk: flutter
+  # Localization delegates and the English and Arabic Material strings; part of the Flutter SDK.
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: ^3.5.0
   # Path URL strategy on the web (usePathUrlStrategy); part of the Flutter SDK.
   flutter_web_plugins:
     sdk: flutter
+  go_router: ^18.1.4
+  intl: ^0.20.3
   json_annotation: ^4.12.0
   material_ui: ^1.11.1
   retrofit: ^4.10.0
+  uuid: ^4.6.0
 
 dev_dependencies:
   build_runner: ^2.17.1
@@ -35,3 +42,14 @@ flutter:
   default-flavor: staging
 
   uses-material-design: true
+
+  assets:
+    # The licence of the bundled font, shown on the app's licence page.
+    - assets/fonts/Rubik-OFL.txt
+
+  fonts:
+    # Rubik (SIL OFL), one variable file for Latin and Arabic, weights 300 to 900 (the app uses 400 to 700).
+    # Bundled, never downloaded at start.
+    - family: Rubik
+      fonts:
+        - asset: assets/fonts/Rubik-VariableFont_wght.ttf
