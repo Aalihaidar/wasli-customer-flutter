@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:wasli_customer/app/placeholder_page.dart';
+import 'package:wasli_customer/app/router/app_router.dart';
 import 'package:wasli_customer/core/l10n/app_locales.dart';
 import 'package:wasli_customer/core/l10n/l10n.dart';
 import 'package:wasli_customer/core/l10n/locale_controller.dart';
@@ -13,16 +13,15 @@ final _darkThemeProvider = Provider<ThemeData>((ref) => WasliTheme.dark(ref.watc
 
 /// Root widget of the customer app.
 ///
-/// It wires the language (English or Arabic, right to left for Arabic), the localization delegates and the Ink &
-/// Mustard theme, light or dark by the system setting. The page is a placeholder until the router and the screens
-/// exist.
+/// It wires the router, the language (English by default, Arabic right to left, chosen in the settings), the
+/// localization delegates and the Ink & Mustard theme, light or dark by the system setting.
 class App extends ConsumerWidget {
   /// Creates the root widget.
   const new({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
+    return MaterialApp.router(
       onGenerateTitle: (context) => context.l10n.appTitle,
       locale: ref.watch(localeProvider),
       supportedLocales: AppLocales.supported,
@@ -33,7 +32,7 @@ class App extends ConsumerWidget {
       localizationsDelegates: const [AppLocalizations.delegate, ...GlobalMaterialLocalizations.delegates],
       theme: ref.watch(_lightThemeProvider),
       darkTheme: ref.watch(_darkThemeProvider),
-      home: const PlaceholderPage(),
+      routerConfig: ref.watch(routerProvider),
     );
   }
 }

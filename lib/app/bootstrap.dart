@@ -1,14 +1,31 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wasli_customer/app/app.dart';
+import 'package:wasli_customer/core/l10n/locale_controller.dart';
+import 'package:wasli_customer/core/l10n/locale_store.dart';
+import 'package:wasli_customer/core/storage/shared_preferences_locale_store.dart';
 
 /// Prepares the app and starts it.
 ///
-/// Web URLs use plain paths (`/r/<slug>`) instead of a hash. Off the web the call does nothing. The whole app runs
-/// inside one [ProviderScope], which holds its state.
-void bootstrap() {
+/// Web URLs use plain paths (`/r/<slug>`) instead of a hash. Off the web the call does nothing. The language the
+/// customer saved is read before the first frame, so the app never flashes the wrong language. The whole app runs inside
+/// one [ProviderScope], which holds its state.
+Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
-  runApp(const ProviderScope(child: App()));
+
+  final LocaleStore localeStore = SharedPreferencesLocaleStore(SharedPreferencesAsync());
+  final savedLocale = await localeStore.read();
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        localeStoreProvider.overrideWithValue(localeStore),
+        savedLocaleProvider.overrideWithValue(savedLocale),
+      ],
+      child: const App(),
+    ),
+  );
 }

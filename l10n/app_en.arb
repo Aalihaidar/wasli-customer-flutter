@@ -4,9 +4,17 @@
   "@appTitle": {
     "description": "The name of the app, shown in the browser tab and the task switcher. A brand name: it stays in Latin letters in every language."
   },
-  "languageSwitchLabel": "Language",
-  "@languageSwitchLabel": {
-    "description": "Accessibility label of the control that switches the language of the app."
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Title of the settings page."
+  },
+  "settingsOpenTooltip": "Settings",
+  "@settingsOpenTooltip": {
+    "description": "Tooltip and screen-reader label of the button that opens the settings page."
+  },
+  "settingsLanguageTitle": "Language",
+  "@settingsLanguageTitle": {
+    "description": "Heading of the language section of the settings page, above the list of languages."
   },
   "languageEnglish": "English",
   "@languageEnglish": {
@@ -15,5 +23,17 @@
   "languageArabic": "العربية",
   "@languageArabic": {
     "description": "The name of Arabic, written in Arabic. Every language is named in its own language so that a customer finds theirs, so this text is the same in every translation."
+  },
+  "notFoundTitle": "Page not found",
+  "@notFoundTitle": {
+    "description": "Heading of the page shown when the address does not match any page of the app."
+  },
+  "notFoundMessage": "The page you opened does not exist or has moved.",
+  "@notFoundMessage": {
+    "description": "Explanation under the heading of the page-not-found page."
+  },
+  "notFoundAction": "Go to the start page",
+  "@notFoundAction": {
+    "description": "Label of the button on the page-not-found page that goes back to the start page."
   }
 }

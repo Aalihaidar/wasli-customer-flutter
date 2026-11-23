@@ -306,10 +306,28 @@ Packages (confirm each when adding): `material_ui` (added with Flutter 3.50, whi
 when their feature starts: `flutter_map`, `latlong2`, `geolocator`, `record`, `flutter_secure_storage`,
 `shared_preferences` (non-sensitive settings only, never tokens).
 `flutter_riverpod`, `go_router`, `intl`, `uuid` and `flutter_localizations` (SDK) were added on 2026-11-23, in the pull
-request of the theme block; the blocks that use them follow.
+request of the theme block; the blocks that use them follow. `shared_preferences` (non-sensitive settings only) was added the
+same day with the settings block.
 
 - [ ] `app/`: `bootstrap()`, `ProviderScope`, global error zone, `go_router` with path URLs and a `/r/<slug>` route (slug
-  shape validated), app shell, session state (auth, locale, config)
+  shape validated), app shell, session state (auth, locale, config). Done: `bootstrap()` (async, reads the saved language
+  before the first frame), `ProviderScope`, the router with `/`, `/settings` and a page-not-found page, the language in
+  the session state. Still to do: the global error zone, `/r/<slug>`, the auth and config parts of the session
+- [x] Router and settings (`feat/app-shell-and-settings`, owner decision 2026-11-23): the app **starts in English whatever the
+  device language is**, and the customer changes the language in a **settings page** (a radio list, each language named in
+  its own language), reached from the gear in the top bar of the start page. `createAppRouter` / `routerProvider`
+  (`go_router`, `MaterialApp.router`, disposed with the app) with `AppRoutes`, `PageFrame` (centred content column of at most
+  560, gutter 16 or 24 by window class), `NotFoundPage`, `features/settings` (`SettingsPage`, `LanguageSetting`; opened from
+  its address the page offers a way to the start page since there is nothing to go back to). `LocaleStore` interface with a
+  memory implementation (for tests) and `SharedPreferencesLocaleStore` in `core/storage` (`SharedPreferencesAsync`, the
+  language code under `app_language`; a value that is not a supported language or a storage that cannot be read counts as
+  nothing saved, so the app still starts in English), `savedLocaleProvider` read in `bootstrap()` before the first frame, and a
+  controller that remembers the choice and does not fail when saving fails. `shared_preferences` is for non-sensitive settings
+  only, never for tokens. Tests: the controller and both stores, the page frame at phone, tablet and wide widths and in
+  RTL, the routes, the settings in both languages (radio semantics, 48 high, back navigation, saved language, 200 % text).
+  Checked end to end in a headless browser: the first visit is English, choosing Arabic writes `app_language` to the
+  browser's local storage, and after a reload the app starts in Arabic
+- [ ] When a conversation is open, a language change also sends the `set_locale` action (Phase 9)
 - [x] `core/config`: `AppEnvironment` reads `APP_ENV` (then the flavor); unknown counts as staging; unit tested
 - [x] `core/error`: sealed `Failure`, parser for the one error body (`type`, `errors[].code/detail/attr`), mapping by
   `code` (unknown code and non-JSON body become a generic failure of the HTTP status), with tests. `failureFromDioException`
@@ -329,16 +347,16 @@ request of the theme block; the blocks that use them follow.
 - [ ] `core/logging`: logger interface without personal data and a crash-report hook (the service is decided later)
 - [x] Localisation (`feat/localization`): ARB files `en` and `ar` in `l10n/` (a description on every message, Arabic keeps the
   same keys and placeholders, tested), `flutter gen-l10n` through `l10n.yaml` (generated code in `lib/core/l10n/generated`, not
-  committed, produced by `flutter pub get`), `AppLocales` (supported languages, device resolution, direction), the
-  `localeProvider` controller (starts from the device, English when it has none of ours), `isolateLeftToRight` for prices and
-  plates inside Arabic text, and the app wired with the delegates of `material_ui` (`GlobalMaterialLocalizations.delegates`,
-  which also covers Cupertino, so Flutter does not warn about Arabic), the per-language theme and a language switch on the
-  placeholder page. Tests: both languages, RTL, the switch, 200 % text, the Arabic Material strings. The language is not
-  stored yet: it is saved with the account (`locale` of the profile) in Phase 6. The Arabic labels are a first translation
-  and need the owner's review
-- [ ] First-load measurement after localisation: release web build `main.dart.js` 2.23 MB (652 KB gzip), up from 1.84 MB
-  (549 KB gzip) with the theme; the increase is Riverpod, `intl` and the Material strings that `flutter_localizations` ships
-  for every language. Look at it again before the first-load gate (deferred loading, or fewer locales)
+  committed, produced by `flutter pub get`), `AppLocales` (supported languages, direction), the `localeProvider`
+  controller (English by default, see the router and settings step below), `isolateLeftToRight` for prices and plates
+  inside Arabic text, and the app wired with the delegates of `material_ui` (`GlobalMaterialLocalizations.delegates`, which
+  also covers Cupertino, so Flutter does not warn about Arabic) and the per-language theme. Tests: both languages, RTL, 200 %
+  text, the Arabic Material strings. The language is also saved with the account (`locale` of the profile) in Phase 6. The
+  Arabic labels are a first translation and need the owner's review
+- [ ] First-load measurement: release web build `main.dart.js` 2.93 MB (853 KB gzip) with the router and settings, 2.23 MB
+  (652 KB gzip) with the localisation and 1.84 MB (549 KB gzip) with the theme only. The growth is Riverpod, `intl`, the
+  Material strings that `flutter_localizations` ships for every language, `go_router` and more widgets. Find what weighs most
+  (`--source-maps` and a size tool) and look again before the first-load gate (deferred loading, or fewer locales)
 - [x] `theme/` (`feat/theme`): Ink & Mustard tokens (`WasliColors`, spacing, radius, motion, elevation, layout), the
   `ColorScheme` derived from them, `WasliTextStyles` (Rubik, the design's type scale), component themes (buttons, input,
   card, top bar, dialog, sheet, snack bar, divider, progress), light and dark; `WasliTheme.light/dark(locale)` and
@@ -349,7 +367,7 @@ request of the theme block; the blocks that use them follow.
   `main.dart.js` 1.84 MB (549 KB gzip), Rubik 360 KB
 - [x] Responsive helpers: `WindowSizeClass` (compact below 600, medium 600 to 839, expanded 840 and up) and the content
   max width 560 in `WasliLayout`
-- [ ] `core/widgets`: loading, error with request id, empty state, responsive page frame
+- [ ] `core/widgets`: loading, error with request id, empty state, responsive page frame. Done: `PageFrame`
 - [ ] `GET /config` on start (without a token), with the "waking up the server" message after 3 s
 - [ ] Repositories in each feature's `data/` map DTOs to domain types; no generated type leaves `data/`
 - [ ] Unit and widget tests for each block (money in both languages, error mapping, RTL smoke test)
@@ -365,7 +383,8 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
   `too_many_attempts`, `throttled`, `password_*` codes; unverified account goes to the code screen
 - [ ] Sign-in with email or phone and password; logout (revokes this device's token and clears the store)
 - [ ] Forgot password (code, then new password)
-- [ ] Settings: show contacts and verified flags, add the missing contact with a code, language switch
+- [ ] Settings: show contacts and verified flags, add the missing contact with a code (the language choice is already on the
+  settings page)
 - [ ] A `401` on any customer call clears the session and routes to sign-in, once
 - [ ] Tests: notifiers with fakes, a widget test per screen, an integration test sign-up to verified, English and Arabic
   (RTL)

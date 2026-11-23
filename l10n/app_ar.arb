@@ -1,7 +1,12 @@
 {
   "@@locale": "ar",
   "appTitle": "Wasli",
-  "languageSwitchLabel": "اللغة",
+  "settingsTitle": "الإعدادات",
+  "settingsOpenTooltip": "الإعدادات",
+  "settingsLanguageTitle": "اللغة",
   "languageEnglish": "English",
-  "languageArabic": "العربية"
+  "languageArabic": "العربية",
+  "notFoundTitle": "الصفحة غير موجودة",
+  "notFoundMessage": "الصفحة التي فتحتها غير موجودة أو تم نقلها.",
+  "notFoundAction": "الانتقال إلى الصفحة الرئيسية"
 }
