@@ -285,6 +285,15 @@ release with its `openapi.yaml` asset, the pin moves to that tag in a pull reque
   optional `parent_id` (absent for a top-level category, never `null`). Additive: nothing is removed or made required. The pin
   also carries backend PR #76 (documentation only). The restaurant detail fixture has a subcategory and a test checks
   `parent_id` present and absent (agreed with the backend, round 9)
+- [x] Pin backend `develop` `2f36d7212eab9815dd4dd67271306a544c0d9518` (backend PR #81, 2026-11-23, round 14): the first
+  three chat endpoints of backend issue #79 (D2 slice 3): `POST /restaurants/{slug}/conversations` (`200` existing with the
+  whole history, `201` new), `GET /conversations/{id}/messages?after_seq=` and `POST /conversations/{id}/messages` (one of
+  `text` or `action`, always `201`). The pin also carries `order_type` on the conversation and `403 phone_not_verified` (PR
+  #78) and the order service (PR #80, no endpoint). Additive; the generated client gains a `chat` group and the shared
+  `LocaleEnum` moves into it (generator layout only, nothing in the app imports it). Fixtures for the three success
+  responses and tests of the request bodies (a typed message has no `action`, a button has no `text`, the item picker sends
+  ids and quantities only, an unknown `kind`, `state` or `order_type` is read, not rejected). Voice, the location, the car
+  answer, the note, the review, the placed order and `GET /orders/{id}` come in the next backend commits
 - [ ] **Backend:** when the backend publishes `v0.1.0` with its `openapi.yaml` asset, run `scripts/sync-api.sh v0.1.0`
   in a pull request of its own and compare the diff with the commit pin (it should be empty or explained)
 
@@ -384,26 +393,34 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
 Backend: needs the `v0.2.0` contract. Pin it with a pull request of its own (`/pin-api`), then build. While the release
 is a draft, pin the agreed backend commit (Phase 4).
 
-- [ ] Pin `v0.2.0` (or its commit), regenerate `lib/api`, fix what the compiler reports
+- [ ] Pin `v0.2.0` (or its commit), regenerate `lib/api`, fix what the compiler reports. First commit pinned on
+  2026-11-23 (`2f36d72`, the text chat); each of the next backend slices (voice, location / car / note / review / placed
+  order, fallbacks) comes with its own commit and its own pin pull request
 - [ ] Order channel modelled as a sealed domain type (`car` now; `dineIn` and `delivery` later); no "car" or "parking"
   words in shared code
-- [ ] Chat shell: open or resume a conversation, append messages by `seq`, poll `?after_seq=` only while visible, stop 10
-  minutes after a result arrives
+- [ ] Chat shell: open or resume a conversation (`start_new: false` returns the whole history, "Order again" is
+  `start_new: true`), append messages by `seq`, poll `?after_seq=` only while visible, stop 10 minutes after the last
+  message arrived (rounds 10-14)
 - [ ] One widget per message kind: `text`, `image`, `order_summary`, `review`, `result`; unknown kinds degrade safely
 - [ ] Quick replies: only those of the latest bot message are active
-- [ ] Composer: text, send, microphone (record with timer, send or cancel, 30 s max), disabled states (sending, placed,
-  assistant unavailable)
+- [ ] Composer: text (at most 500 code points as typed, blank refused), send, microphone (record our own mono 16 kHz WAV
+  with a timer, send or cancel, 30 s and 5 MB max; never the browser recorder, the microphone shows as unavailable if the WAV
+  cannot be made), disabled states (sending, placed, assistant unavailable)
 - [ ] Send with idempotency: `client_message_id` generated once per action, persisted until acknowledged, the same id on
   retry
-- [ ] Position at `ask_car` (QR arrivals ask for location here), accuracy and range checks, `invalid_location` handling
+- [ ] Position at `ask_car`, not earlier (QR arrivals ask for location here), `accuracy_m` optional, accuracy and range
+  checks, `invalid_location` handling
 - [ ] Item picker for `ai_available: false` (built from the structured menu, sends item ids and quantities only; the app
   never computes a price)
 - [ ] Review card and result cards (accepted with wait time, rejected with reason and note), "Order again"
 - [ ] Order status from `GET /orders/{id}`; polling shows what the server decides, the app decides nothing
-- [ ] Phone-verification gate before the first order for an email-only customer (**Backend**: needs the agreed error code)
-- [ ] Error mapping for the chat codes (`invalid_action_for_state`, `conversation_expired`, `audio_too_large`,
-  `audio_too_long`, `unsupported_audio_format`, `ai_unavailable`, `transcription_failed`, `item_unavailable`; no code
-  for the distance in the first version, an order is never refused for it)
+- [ ] Phone-verification gate before the first order for an email-only customer (`403 phone_not_verified` is in the
+  contract since the pin of 2026-11-23; the backend switches it on at staging)
+- [ ] Error mapping for the chat codes (`invalid_action_for_state`, `conversation_expired`, `unsupported_order_type`,
+  `phone_not_verified`, `max_length`, `audio_too_large`, `audio_too_long`, `unsupported_audio_format`,
+  `item_unavailable`; `ai_unavailable` and `transcription_failed` are not HTTP codes, an assistant outage is
+  `ai_available: false` and an unreadable clip is a bot message; no code for the distance in the first version, an order
+  is never refused for it)
 - [ ] Tests: merge by `seq`, polling rules, retry with the same id, every message kind, composer states, recorder with a
   fake, item picker, RTL smoke test, an integration test sign-up to order placed against a fake server
 

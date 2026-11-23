@@ -1,0 +1,49 @@
+{
+  "conversation": {
+    "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c10",
+    "restaurant_slug": "demo-cafe",
+    "state": "ordering",
+    "locale": "en",
+    "order_type": "car",
+    "ai_available": true,
+    "expires_at": "2026-11-23T12:00:00.000Z"
+  },
+  "messages": [
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c11",
+      "seq": 1,
+      "sender": "bot",
+      "kind": "text",
+      "text": "Welcome to Demo Cafe.",
+      "image_url": null,
+      "transcript": null,
+      "used_voice": false,
+      "payload": {},
+      "created_at": "2026-11-23T09:00:00.000Z"
+    },
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c12",
+      "seq": 2,
+      "sender": "bot",
+      "kind": "image",
+      "text": "Hot drinks",
+      "image_url": "https://media.example.com/menus/demo-cafe-1.jpg",
+      "transcript": null,
+      "used_voice": false,
+      "payload": {},
+      "created_at": "2026-11-23T09:00:00.000Z"
+    },
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c13",
+      "seq": 3,
+      "sender": "bot",
+      "kind": "text",
+      "text": "What would you like to order?",
+      "image_url": null,
+      "transcript": null,
+      "used_voice": false,
+      "payload": {},
+      "created_at": "2026-11-23T09:00:00.000Z"
+    }
+  ]
+}

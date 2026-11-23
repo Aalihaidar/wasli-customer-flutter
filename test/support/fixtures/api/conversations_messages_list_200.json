@@ -1,0 +1,71 @@
+{
+  "conversation": {
+    "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c10",
+    "restaurant_slug": "demo-cafe",
+    "state": "ordering",
+    "locale": "ar",
+    "order_type": "car",
+    "ai_available": false,
+    "expires_at": "2026-11-23T12:00:00.000Z"
+  },
+  "messages": [
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c14",
+      "seq": 4,
+      "sender": "customer",
+      "kind": "text",
+      "text": "Latte, large",
+      "image_url": null,
+      "transcript": null,
+      "used_voice": false,
+      "payload": {},
+      "created_at": "2026-11-23T09:01:00.000Z"
+    },
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c15",
+      "seq": 5,
+      "sender": "bot",
+      "kind": "order_summary",
+      "text": "Your order",
+      "image_url": null,
+      "transcript": null,
+      "used_voice": false,
+      "payload": {
+        "summary": {
+          "lines": [
+            {
+              "line": 1,
+              "item_id": "a1b2c3d4-0002-4a5b-8c9d-0e1f2a3b4c02",
+              "name": "Latte",
+              "options": [
+                {
+                  "id": "a1b2c3d4-0005-4a5b-8c9d-0e1f2a3b4c05",
+                  "name": "Large",
+                  "price_delta_minor": 200
+                }
+              ],
+              "quantity": 1,
+              "note": null,
+              "unit_price_minor": 1450,
+              "line_total_minor": 1450
+            }
+          ],
+          "subtotal_minor": 1450,
+          "total_minor": 1450,
+          "currency": "AED"
+        },
+        "quick_replies": [
+          {
+            "label": "Confirm",
+            "action": "confirm"
+          },
+          {
+            "label": "Edit",
+            "action": "edit"
+          }
+        ]
+      },
+      "created_at": "2026-11-23T09:01:01.000Z"
+    }
+  ]
+}

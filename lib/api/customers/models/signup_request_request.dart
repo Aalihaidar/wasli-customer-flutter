@@ -2,7 +2,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-import 'locale_enum.dart';
+import '../../chat/models/locale_enum.dart';
 
 part 'signup_request_request.g.dart';
 
