@@ -100,7 +100,7 @@ one place where it runs, so nothing is built twice for the same change:
 
 | Event | Result |
 | --- | --- |
-| Pull request into `develop` | The staging web build, kept 14 days, and the Android test builds (APK and AAB, debug key, no secrets, kept 14 days) only when the pull request changes `android/`, `pubspec.yaml`, `pubspec.lock`, `.github/workflows/build.yml` or `.github/actions/setup-flutter/` |
+| Pull request into `develop` | The staging web build, kept 14 days, and the Android test builds (APK and AAB, debug key, no secrets, kept 14 days) only when the pull request changes `android/`, `pubspec.yaml`, `pubspec.lock`, `.github/workflows/build.yml` or `.github/actions/setup-flutter/`. The unsigned iOS compile check follows the same rule with `ios/` instead of `android/`, and only exists once the iOS flavors (Xcode schemes `staging` and `production`) are committed |
 | Merge into `develop` | Nothing is built; start a staging build by hand (below) |
 | Pull request into `main` (the release) | Nothing is built; CI checks it, and the build runs once after the merge |
 | Merge into `main` | Signed production build; its files go into the draft release `v<version>` |
@@ -120,7 +120,7 @@ are created and refreshed, and you publish the production one.
 - A pull request build answers "does this change still compile?". Dart code is checked by
   format, analyze (including the lint against web-only libraries), test and the web build,
   and rarely breaks the Android build, so a Dart-only pull request skips the slowest part
-  of the build, the Android test builds; native changes still get them, and anything the
+  of the build, the Android (and, once the iOS flavors exist, iOS) test builds; native changes still get them, and anything the
   skip misses shows in the signed build after the merge into `main` or in a manual staging
   run, before anything is published.
 - A signed build is something you ship, so it runs when you ship: after a merge into
@@ -198,9 +198,10 @@ These are per-project decisions the template does not make for you:
 - **iOS flavors.** Flutter needs Xcode schemes named `staging` and `production`, build
   configurations and a bundle identifier per flavor
   ([Flutter guide](https://docs.flutter.dev/deployment/flavors-ios)); that needs a Mac.
-  Until then `default-flavor` makes an iOS build fail, so the opt-in iOS job of
-  `build.yml` (repository variable `BUILD_IOS`) waits for it. Use the same bundle IDs as
-  the Android IDs.
+  Until then `default-flavor` makes an iOS build fail, so the iOS job of `build.yml`
+  is skipped until the two schemes are committed; then it switches on by itself (in a
+  pull request only when `ios/`, `pubspec.*` or the build setup changed). Use the same
+  bundle IDs as the Android IDs.
 - **Store upload.** A merge into `main` can later also upload the App Bundle (first to
   an internal or closed track); see the end of [`android-signing.md`](android-signing.md).
 - **Firebase.** One Firebase project per environment, each registered with the

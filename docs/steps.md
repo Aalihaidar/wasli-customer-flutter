@@ -67,7 +67,8 @@ Branch: `feat/initial-app`. Everything below goes into one reviewable pull reque
   `android/app/build.gradle.kts`, and remove the generated `release { signingConfig … }` block
   (`docs/android-signing.md` section 2)
 - [x] `default-flavor: staging` in `pubspec.yaml`, and check that a web run still starts. Until the iOS flavors exist
-  (block below, needs a Mac), iOS builds fail because of this setting; `BUILD_IOS` stays off
+  (block below, needs a Mac), iOS builds fail because of this setting; the iOS job of `build.yml` stays skipped until the
+  schemes are committed
 - [x] Debug-only cleartext exception for `10.0.2.2` and `localhost` in `android/app/src/debug`
   (`docs/consuming-the-api.md` section 5)
 - [x] `flutter pub get` (creates `pubspec.lock`, which switches CI to its full checks)
@@ -155,7 +156,9 @@ next to it. A line is ticked in the pull request that comes after the event, bec
   PR #13: Detect, Web, APK and AAB passed; signed, iOS and draft release skipped)
 - [x] (b) A docs-only pull request shows no Build run (CI and PR labels only) (2026-11-19, PR #14: CI and PR labels
   ran, no Build; its merge into `develop` started no run either, which repeats (d))
-- [ ] (c) A Dart-only pull request (under `lib/` or `test/`) shows the web build and skips the two Android jobs
+- [x] (c) A Dart-only pull request (under `lib/` or `test/`) shows the web build and skips the two Android jobs
+  (2026-11-23, PR #18, Build run 45142987576: Detect and Web passed; the Android jobs, signed, iOS and draft release
+  were skipped. PR #19, which changed `pubspec.yaml`, ran the Android jobs too, as the rules say)
 - [x] (d) The merge into `develop` starts no Build run (2026-11-19, merge of PR #13: no run on `2809d17`)
 - [ ] (e) Build → Run workflow from `develop` with `staging` works and refreshes the draft "Staging"
 - [ ] (f) `production` from `develop`, or `staging` from a topic branch, fails at once with the "Wrong branch" message
@@ -170,7 +173,9 @@ yet").
 - [ ] **Decide** where this is done (a Mac, or later together with the iOS signing in Phase 12)
 - [ ] Xcode schemes and build configurations `staging` and `production`, bundle identifier per flavor
   (`com.alihaidar.wasli.customer` and the `.staging` variant, the same IDs as Android)
-- [ ] `flutter build ios --flavor staging` compiles on a Mac; then set the repository variable `BUILD_IOS` to `true`
+- [ ] `flutter build ios --flavor staging` compiles on a Mac; committing the two schemes switches the iOS job of
+  `build.yml` on by itself (no variable): in a pull request it then runs when `ios/`, `pubspec.*` or the build setup
+  changed, and always on a manual run and after a merge into `main`
 
 ## Phase 3: GitHub repository settings
 
@@ -226,6 +231,14 @@ result. Settings are changed in the GitHub web interface by the owner; the assis
 - [x] Environment `production` (and `staging`): restrict **Deployment branches and tags** to `main` (and `develop`) while
   the repository is public, since the signing secrets live there (`production` -> `main`, `staging` -> `develop`, read
   2026-11-20; read it again when the repository goes private)
+- [x] No repository variable is a build switch (owner rule, 2026-11-19): the iOS job of `build.yml` no longer reads
+  `BUILD_IOS`; it runs when the Xcode schemes `staging` and `production` are committed, and in a pull request only when
+  `ios/`, `pubspec.*` or the build setup changed (found by "check repo" on 2026-11-23). The `BACKEND_REPO` variable only
+  gates the weekly contract check, which builds nothing, and stays
+- [x] The Labels workflow is an exact sync (owner request, 2026-11-23): a label that is not in `.github/labels.yml` is
+  deleted. The first run, started by merging this change, removes the four labels GitHub had that the file lacks
+  (`accessibility`, `help wanted`, `invalid`, `question`); none is used by the automation. Check Actions → Labels and
+  `gh label list` afterwards (25 labels become 21)
 
 ## Phase 4: Backend contract and generated client (D1, backend v0.1.0)
 
