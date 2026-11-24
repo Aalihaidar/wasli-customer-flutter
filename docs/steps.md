@@ -348,18 +348,34 @@ same day with the settings block.
   `code` (unknown code and non-JSON body become a generic failure of the HTTP status), with tests. `failureFromDioException`
   is the single pipeline from the HTTP client to the repositories (it reads `Retry-After` and `X-Request-ID`); the chat
   codes join the `ApiErrorCode` list with the conversation endpoints (Phase 9)
-- [ ] `core/network`: Dio factory with timeouts, interceptors for the auth header (`Customer <token>`, never on the
-  public endpoints), `X-Request-ID` capture, locale, and **redacted** logging (no tokens, bodies or query strings); GET
-  retry with backoff; `429` honours `Retry-After`; a `401` clears the session once
-- [ ] `core/storage`: `TokenStore` interface and the interim web implementation (memory first);
-  `flutter_secure_storage` implementation for Android and iOS when those targets start; never `shared_preferences` for
-  tokens
+- [x] `core/network` (2026-11-24): `createDio` builds the one HTTP client. Its base URL is the API origin
+  (`AppEnvironment.apiOrigin`: `API_BASE_URL` without `/api/v1`, because the generated paths already start with it; a base
+  URL that does not end with `/api/v1` is refused at start-up). Timeouts on every call (connect 15 s, send 30 s, receive
+  30 s; 70 s for the first call of a visit, because the staging host sleeps). Interceptors: the token (`Authorization:
+  Customer <token>`, added only to the operations whose `security` in the contract names `customerAuth`, read from the
+  generated client's `extra['openapi.security']`; never on a public one; a `401` on a call that carried a token clears it
+  and announces once), a log of method, path, status, time and request id only (no header, body or query string), and the
+  retry (a `GET` that timed out, lost the connection or got `500/502/503/504`, at most twice, 0.5 s then 1 s, honouring a
+  `Retry-After` up to 10 s; never a `POST`, never a `429`). `runApi` turns every error into a `Failure`. The request id
+  stays on `Failure.requestId`, so no separate capture exists; no locale header is sent (the backend writes the chat in the
+  conversation's language). Tests use a fake HTTP adapter, no network
+- [x] `features/server_config` (2026-11-24): `GET /config` read through the generated `ConfigClient` (public, no token, waits up
+  to 70 s for a sleeping server) into a domain `ServerConfig`; a failed read is not retried by Riverpod (the network layer
+  retries, the screen offers "Try again"). The start page shows one status line outside production: waiting, connected
+  (stage and assistant), or the failure with its reference. A configuration error at start-up opens a plain localized page
+  instead of a blank screen. `lib/api` is imported by a feature's `data/` only, so each feature builds the client group it
+  needs from `dioProvider`
+- [x] `core/storage`: `TokenStore` interface and the in-memory implementation (the web version for now: the customer signs in
+  again after a reload; owner, 2026-11-24)
+- [ ] `core/storage`: `flutter_secure_storage` implementation for Android and iOS when those targets start; the web cookie
+  session when the backend and a custom domain exist; never `shared_preferences` for tokens
 - [ ] `core/platform`: interfaces (location, audio recorder, secure storage, wake lock, notifications) with web
   implementations as each is needed; shared code never imports `dart:io`
 - [ ] `core/format`: money from integer fils (`AED 12.50` / `12.50 د.إ`), UTC to Asia/Dubai, distance, plates, Western
   digits always; unit tested in both languages
 - [ ] `core/polling`: lifecycle-aware `Poller` (visible, idle, back-off, `Retry-After`) with tests
-- [ ] `core/logging`: logger interface without personal data and a crash-report hook (the service is decided later)
+- [x] `core/logging`: the `AppLogger` interface (no personal data; the console implementation is silent in release builds)
+- [ ] `core/logging`: the crash-report hook (the service is decided later)
 - [x] Localisation (`feat/localization`): ARB files `en` and `ar` in `l10n/` (a description on every message, Arabic keeps the
   same keys and placeholders, tested), `flutter gen-l10n` through `l10n.yaml` (generated code in `lib/core/l10n/generated`, not
   committed, produced by `flutter pub get`), `AppLocales` (supported languages, direction), the `localeProvider`
@@ -368,7 +384,7 @@ same day with the settings block.
   also covers Cupertino, so Flutter does not warn about Arabic) and the per-language theme. Tests: both languages, RTL, 200 %
   text, the Arabic Material strings. The language is also saved with the account (`locale` of the profile) in Phase 6. The
   Arabic labels are a first translation and need the owner's review
-- [ ] First-load measurement: release web build `main.dart.js` 2.93 MB (853 KB gzip) with the router and settings, 2.23 MB
+- [ ] First-load measurement: release web build `main.dart.js` 3.05 MB (894 KB gzip) with the network layer and the server settings (2.93 MB and 853 KB gzip before it, with the router and settings), 2.23 MB
   (652 KB gzip) with the localisation and 1.84 MB (549 KB gzip) with the theme only. The growth is Riverpod, `intl`, the
   Material strings that `flutter_localizations` ships for every language, `go_router` and more widgets. Find what weighs most
   (`--source-maps` and a size tool) and look again before the first-load gate (deferred loading, or fewer locales)

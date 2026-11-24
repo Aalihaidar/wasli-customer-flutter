@@ -14,7 +14,7 @@ Failure failureFromDioException(DioException exception) {
     return failureFromResponse(
       statusCode: statusCode,
       data: response.data,
-      retryAfter: _parseRetryAfter(response.headers.value('retry-after')),
+      retryAfter: parseRetryAfter(response.headers.value('retry-after')),
       requestId: requestId,
     );
   }
@@ -33,7 +33,7 @@ Failure failureFromDioException(DioException exception) {
 }
 
 /// `Retry-After` as a number of seconds. The date form is not used by the backend and reads as "not said".
-Duration? _parseRetryAfter(String? value) {
+Duration? parseRetryAfter(String? value) {
   final seconds = int.tryParse(value?.trim() ?? '');
   return seconds == null || seconds < 0 ? null : Duration(seconds: seconds);
 }

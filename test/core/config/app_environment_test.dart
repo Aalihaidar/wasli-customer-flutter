@@ -24,6 +24,35 @@ void main() {
       expect(environment.apiBaseUrl.toString(), 'https://api.example.test/api/v1');
     });
 
+    test('the API origin is the base URL without /api/v1, with the port and any host path kept', () {
+      expect(
+        AppEnvironment.parse(apiBaseUrl: 'https://api.example.test/api/v1').apiOrigin.toString(),
+        'https://api.example.test',
+      );
+      expect(
+        AppEnvironment.parse(apiBaseUrl: 'http://10.0.2.2:8000/api/v1').apiOrigin.toString(),
+        'http://10.0.2.2:8000',
+      );
+      expect(
+        AppEnvironment.parse(apiBaseUrl: 'https://example.test/wasli/api/v1').apiOrigin.toString(),
+        'https://example.test/wasli',
+      );
+    });
+
+    test('a base URL that does not end with /api/v1 is refused, because the paths would not line up', () {
+      for (final bad in [
+        'https://api.example.test',
+        'https://api.example.test/api',
+        'https://api.example.test/api/v2',
+      ]) {
+        expect(
+          () => AppEnvironment.parse(apiBaseUrl: bad),
+          throwsA(isA<AppConfigException>().having((e) => e.message, 'message', contains('/api/v1'))),
+          reason: bad,
+        );
+      }
+    });
+
     test('the customer site URL is optional', () {
       final unset = AppEnvironment.parse(apiBaseUrl: 'https://api.example.test/api/v1');
       final empty = AppEnvironment.parse(apiBaseUrl: 'https://api.example.test/api/v1', customerSiteUrl: '  ');

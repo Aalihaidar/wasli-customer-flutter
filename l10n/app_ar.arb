@@ -8,5 +8,17 @@
   "languageArabic": "العربية",
   "notFoundTitle": "الصفحة غير موجودة",
   "notFoundMessage": "الصفحة التي فتحتها غير موجودة أو تم نقلها.",
-  "notFoundAction": "الانتقال إلى الصفحة الرئيسية"
+  "notFoundAction": "الانتقال إلى الصفحة الرئيسية",
+  "failureOffline": "لا يوجد اتصال بالإنترنت. تحقق من اتصالك وحاول مرة أخرى.",
+  "failureTimeout": "استغرق الخادم وقتًا طويلًا للرد. حاول مرة أخرى.",
+  "failureThrottled": "طلبات كثيرة جدًا. انتظر قليلًا ثم حاول مرة أخرى.",
+  "failureSessionEnded": "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.",
+  "failureGeneric": "حدث خطأ ما. حاول مرة أخرى.",
+  "failureReference": "المرجع: {requestId}",
+  "serverStatusLoading": "جارٍ الاتصال بالخادم…",
+  "serverStatusAssistantOn": "تم الاتصال بالخادم ({stage}). المساعد يعمل.",
+  "serverStatusAssistantOff": "تم الاتصال بالخادم ({stage}). المساعد متوقف.",
+  "serverStatusRetry": "حاول مرة أخرى",
+  "configErrorTitle": "التطبيق غير مهيأ",
+  "configErrorMessage": "هناك مشكلة في إعدادات هذه النسخة من التطبيق. حاول مرة أخرى لاحقًا."
 }
