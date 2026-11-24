@@ -1,0 +1,13 @@
+{
+  "id": "d1b90202-0000-4a5b-8c9d-0e1f2a3b4c31",
+  "number": 18,
+  "status": "rejected",
+  "order_type": "car",
+  "placed_at": "2026-11-23T09:20:00.000Z",
+  "eta_minutes": null,
+  "rejection_reason_code": "other",
+  "rejection_note": "The oven is being repaired.",
+  "subtotal_minor": 1250,
+  "total_minor": 1250,
+  "currency": "AED"
+}

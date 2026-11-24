@@ -3,6 +3,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import 'conversation_locale.dart';
+import 'conversation_order_response.dart';
 import 'conversation_order_type.dart';
 import 'conversation_state.dart';
 
@@ -35,6 +36,11 @@ class Conversation$Response {
     /// False while the assistant cannot be used (it failed a moment ago, or it is off): typed and spoken orders are not understood and the app offers the item picker.
     required this.aiAvailable,
     required this.expiresAt,
+
+    /// Leaves the property out of the response, never ``null``, when it has no value: the
+    /// contract has no nullable references and a missing value is an optional property
+    /// (docs/api-conventions.md). A missing related object counts as no value.
+    this.order,
     this.additionalProperties = const {},
   });
 
@@ -85,6 +91,12 @@ class Conversation$Response {
   )
   final DateTime expiresAt;
 
+  /// Leaves the property out of the response, never ``null``, when it has no value: the
+  /// contract has no nullable references and a missing value is an optional property
+  /// (docs/api-conventions.md). A missing related object counts as no value.
+  @JsonKey(disallowNullValue: true, includeIfNull: false)
+  final ConversationOrder$Response? order;
+
   static const _knownKeys = <String>{
     "id",
     "restaurant_slug",
@@ -93,6 +105,7 @@ class Conversation$Response {
     "order_type",
     "ai_available",
     "expires_at",
+    "order",
   };
 
   @JsonKey(readValue: Conversation$Response._extras, fromJson: Conversation$Response._readExtras, includeToJson: false)

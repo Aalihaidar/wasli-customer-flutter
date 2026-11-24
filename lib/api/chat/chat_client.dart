@@ -2,11 +2,12 @@
 
 import 'dart:convert' as convert;
 
-import 'package:dio/dio.dart' show Dio, Options, ResponseType, CancelToken, RequestOptions;
+import 'package:dio/dio.dart' show Dio, Options, ResponseType, CancelToken, FormData, MultipartFile, RequestOptions;
 import 'package:retrofit/retrofit.dart'
-    show RestApi, Extras, CancelRequest, GET, POST, ParseErrorLogger, Body, Headers, Path, Query;
+    show RestApi, Extras, CancelRequest, PUT, GET, POST, ParseErrorLogger, Body, Headers, MultiPart, Part, Path, Query;
 
 import 'models/chat_response.dart' show Chat$Response;
+import 'models/location_request.dart' show LocationRequest;
 import 'models/open_conversation_request.dart' as models show OpenConversationRequest;
 import 'models/send_message_request.dart' show SendMessageRequest;
 
@@ -20,6 +21,69 @@ abstract class ChatClient {
 
   final Dio _transport;
 
+  Future<void> _conversationsLocationUpdateWithOptions({
+    Map<String, Object?> extra = const {
+      "openapi.security": [
+        {"customerAuth": []},
+      ],
+      "openapi.securitySchemes": {
+        "customerAuth": {
+          "type": "apiKey",
+          "name": "Authorization",
+          "in": "header",
+          "description": "Customer token, sent as `Customer <token>`. It is returned once, when a sign-up is verified or a customer signs in.",
+        },
+      },
+    },
+    CancelToken? cancelToken,
+    Options? options,
+    required String id,
+    required LocationRequest body,
+  }) async {
+    final _options = (options ?? Options()).copyWith(
+      method: "PUT",
+      responseType: ResponseType.json,
+      extra: {...?options?.extra, ...extra},
+      contentType: "application/json",
+      headers: {
+        for (final entry in (options?.headers ?? const <String, Object?>{}).entries)
+          if (entry.key.toLowerCase() != 'content-type') entry.key: entry.value,
+        'Accept': "application/json",
+      },
+    );
+    await _transport.request<dynamic>(
+      "/api/v1/conversations/" + id.toString() + "/location",
+      options: _options,
+      data: convert.jsonEncode(body),
+      cancelToken: cancelToken,
+    );
+  }
+
+  /// Send the phone's position
+  ///
+  /// The phone's position, sent by the app when the car question appears. It is kept on the conversation until the order is placed, the latest value wins, and it goes to the restaurant's staff with the order. `204` with no body. Allowed in any open step; a placed conversation is `409 invalid_action_for_state` and an expired one `409 conversation_expired`. A latitude outside -90 to 90, a longitude outside -180 to 180 or a negative `accuracy_m` is `400 invalid_location`. Another customer's conversation is a `404`.
+  @PUT('/api/v1/conversations/{id}/location')
+  @Headers({'Content-Type': 'application/json'})
+  Future<void> conversationsLocationUpdate({
+    @Extras()
+    Map<String, Object?> extra = const {
+      "openapi.security": [
+        {"customerAuth": []},
+      ],
+      "openapi.securitySchemes": {
+        "customerAuth": {
+          "type": "apiKey",
+          "name": "Authorization",
+          "in": "header",
+          "description": "Customer token, sent as `Customer <token>`. It is returned once, when a sign-up is verified or a customer signs in.",
+        },
+      },
+    },
+    @CancelRequest() CancelToken? cancelToken,
+    Options? options,
+    @Path('id') required String id,
+    @Body() required LocationRequest body,
+  });
   Future<Chat$Response> _conversationsMessagesListWithOptions({
     Map<String, Object?> extra = const {
       "openapi.security": [
@@ -144,6 +208,79 @@ abstract class ChatClient {
     @Path('id') required String id,
     @Body() required SendMessageRequest body,
   });
+  Future<Chat$Response> _conversationsVoiceCreateWithOptions({
+    Map<String, Object?> extra = const {
+      "openapi.security": [
+        {"customerAuth": []},
+      ],
+      "openapi.securitySchemes": {
+        "customerAuth": {
+          "type": "apiKey",
+          "name": "Authorization",
+          "in": "header",
+          "description": "Customer token, sent as `Customer <token>`. It is returned once, when a sign-up is verified or a customer signs in.",
+        },
+      },
+    },
+    CancelToken? cancelToken,
+    Options? options,
+    required String id,
+    required String clientMessageId,
+    required MultipartFile audio,
+  }) async {
+    final _options = (options ?? Options()).copyWith(
+      method: "POST",
+      responseType: ResponseType.json,
+      extra: {...?options?.extra, ...extra},
+      contentType: "multipart/form-data",
+      headers: {
+        for (final entry in (options?.headers ?? const <String, Object?>{}).entries)
+          if (entry.key.toLowerCase() != 'content-type') entry.key: entry.value,
+        'Accept': "application/json",
+      },
+    );
+    final formData = FormData();
+    formData.fields.add(MapEntry("client_message_id", clientMessageId.toString()));
+    formData.files.add(MapEntry("audio", audio));
+    final response = await _transport.request<dynamic>(
+      "/api/v1/conversations/" + id.toString() + "/voice",
+      options: _options,
+      data: formData,
+      cancelToken: cancelToken,
+    );
+    return Chat$Response.fromJson(response.data as Map<String, Object?>);
+  }
+
+  /// Send a voice message
+  ///
+  /// One WAV clip of at most 60 seconds and 5 MB, with a `client_message_id`. The clip is read in memory, understood like a typed message and dropped: it is never stored, and only what was said stays on the customer's message (`used_voice: true` and the `transcript`). The answer is the same as for a message, always `201`, and a replay of the same `client_message_id` returns the first result. A clip nobody could understand, and an assistant that is down, are not errors: the customer's message is stored with an empty transcript and the bot answers in the chat (the second also makes `ai_available` false for a few minutes). `400` codes: `audio_too_long`, `audio_too_large` (the clip above 5 MB, or the whole request above 6 MB) and `unsupported_audio_format` (only WAV for now). Allowed while the conversation is in `ordering`; elsewhere `409 invalid_action_for_state`.
+  @POST('/api/v1/conversations/{id}/voice')
+  @MultiPart()
+  Future<Chat$Response> conversationsVoiceCreate({
+    @Extras()
+    Map<String, Object?> extra = const {
+      "openapi.security": [
+        {"customerAuth": []},
+      ],
+      "openapi.securitySchemes": {
+        "customerAuth": {
+          "type": "apiKey",
+          "name": "Authorization",
+          "in": "header",
+          "description": "Customer token, sent as `Customer <token>`. It is returned once, when a sign-up is verified or a customer signs in.",
+        },
+      },
+    },
+    @CancelRequest() CancelToken? cancelToken,
+    Options? options,
+    @Path('id') required String id,
+
+    /// Made by the app for every message and kept for a retry, as for a text.
+    @Part(name: 'client_message_id') required String clientMessageId,
+
+    /// One WAV clip of at most 60 seconds and 5 MB. It is read in memory and never stored: only what was said stays on the message, as its transcript.
+    @Part(name: 'audio') required MultipartFile audio,
+  });
 
   /// Open the conversation with a restaurant
   ///
@@ -194,6 +331,43 @@ abstract class ChatClient {
 
 class _ChatClientWithOptions extends _ChatClient {
   _ChatClientWithOptions(Dio dio) : super._(dio, dio);
+
+  @override
+  Future<void> conversationsLocationUpdate({
+    Map<String, Object?> extra = const {
+      "openapi.security": [
+        {"customerAuth": []},
+      ],
+      "openapi.securitySchemes": {
+        "customerAuth": {
+          "type": "apiKey",
+          "name": "Authorization",
+          "in": "header",
+          "description": "Customer token, sent as `Customer <token>`. It is returned once, when a sign-up is verified or a customer signs in.",
+        },
+      },
+    },
+    CancelToken? cancelToken,
+    Options? options,
+    required String id,
+    required LocationRequest body,
+  }) {
+    return options == null
+        ? super.conversationsLocationUpdate(
+            extra: extra,
+            cancelToken: cancelToken,
+            options: options,
+            id: id,
+            body: body,
+          )
+        : _conversationsLocationUpdateWithOptions(
+            extra: extra,
+            cancelToken: cancelToken,
+            options: options,
+            id: id,
+            body: body,
+          );
+  }
 
   @override
   Future<Chat$Response> conversationsMessagesList({
@@ -266,6 +440,46 @@ class _ChatClientWithOptions extends _ChatClient {
             options: options,
             id: id,
             body: body,
+          );
+  }
+
+  @override
+  Future<Chat$Response> conversationsVoiceCreate({
+    Map<String, Object?> extra = const {
+      "openapi.security": [
+        {"customerAuth": []},
+      ],
+      "openapi.securitySchemes": {
+        "customerAuth": {
+          "type": "apiKey",
+          "name": "Authorization",
+          "in": "header",
+          "description": "Customer token, sent as `Customer <token>`. It is returned once, when a sign-up is verified or a customer signs in.",
+        },
+      },
+    },
+    CancelToken? cancelToken,
+    Options? options,
+    required String id,
+    required String clientMessageId,
+    required MultipartFile audio,
+  }) {
+    return options == null
+        ? super.conversationsVoiceCreate(
+            extra: extra,
+            cancelToken: cancelToken,
+            options: options,
+            id: id,
+            clientMessageId: clientMessageId,
+            audio: audio,
+          )
+        : _conversationsVoiceCreateWithOptions(
+            extra: extra,
+            cancelToken: cancelToken,
+            options: options,
+            id: id,
+            clientMessageId: clientMessageId,
+            audio: audio,
           );
   }
 }

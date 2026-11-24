@@ -1,0 +1,37 @@
+{
+  "conversation": {
+    "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c10",
+    "restaurant_slug": "demo-cafe",
+    "state": "ordering",
+    "locale": "en",
+    "order_type": "car",
+    "ai_available": true,
+    "expires_at": "2026-11-23T12:00:00.000Z"
+  },
+  "messages": [
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c18",
+      "seq": 8,
+      "sender": "customer",
+      "kind": "text",
+      "text": "",
+      "image_url": null,
+      "transcript": "Two lattes please",
+      "used_voice": true,
+      "payload": {},
+      "created_at": "2026-11-23T09:03:00.000Z"
+    },
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c19",
+      "seq": 9,
+      "sender": "bot",
+      "kind": "text",
+      "text": "Sorry, I could not hear that. Please say it again.",
+      "image_url": null,
+      "transcript": null,
+      "used_voice": false,
+      "payload": {},
+      "created_at": "2026-11-23T09:03:01.000Z"
+    }
+  ]
+}
