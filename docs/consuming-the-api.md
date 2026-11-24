@@ -178,12 +178,12 @@ dev container. So the backend (in its own dev container, with port 8000 publishe
 is reached through the host. `host.docker.internal` is only used for adb and is the wrong
 address for the API.
 
-| Where the app runs | Base URL | Also needed |
+| Where the app runs | `API_BASE_URL` | Also needed |
 | --- | --- | --- |
-| Android emulator on the host | `http://10.0.2.2:8000` (the emulator's alias for the host's loopback) | `10.0.2.2` in the backend's `ALLOWED_HOSTS`, and the cleartext exception below |
-| Browser on the host (`frunw`, port 8080) | `http://localhost:8000` | The app origin `http://localhost:8080` allowed by the backend's CORS settings, because the two ports are different origins |
-| A phone on your network | `http://<your host's LAN address>:8000` | The same as the emulator, and the host's firewall open for the port |
-| Staging, production | `https://...` | Nothing: HTTPS needs no exception |
+| Android emulator on the host | `http://10.0.2.2:8000/api/v1` (the emulator's alias for the host's loopback) | `10.0.2.2` in the backend's `ALLOWED_HOSTS`, and the cleartext exception below |
+| Browser on the host (`frunw`, port 8080) | `http://localhost:8000/api/v1` | The app origin `http://localhost:8080` allowed by the backend's CORS settings, because the two ports are different origins |
+| A phone on your network | `http://<your host's LAN address>:8000/api/v1` | The same as the emulator, and the host's firewall open for the port |
+| Staging, production | `https://.../api/v1` | Android: nothing, HTTPS needs no exception. A browser: its origin in the server's CORS list (the staging server also lists `http://localhost:8080`, for local tests only; CORS is a browser rule, so an emulator or a phone app is never blocked by it) |
 
 **Cleartext HTTP on Android.** Android blocks plain `http://` by default. Allow it for the
 local addresses in **debug builds only**, in the project's `android/` folder (created by
