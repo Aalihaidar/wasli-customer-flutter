@@ -294,6 +294,16 @@ release with its `openapi.yaml` asset, the pin moves to that tag in a pull reque
   responses and tests of the request bodies (a typed message has no `action`, a button has no `text`, the item picker sends
   ids and quantities only, an unknown `kind`, `state` or `order_type` is read, not rejected). Voice, the location, the car
   answer, the note, the review, the placed order and `GET /orders/{id}` come in the next backend commits
+- [x] Pin backend `develop` `ac4ab496414454ed6aae07db3dab4318f41f19fa` (backend PRs #89 and #90, 2026-11-24, rounds 17-18): the
+  rest of the customer chat. Voice: `POST /conversations/{id}/voice` (multipart, one WAV clip of at most 60 seconds and 5 MB,
+  `client_message_id`, always `201`). The position: `PUT /conversations/{id}/location` (`lat`, `lng`, optional `accuracy_m`,
+  `source` `gps` or `simulated`, answer `204`). The order: the conversation has an optional `order` (`id`, `number`, `status`),
+  absent before the order is placed and never `null`, and `GET /orders/{id}` returns the order with `eta_minutes`,
+  `rejection_reason_code` and `rejection_note` nullable until the restaurant answers. Additive; the generated client gains an
+  `orders` group. Two descriptions in the pinned file are older than the agreed behaviour (the voice endpoint says it is allowed
+  only in `ordering`; the backend takes voice in every open step), so the app follows the backend's message. Fixtures and tests
+  for the voice response, the placed conversation, the order before and after a rejection, an unknown order status and the
+  position body
 - [ ] **Backend:** when the backend publishes `v0.1.0` with its `openapi.yaml` asset, run `scripts/sync-api.sh v0.1.0`
   in a pull request of its own and compare the diff with the commit pin (it should be empty or explained)
 
@@ -423,8 +433,9 @@ Backend: needs the `v0.2.0` contract. Pin it with a pull request of its own (`/p
 is a draft, pin the agreed backend commit (Phase 4).
 
 - [ ] Pin `v0.2.0` (or its commit), regenerate `lib/api`, fix what the compiler reports. First commit pinned on
-  2026-11-23 (`2f36d72`, the text chat); each of the next backend slices (voice, location / car / note / review / placed
-  order, fallbacks) comes with its own commit and its own pin pull request
+  2026-11-23 (`2f36d72`, the text chat) and 2026-11-24 (`ac4ab49`: voice, car, note, location, review, placed order,
+  `GET /orders/{id}`); the remaining slices (the item-by-item car fallback, the `result` message) come with their own commit
+  and their own pin pull request
 - [ ] Order channel modelled as a sealed domain type (`car` now; `dineIn` and `delivery` later); no "car" or "parking"
   words in shared code
 - [ ] Chat shell: open or resume a conversation (`start_new: false` returns the whole history, "Order again" is

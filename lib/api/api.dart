@@ -2,7 +2,7 @@
 
 import 'package:dio/dio.dart' as transport;
 
-import 'exports.dart' as clients show ChatClient, ConfigClient, CustomersClient, RestaurantsClient;
+import 'exports.dart' as clients show ChatClient, ConfigClient, CustomersClient, OrdersClient, RestaurantsClient;
 
 export 'exports.dart';
 
@@ -22,5 +22,6 @@ final class Api {
   late final clients.ChatClient chat = clients.ChatClient(_client);
   late final clients.ConfigClient config = clients.ConfigClient(_client);
   late final clients.CustomersClient customers = clients.CustomersClient(_client);
+  late final clients.OrdersClient orders = clients.OrdersClient(_client);
   late final clients.RestaurantsClient restaurants = clients.RestaurantsClient(_client);
 }

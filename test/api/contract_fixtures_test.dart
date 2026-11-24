@@ -189,6 +189,37 @@ void main() {
       expect(chat.toJson(), json);
     });
 
+    test('POST /conversations/{id}/voice (201): the customer message shows its transcript', () {
+      final json = readApiFixture('conversations_voice_create_201');
+      final chat = Chat$Response.fromJson(json);
+
+      expect(chat.messages.first.usedVoice, isTrue);
+      expect(chat.messages.first.text, isEmpty);
+      expect(chat.messages.first.transcript, 'Two lattes please');
+      expect(chat.messages.last.usedVoice, isFalse);
+      expect(chat.toJson(), json);
+    });
+
+    test('POST /conversations/{id}/messages (201) placing the order: the conversation carries the order', () {
+      final json = readApiFixture('conversations_messages_create_201_placed');
+      final chat = Chat$Response.fromJson(json);
+      final order = chat.conversation.order;
+
+      expect(chat.conversation.state.value, 'placed');
+      expect(order, isNotNull);
+      expect(order!.number, 17);
+      expect(order.status.value, 'placed');
+      expect(chat.toJson(), json);
+    });
+
+    test('a conversation before the order is placed has no order key, never null', () {
+      final json = readApiFixture('conversations_open_201');
+      final chat = Chat$Response.fromJson(json);
+
+      expect(chat.conversation.order, isNull);
+      expect((chat.toJson()['conversation']! as Map<String, Object?>).containsKey('order'), isFalse);
+    });
+
     test('a value the server adds later (kind, state, order type) is read, not rejected', () {
       final json = Map<String, Object?>.of(readApiFixture('conversations_open_201'));
       final conversation = Map<String, Object?>.of(json['conversation']! as Map<String, Object?>)
@@ -218,6 +249,38 @@ void main() {
     });
   });
 
+  group('order fixtures', () {
+    test('GET /orders/{id} (200) before the restaurant answers: the answer fields are null', () {
+      final json = readApiFixture('orders_retrieve_200');
+      final order = Order$Response.fromJson(json);
+
+      expect(order.status.value, 'placed');
+      expect(order.orderType.value, 'car');
+      expect(order.placedAt, DateTime.utc(2026, 11, 23, 9, 10));
+      expect(order.etaMinutes, isNull);
+      expect(order.rejectionReasonCode, isNull);
+      expect(order.rejectionNote, isNull);
+      expect(order.totalMinor, 2500);
+      expect(order.toJson(), json);
+    });
+
+    test('GET /orders/{id} (200) rejected with a note', () {
+      final json = readApiFixture('orders_retrieve_200_rejected');
+      final order = Order$Response.fromJson(json);
+
+      expect(order.status.value, 'rejected');
+      expect(order.rejectionReasonCode, 'other');
+      expect(order.rejectionNote, 'The oven is being repaired.');
+      expect(order.toJson(), json);
+    });
+
+    test('a status the server adds later is read, not rejected', () {
+      final json = Map<String, Object?>.of(readApiFixture('orders_retrieve_200'))..['status'] = 'refunded';
+
+      expect(Order$Response.fromJson(json).status.value, 'refunded');
+    });
+  });
+
   group('chat requests', () {
     test('opening a conversation sends the car order type and does not start a new one by default', () {
       expect(const OpenConversationRequest().toJson(), {'start_new': false, 'order_type': 'car'});
@@ -241,6 +304,15 @@ void main() {
       );
 
       expect(request.toJson(), {'client_message_id': '5f1e2d3c-0000-4a5b-8c9d-0e1f2a3b4c21', 'action': 'confirm'});
+    });
+
+    test('the position carries lat, lng and source, and leaves accuracy out when unknown', () {
+      const plain = LocationRequest(lat: 25.2, lng: 55.3, source: SourceEnum.gps);
+      const simulated = LocationRequest(lat: 25.2, lng: 55.3, accuracyM: 12, source: SourceEnum.simulated);
+
+      expect(plain.toJson(), {'lat': 25.2, 'lng': 55.3, 'source': 'gps'});
+      expect(simulated.toJson()['accuracy_m'], 12);
+      expect(simulated.toJson()['source'], 'simulated');
     });
 
     test('the item picker sends item ids, quantities and option ids, never a price', () {

@@ -10,7 +10,7 @@ Conversation$Response _$Conversation$ResponseFromJson(Map<String, dynamic> json)
   $checkKeys(
     json,
     requiredKeys: const ['id', 'restaurant_slug', 'state', 'locale', 'order_type', 'ai_available', 'expires_at'],
-    disallowNullValues: const ['id', 'restaurant_slug', 'ai_available', 'expires_at'],
+    disallowNullValues: const ['id', 'restaurant_slug', 'ai_available', 'expires_at', 'order'],
   );
   return Conversation$Response(
     id: json['id'] as String,
@@ -20,6 +20,7 @@ Conversation$Response _$Conversation$ResponseFromJson(Map<String, dynamic> json)
     orderType: Conversation$Response._read_orderType(json['order_type']),
     aiAvailable: json['ai_available'] as bool,
     expiresAt: Conversation$Response._read_expiresAt(json['expires_at']),
+    order: json['order'] == null ? null : ConversationOrder$Response.fromJson(json['order'] as Map<String, dynamic>),
     additionalProperties: Conversation$Response._extras(json, 'additionalProperties') == null
         ? const {}
         : Conversation$Response._readExtras(Conversation$Response._extras(json, 'additionalProperties')),
@@ -34,4 +35,5 @@ Map<String, dynamic> _$Conversation$ResponseToJson(Conversation$Response instanc
   'order_type': Conversation$Response._write_orderType(instance.orderType),
   'ai_available': instance.aiAvailable,
   'expires_at': ?Conversation$Response._write_expiresAt(instance.expiresAt),
+  'order': ?instance.order?.toJson(),
 };
