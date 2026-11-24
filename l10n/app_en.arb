@@ -35,5 +35,71 @@
   "notFoundAction": "Go to the start page",
   "@notFoundAction": {
     "description": "Label of the button on the page-not-found page that goes back to the start page."
+  },
+  "failureOffline": "You are offline. Check your connection and try again.",
+  "@failureOffline": {
+    "description": "Shown when a request could not reach the server because the device has no connection."
+  },
+  "failureTimeout": "The server took too long to answer. Please try again.",
+  "@failureTimeout": {
+    "description": "Shown when the server did not answer in time."
+  },
+  "failureThrottled": "Too many requests. Please wait a moment and try again.",
+  "@failureThrottled": {
+    "description": "Shown when the server asked the app to slow down (too many requests)."
+  },
+  "failureSessionEnded": "Your session has ended. Please sign in again.",
+  "@failureSessionEnded": {
+    "description": "Shown when the server no longer accepts the customer's sign-in."
+  },
+  "failureGeneric": "Something went wrong. Please try again.",
+  "@failureGeneric": {
+    "description": "Shown for any failure the app has no more specific text for."
+  },
+  "failureReference": "Reference: {requestId}",
+  "@failureReference": {
+    "description": "A short line under an error that gives the request reference the customer can quote to support. The reference is a code made of Latin letters and digits.",
+    "placeholders": {
+      "requestId": {
+        "type": "String",
+        "example": "3f9a1c2e"
+      }
+    }
+  },
+  "serverStatusLoading": "Contacting the server…",
+  "@serverStatusLoading": {
+    "description": "Status line on the start page while the app reads the server's settings. The server can take up to a minute to wake up."
+  },
+  "serverStatusAssistantOn": "Server connected ({stage}). The assistant is on.",
+  "@serverStatusAssistantOn": {
+    "description": "Status line on the start page of a test build when the server answered and the ordering assistant is available. The stage is a technical word such as staging.",
+    "placeholders": {
+      "stage": {
+        "type": "String",
+        "example": "staging"
+      }
+    }
+  },
+  "serverStatusAssistantOff": "Server connected ({stage}). The assistant is off.",
+  "@serverStatusAssistantOff": {
+    "description": "Status line on the start page of a test build when the server answered and the ordering assistant is not available. The stage is a technical word such as staging.",
+    "placeholders": {
+      "stage": {
+        "type": "String",
+        "example": "staging"
+      }
+    }
+  },
+  "serverStatusRetry": "Try again",
+  "@serverStatusRetry": {
+    "description": "Label of the button under a failed server status line that tries the call again."
+  },
+  "configErrorTitle": "The app is not set up",
+  "@configErrorTitle": {
+    "description": "Heading of the page shown instead of the app when this build has a configuration problem."
+  },
+  "configErrorMessage": "This version of the app has a configuration problem. Please try again later.",
+  "@configErrorMessage": {
+    "description": "Explanation under the heading of the configuration-problem page."
   }
 }

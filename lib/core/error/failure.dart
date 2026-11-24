@@ -4,8 +4,8 @@ import 'package:wasli_customer/core/error/api_issue.dart';
 /// Why a call failed, in the terms the app acts on.
 ///
 /// Repositories return or throw a [Failure]; the UI switches over it exhaustively and writes its own localized text.
-/// Nothing here carries server text.
-sealed class Failure {
+/// Nothing here carries server text. It is an [Exception] so that it can be thrown.
+sealed class Failure implements Exception {
   /// Creates a failure; [requestId] is the `X-Request-ID` of the response, when there was one.
   const new({this.requestId});
 

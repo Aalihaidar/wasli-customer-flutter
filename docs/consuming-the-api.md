@@ -145,33 +145,30 @@ token with the same read-only *Contents* access to the backend repository only, 
 
 ### Never hard-code the base URL
 
-The URL differs per environment, so it is a build-time value. Read it with
-`String.fromEnvironment` and give it to Dio:
+The URL differs per environment, so it is a build-time value. `AppEnvironment` (`core/config`) reads it once with
+`String.fromEnvironment` and the app gives it to Dio:
 
 ```dart
-// lib/core/api_client.dart: your code, outside the generated lib/api
-import 'package:dio/dio.dart';
-
-import '../api/rest_client.dart'; // generated; check the file name in lib/api
-
-const _baseUrl = String.fromEnvironment('API_BASE_URL');
-
-RestClient createApiClient(Interceptor authInterceptor) {
-  assert(_baseUrl.isNotEmpty, 'Run with --dart-define=API_BASE_URL=...');
-  final dio = Dio(BaseOptions(baseUrl: _baseUrl))
-    ..interceptors.add(authInterceptor);
-  return RestClient(dio);
-}
+// lib/core/network/dio_factory.dart: this app's code, outside the generated lib/api
+final dio = Dio(BaseOptions(baseUrl: environment.apiOrigin.toString()))
+  ..interceptors.add(AuthInterceptor(tokenStore: tokenStore, onSessionExpired: onSessionExpired));
 ```
+
+`API_BASE_URL` ends with `/api/v1` (`https://host/api/v1`), and the generated paths already start with `/api/v1`, so the
+client's base URL is the **origin** (`AppEnvironment.apiOrigin`, the value without that ending). Giving Dio the whole
+`API_BASE_URL` would send calls to `/api/v1/api/v1/...`. The app refuses to start, with a plain error page, when
+`API_BASE_URL` does not end with `/api/v1`. The token interceptor does not keep a list of public paths: the generated
+client puts each operation's `security` from the contract into `extra['openapi.security']`, and only an operation that
+names `customerAuth` gets the header.
 
 - **Staging and production builds.** `build.yml` already passes
   `--dart-define-from-file=env/<environment>.json` when the file exists. Put the public value
-  there, for example `env/staging.json`: `{"API_BASE_URL": "https://api.staging.example.com"}`.
+  there, for example `env/staging.json`: `{"API_BASE_URL": "https://api.staging.example.com/api/v1"}`.
   A value given with `--dart-define` is compiled into the app and can be read from it, so it
   must never hold a secret.
 - **Local runs.** Add the define to the arguments of your launch configurations in
-  `.vscode/launch.json` (next to `deviceId`): `"args": ["--dart-define=API_BASE_URL=http://10.0.2.2:8000"]`
-  for the Android emulator, and `"--dart-define=API_BASE_URL=http://localhost:8000"` for the web
+  `.vscode/launch.json` (next to `deviceId`): `"args": ["--dart-define=API_BASE_URL=http://10.0.2.2:8000/api/v1"]`
+  for the Android emulator, and `"--dart-define=API_BASE_URL=http://localhost:8000/api/v1"` for the web
   one (keep its `--web-port` and `--web-hostname` arguments).
 
 ### Reaching a backend that runs on your machine
