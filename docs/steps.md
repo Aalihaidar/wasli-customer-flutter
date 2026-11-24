@@ -304,6 +304,11 @@ release with its `openapi.yaml` asset, the pin moves to that tag in a pull reque
   only in `ordering`; the backend takes voice in every open step), so the app follows the backend's message. Fixtures and tests
   for the voice response, the placed conversation, the order before and after a rejection, an unknown order status and the
   position body
+- [x] Pin backend `develop` `a143e7943230b76238f90eec0ebd63c4f13be2a3` (backend PR #91, 2026-11-24, round 22): the description of
+  `POST /conversations/{id}/voice` now says a clip is taken in every open step (the order, the car, the note and the review), that a
+  placed conversation is `409 invalid_action_for_state` and an expired one `409 conversation_expired`, and that a spoken yes at the
+  review can be `403 phone_not_verified`. Nothing else changed: no path, parameter, schema or response, so the regenerated `lib/api`
+  differs by one doc comment. The pinned file now agrees with the behaviour that the previous pin step described
 - [ ] **Backend:** when the backend publishes `v0.1.0` with its `openapi.yaml` asset, run `scripts/sync-api.sh v0.1.0`
   in a pull request of its own and compare the diff with the commit pin (it should be empty or explained)
 
@@ -434,7 +439,7 @@ is a draft, pin the agreed backend commit (Phase 4).
 
 - [ ] Pin `v0.2.0` (or its commit), regenerate `lib/api`, fix what the compiler reports. First commit pinned on
   2026-11-23 (`2f36d72`, the text chat) and 2026-11-24 (`ac4ab49`: voice, car, note, location, review, placed order,
-  `GET /orders/{id}`); the remaining slices (the item-by-item car fallback, the `result` message) come with their own commit
+  `GET /orders/{id}`; `a143e79`: the corrected voice wording); the remaining slices (the item-by-item car fallback, the `result` message) come with their own commit
   and their own pin pull request
 - [ ] Order channel modelled as a sealed domain type (`car` now; `dineIn` and `delivery` later); no "car" or "parking"
   words in shared code
