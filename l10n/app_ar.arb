@@ -16,6 +16,7 @@
   "failureGeneric": "حدث خطأ ما. حاول مرة أخرى.",
   "failureReference": "المرجع: {requestId}",
   "serverStatusLoading": "جارٍ الاتصال بالخادم…",
+  "serverStatusWaking": "جارٍ تشغيل الخادم، قد يستغرق ذلك حتى دقيقة…",
   "serverStatusAssistantOn": "تم الاتصال بالخادم ({stage}). المساعد يعمل.",
   "serverStatusAssistantOff": "تم الاتصال بالخادم ({stage}). المساعد متوقف.",
   "serverStatusRetry": "حاول مرة أخرى",

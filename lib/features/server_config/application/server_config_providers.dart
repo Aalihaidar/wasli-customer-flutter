@@ -17,3 +17,12 @@ final serverConfigProvider = FutureProvider<ServerConfig>(
   (ref) => ref.watch(serverConfigRepositoryProvider).load(),
   retry: (retryCount, error) => null,
 );
+
+/// The pause between two polls of the chat and the order until the server has said otherwise (3 seconds, its value today).
+const Duration defaultPollInterval = Duration(seconds: 3);
+
+/// How often the chat and the order are polled: the server's `poll_interval_seconds` once it is known, and
+/// [defaultPollInterval] while the settings are still loading or could not be read. A poller reads it fresh on each tick.
+final pollIntervalProvider = Provider<Duration>(
+  (ref) => ref.watch(serverConfigProvider.select((config) => config.value?.pollInterval)) ?? defaultPollInterval,
+);
