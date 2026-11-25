@@ -371,8 +371,9 @@ same day with the settings block.
   session when the backend and a custom domain exist; never `shared_preferences` for tokens
 - [ ] `core/platform`: interfaces (location, audio recorder, secure storage, wake lock, notifications) with web
   implementations as each is needed; shared code never imports `dart:io`
-- [ ] `core/format`: money from integer fils (`AED 12.50` / `12.50 د.إ`), UTC to Asia/Dubai, distance, plates, Western
-  digits always; unit tested in both languages
+- [x] `core/format` (2026-11-25): money from integer fils (`AED 12.50` / `12.50 د.إ`, comma-grouped thousands), UTC to Asia/Dubai
+  (fixed UTC+4; 24-hour time, date with the month written out), distance (`120 m`, `1.2 km` / `120 م`, `1.2 كم`), plates, Western
+  digits always; Arabic money, distance and plates are wrapped in a left-to-right isolate; unit tested in both languages
 - [ ] `core/polling`: lifecycle-aware `Poller` (visible, idle, back-off, `Retry-After`) with tests
 - [x] `core/logging`: the `AppLogger` interface (no personal data; the console implementation is silent in release builds)
 - [ ] `core/logging`: the crash-report hook (the service is decided later)
