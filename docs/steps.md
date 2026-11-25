@@ -402,13 +402,17 @@ same day with the settings block.
 - [x] Responsive helpers: `WindowSizeClass` (compact below 600, medium 600 to 839, expanded 840 and up) and the content
   max width 560 in `WasliLayout`
 - [ ] `core/widgets`: loading, error with request id, empty state, responsive page frame. Done: `PageFrame`
-- [ ] `GET /config` on start (without a token), with the "waking up the server" message after 3 s
+- [x] `GET /config` on start (without a token), with the "waking up the server" message after 3 s (PRs #26 and #30)
 - [ ] Repositories in each feature's `data/` map DTOs to domain types; no generated type leaves `data/`
 - [ ] Unit and widget tests for each block (money in both languages, error mapping, RTL smoke test)
 
 ## Phase 6: Customer account (D1)
 
 Branch per screen group (`feat/account-signup`, …). Domain, data, application and presentation layers for each.
+
+- [x] Account domain and data layer (2026-11-25, `feat/account-data`): `AccountRepository` (sign-up, verify, resend, login, logout,
+  profile, add and verify a contact, password reset) over the generated `CustomersClient`, the mappers, `accountRepositoryProvider`;
+  no screen yet
 
 - [ ] Sign-up (full name, email or phone, password, language) with client-side checks for UX only
 - [ ] Code screen (six digits, countdown from `code_expires_in_seconds`, resend disabled for
