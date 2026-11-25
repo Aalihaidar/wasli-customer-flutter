@@ -17,6 +17,7 @@ class MenuCategory$Response {
 
     /// The Arabic name, or the English name when there is no Arabic one.
     required this.nameAr,
+    required this.imageUrl,
     required this.items,
     this.additionalProperties = const {},
   });
@@ -37,10 +38,13 @@ class MenuCategory$Response {
   @JsonKey(name: "name_ar", required: true, disallowNullValue: true)
   final String nameAr;
 
+  @JsonKey(name: "image_url", required: true)
+  final String? imageUrl;
+
   @JsonKey(required: true, disallowNullValue: true)
   final List<MenuItem$Response> items;
 
-  static const _knownKeys = <String>{"id", "parent_id", "name_en", "name_ar", "items"};
+  static const _knownKeys = <String>{"id", "parent_id", "name_en", "name_ar", "image_url", "items"};
 
   @JsonKey(readValue: MenuCategory$Response._extras, fromJson: MenuCategory$Response._readExtras, includeToJson: false)
   final Map<String, Object?> additionalProperties;

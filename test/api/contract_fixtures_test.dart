@@ -141,6 +141,15 @@ void main() {
       expect(sub.toJson()['parent_id'], top.id);
     });
 
+    test('GET /restaurants/{slug} (200) a category picture is an absolute URL or null', () {
+      final json = readApiFixture('restaurants_retrieve_200');
+      final restaurant = RestaurantDetail$Response.fromJson(json);
+
+      expect(restaurant.menu.first.imageUrl, 'https://media.example.com/categories/drinks.jpg');
+      expect(restaurant.menu.last.imageUrl, isNull);
+      expect(restaurant.menu.last.toJson().containsKey('image_url'), isTrue);
+    });
+
     test('GET /restaurants/{slug} (200) without a service distance: the key is absent', () {
       final json = Map<String, Object?>.of(readApiFixture('restaurants_retrieve_200'))..remove('service_radius_m');
       final restaurant = RestaurantDetail$Response.fromJson(json);

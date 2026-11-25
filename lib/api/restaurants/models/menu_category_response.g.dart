@@ -9,7 +9,7 @@ part of 'menu_category_response.dart';
 MenuCategory$Response _$MenuCategory$ResponseFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const ['id', 'name_en', 'name_ar', 'items'],
+    requiredKeys: const ['id', 'name_en', 'name_ar', 'image_url', 'items'],
     disallowNullValues: const ['id', 'parent_id', 'name_en', 'name_ar', 'items'],
   );
   return MenuCategory$Response(
@@ -17,6 +17,7 @@ MenuCategory$Response _$MenuCategory$ResponseFromJson(Map<String, dynamic> json)
     parentId: json['parent_id'] as String?,
     nameEn: json['name_en'] as String,
     nameAr: json['name_ar'] as String,
+    imageUrl: json['image_url'] as String?,
     items: (json['items'] as List<dynamic>).map((e) => MenuItem$Response.fromJson(e as Map<String, dynamic>)).toList(),
     additionalProperties: MenuCategory$Response._extras(json, 'additionalProperties') == null
         ? const {}
@@ -29,5 +30,6 @@ Map<String, dynamic> _$MenuCategory$ResponseToJson(MenuCategory$Response instanc
   'parent_id': ?instance.parentId,
   'name_en': instance.nameEn,
   'name_ar': instance.nameAr,
+  'image_url': instance.imageUrl,
   'items': instance.items.map((e) => e.toJson()).toList(),
 };
