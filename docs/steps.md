@@ -327,7 +327,9 @@ same day with the settings block.
 - [ ] `app/`: `bootstrap()`, `ProviderScope`, global error zone, `go_router` with path URLs and a `/r/<slug>` route (slug
   shape validated), app shell, session state (auth, locale, config). Done: `bootstrap()` (async, reads the saved language
   before the first frame), `ProviderScope`, the router with `/`, `/settings` and a page-not-found page, the language in
-  the session state. Still to do: the global error zone, `/r/<slug>`, the auth and config parts of the session
+  the session state. Done 2026-11-25 (`feat/session`): the global error handlers (`FlutterError.onError` and `PlatformDispatcher.onError`, one
+  log line with the error type and no message), the signed-out / signed-in session state that follows a `401` (`core/session`), the
+  "Waking up the server" line after 3 s, and the server's poll interval as a provider. Still to do: `/r/<slug>`, the sign-in redirect
 - [x] Router and settings (`feat/app-shell-and-settings`, owner decision 2026-11-23): the app **starts in English whatever the
   device language is**, and the customer changes the language in a **settings page** (a radio list, each language named in
   its own language), reached from the gear in the top bar of the start page. `createAppRouter` / `routerProvider`
@@ -417,7 +419,8 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
 - [ ] Forgot password (code, then new password)
 - [ ] Settings: show contacts and verified flags, add the missing contact with a code (the language choice is already on the
   settings page)
-- [ ] A `401` on any customer call clears the session and routes to sign-in, once
+- [ ] A `401` on any customer call clears the session and routes to sign-in, once (clears the token and moves the session to
+  signed out since 2026-11-25; the route to sign-in comes with the sign-in screen)
 - [ ] Tests: notifiers with fakes, a widget test per screen, an integration test sign-up to verified, English and Arabic
   (RTL)
 

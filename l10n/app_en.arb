@@ -70,6 +70,10 @@
   "@serverStatusLoading": {
     "description": "Status line on the start page while the app reads the server's settings. The server can take up to a minute to wake up."
   },
+  "serverStatusWaking": "Waking up the server, this can take up to a minute…",
+  "@serverStatusWaking": {
+    "description": "Status line that replaces the \"Contacting the server\" line when the server has not answered after a few seconds. A sleeping server needs up to a minute to start."
+  },
   "serverStatusAssistantOn": "Server connected ({stage}). The assistant is on.",
   "@serverStatusAssistantOn": {
     "description": "Status line on the start page of a test build when the server answered and the ordering assistant is available. The stage is a technical word such as staging.",
