@@ -2066,6 +2066,11 @@ components:
           readOnly: true
           description: The Arabic name, or the English name when there is no Arabic
             one.
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
         items:
           type: array
           items:
@@ -2073,6 +2078,7 @@ components:
           readOnly: true
       required:
       - id
+      - image_url
       - items
       - name_ar
       - name_en

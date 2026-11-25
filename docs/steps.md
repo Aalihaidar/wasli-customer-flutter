@@ -453,9 +453,13 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
 Backend: needs the `v0.2.0` contract. Pin it with a pull request of its own (`/pin-api`), then build. While the release
 is a draft, pin the agreed backend commit (Phase 4).
 
+- [x] Pin backend `develop` `be7d322645d711228d8e9623a4a00f0fb43a74a7` (backend PR #93, 2026-11-25, round 26): every menu category in
+  `GET /restaurants/{slug}` has a required nullable `image_url` (absolute URL or `null`); the regenerated `lib/api` and the
+  restaurant fixture gain it, and nothing else changed. The app does not read it yet. Staging answers without the key until the owner
+  redeploys it, so a menu read against staging fails until then (the generated model requires the key)
 - [ ] Pin `v0.2.0` (or its commit), regenerate `lib/api`, fix what the compiler reports. First commit pinned on
   2026-11-23 (`2f36d72`, the text chat) and 2026-11-24 (`ac4ab49`: voice, car, note, location, review, placed order,
-  `GET /orders/{id}`; `a143e79`: the corrected voice wording); the remaining slices (the item-by-item car fallback, the `result` message) come with their own commit
+  `GET /orders/{id}`; `a143e79`: the corrected voice wording; `be7d322`: the category `image_url`); the remaining slices (the item-by-item car fallback, the `result` message) come with their own commit
   and their own pin pull request
 - [ ] Order channel modelled as a sealed domain type (`car` now; `dineIn` and `delivery` later); no "car" or "parking"
   words in shared code

@@ -25,6 +25,7 @@
       "id": "a1b2c3d4-0001-4a5b-8c9d-0e1f2a3b4c01",
       "name_en": "Drinks",
       "name_ar": "المشروبات",
+      "image_url": "https://media.example.com/categories/drinks.jpg",
       "items": [
         {
           "id": "a1b2c3d4-0002-4a5b-8c9d-0e1f2a3b4c02",
@@ -81,6 +82,7 @@
       "parent_id": "a1b2c3d4-0001-4a5b-8c9d-0e1f2a3b4c01",
       "name_en": "Cold drinks",
       "name_ar": "المشروبات الباردة",
+      "image_url": null,
       "items": []
     }
   ]
