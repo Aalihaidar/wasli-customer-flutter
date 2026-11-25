@@ -414,11 +414,15 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
   profile, add and verify a contact, password reset) over the generated `CustomersClient`, the mappers, `accountRepositoryProvider`;
   no screen yet
 
-- [ ] Sign-up (full name, email or phone, password, language) with client-side checks for UX only
-- [ ] Code screen (six digits, countdown from `code_expires_in_seconds`, resend disabled for
-  `resend_available_in_seconds`); `verify` stores the token through `TokenStore`
+- [x] Sign-up (2026-11-25, `feat/account-signup`): full name, one field for an email or a phone number (an `@` makes it an email),
+  password with a show/hide button; the account language is the language the app shows (no field); client-side checks are "not
+  empty" only; `account_exists` and `password_*` are told in the page's own words, other failures through the generic texts
+- [x] Code screen (2026-11-25): one six-digit field (Arabic digits become Western ones), a countdown for the resend from
+  `resend_available_in_seconds`, the expiry from `code_expires_in_seconds`, `verify` signs in and stores the token through
+  `TokenStore`; opens the start page, which shows "You are signed in." until the real start screen exists
 - [ ] Error handling: `account_exists` (offer sign-in, at sign-up only), `code_invalid`, `code_expired`,
-  `too_many_attempts`, `throttled`, `password_*` codes; unverified account goes to the code screen
+  `too_many_attempts`, `throttled`, `password_*` codes; unverified account goes to the code screen (done for sign-up and the
+  code screen; the "Sign in" offer and the unverified-account redirect come with the sign-in screen)
 - [ ] Sign-in with email or phone and password; logout (revokes this device's token and clears the store)
 - [ ] Forgot password (code, then new password)
 - [ ] Settings: show contacts and verified flags, add the missing contact with a code (the language choice is already on the
