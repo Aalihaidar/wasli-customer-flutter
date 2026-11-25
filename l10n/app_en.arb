@@ -105,5 +105,105 @@
   "configErrorMessage": "This version of the app has a configuration problem. Please try again later.",
   "@configErrorMessage": {
     "description": "Explanation under the heading of the configuration-problem page."
+  },
+  "signUpTitle": "Create your account",
+  "@signUpTitle": {
+    "description": "Title of the sign-up page and its top bar."
+  },
+  "signUpNameLabel": "Full name",
+  "@signUpNameLabel": {
+    "description": "Label above the full-name field on the sign-up page."
+  },
+  "signUpContactLabel": "Email or phone number",
+  "@signUpContactLabel": {
+    "description": "Label above the field where the customer types either an email address or a phone number to sign up."
+  },
+  "signUpContactHelper": "We send a 6-digit code to confirm it.",
+  "@signUpContactHelper": {
+    "description": "Hint under the email-or-phone field on the sign-up page."
+  },
+  "signUpPasswordLabel": "Password",
+  "@signUpPasswordLabel": {
+    "description": "Label above the password field on the sign-up page."
+  },
+  "passwordShow": "Show password",
+  "@passwordShow": {
+    "description": "Tooltip and screen-reader label of the button that shows the typed password."
+  },
+  "passwordHide": "Hide password",
+  "@passwordHide": {
+    "description": "Tooltip and screen-reader label of the button that hides the typed password."
+  },
+  "signUpSubmit": "Create account",
+  "@signUpSubmit": {
+    "description": "Label of the button that creates the account, on the sign-up page and on the start page."
+  },
+  "fieldRequired": "This field is required.",
+  "@fieldRequired": {
+    "description": "Message under a form field the customer left empty."
+  },
+  "signUpAccountExists": "An account with this email or phone number already exists.",
+  "@signUpAccountExists": {
+    "description": "Shown on the sign-up page when the server says the email or phone number belongs to another account."
+  },
+  "signUpPasswordRejected": "This password is not accepted. Choose another one.",
+  "@signUpPasswordRejected": {
+    "description": "Shown on the sign-up page when the server refuses the password (too short, too common, and so on)."
+  },
+  "signUpCheckFields": "Check the details and try again.",
+  "@signUpCheckFields": {
+    "description": "Shown on the sign-up page or the code page when the server refuses the input for a reason the app has no specific text for."
+  },
+  "verifyTitle": "Enter the code",
+  "@verifyTitle": {
+    "description": "Title of the page where the customer types the 6-digit code."
+  },
+  "verifyBody": "We sent a 6-digit code to {identifier}.",
+  "@verifyBody": {
+    "description": "Explains where the code went. The identifier is the customer's email address or phone number.",
+    "placeholders": {
+      "identifier": {
+        "type": "String",
+        "description": "The email address or phone number the code was sent to."
+      }
+    }
+  },
+  "verifyCodeLabel": "6-digit code",
+  "@verifyCodeLabel": {
+    "description": "Label above the field where the customer types the 6-digit code."
+  },
+  "verifySubmit": "Confirm",
+  "@verifySubmit": {
+    "description": "Label of the button that sends the 6-digit code."
+  },
+  "verifyResend": "Send a new code",
+  "@verifyResend": {
+    "description": "Label of the button that asks for a new code, when it can be used."
+  },
+  "verifyResendIn": "Send a new code in {time}",
+  "@verifyResendIn": {
+    "description": "Label of the disabled button that asks for a new code while the customer must still wait. The time is minutes and seconds such as 0:42.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "description": "The time left to wait, for example 0:42."
+      }
+    }
+  },
+  "verifyCodeInvalid": "That code is not correct. Check it and try again.",
+  "@verifyCodeInvalid": {
+    "description": "Shown when the server says the 6-digit code is wrong."
+  },
+  "verifyCodeExpired": "This code has expired. Send a new one.",
+  "@verifyCodeExpired": {
+    "description": "Shown when the 6-digit code is no longer valid."
+  },
+  "verifyTooManyAttempts": "Too many wrong attempts. Send a new code.",
+  "@verifyTooManyAttempts": {
+    "description": "Shown when the server has stopped accepting guesses for this code."
+  },
+  "homeSignedIn": "You are signed in.",
+  "@homeSignedIn": {
+    "description": "Line on the placeholder start page when a customer is signed in."
   }
 }
