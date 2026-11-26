@@ -1,3 +1,4 @@
+import 'package:wasli_customer/features/account/domain/contact_kind.dart';
 import 'package:wasli_customer/features/account/domain/customer_language.dart';
 
 /// The signed-in customer's profile, as the server holds it.
@@ -36,4 +37,18 @@ class Customer {
 
   /// Whether the phone number was confirmed with a code.
   final bool phoneVerified;
+
+  /// The kind of contact the customer can still add from the settings, or `null` when they have both.
+  ///
+  /// A customer is known by an email, a phone, or both, so at most one kind is missing. A contact that is set is never
+  /// replaced (`contact_already_set`), so this is the only one the app offers.
+  ContactKind? get missingContact {
+    if (email == null) {
+      return ContactKind.email;
+    }
+    if (phone == null) {
+      return ContactKind.phone;
+    }
+    return null;
+  }
 }

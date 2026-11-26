@@ -24,6 +24,31 @@ String signInFailureText(AppLocalizations l10n, Object error) {
   };
 }
 
+/// What to tell the customer when sending a code to the contact they are adding failed.
+String addContactFailureText(AppLocalizations l10n, Object error) {
+  if (error is ConflictFailure) {
+    if (error.has(ApiErrorCode.accountExists)) {
+      return l10n.addContactTaken;
+    }
+    if (error.has(ApiErrorCode.contactAlreadySet)) {
+      return l10n.addContactAlreadySet;
+    }
+  }
+  if (error is ValidationFailure) {
+    return l10n.signUpCheckFields;
+  }
+  return _generic(l10n, error);
+}
+
+/// What to tell the customer when confirming or resending the code of a contact they are adding failed. A code the
+/// server no longer holds (`no_pending_contact`) reads like an expired one: ask for a new code.
+String contactCodeFailureText(AppLocalizations l10n, Object error) {
+  if (error is ConflictFailure && error.has(ApiErrorCode.noPendingContact)) {
+    return l10n.verifyCodeExpired;
+  }
+  return codeFailureText(l10n, error);
+}
+
 /// What to tell the customer when confirming or resending a code failed.
 String codeFailureText(AppLocalizations l10n, Object error) {
   if (_has(error, ApiErrorCode.codeInvalid)) {
