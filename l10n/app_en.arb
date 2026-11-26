@@ -237,5 +237,77 @@
   "signUpGoToSignIn": "Already have an account? Sign in",
   "@signUpGoToSignIn": {
     "description": "Label of the link under the sign-up form that opens the sign-in page."
+  },
+  "settingsAccountTitle": "Account",
+  "@settingsAccountTitle": {
+    "description": "Heading of the account section on the settings page."
+  },
+  "settingsSignedOutBody": "Sign in to place orders and manage your details.",
+  "@settingsSignedOutBody": {
+    "description": "Text in the account section of the settings when nobody is signed in, above the sign-in and create-account buttons."
+  },
+  "settingsSignOut": "Sign out",
+  "@settingsSignOut": {
+    "description": "Label of the button in the settings that signs the customer out of this device."
+  },
+  "accountEmailLabel": "Email",
+  "@accountEmailLabel": {
+    "description": "Label above the customer's email address in the account section."
+  },
+  "accountPhoneLabel": "Phone",
+  "@accountPhoneLabel": {
+    "description": "Label above the customer's phone number in the account section."
+  },
+  "accountVerified": "Verified",
+  "@accountVerified": {
+    "description": "Badge next to an email or phone number that was confirmed with a code."
+  },
+  "accountNotVerified": "Not verified",
+  "@accountNotVerified": {
+    "description": "Badge next to an email or phone number that was not confirmed with a code yet."
+  },
+  "accountRetry": "Try again",
+  "@accountRetry": {
+    "description": "Label of the button that reads the customer's details again after they could not be loaded."
+  },
+  "accountAddEmail": "Add an email address",
+  "@accountAddEmail": {
+    "description": "Label of the button in the account section that adds an email address to an account that has only a phone number."
+  },
+  "accountAddPhone": "Add a phone number",
+  "@accountAddPhone": {
+    "description": "Label of the button in the account section that adds a phone number to an account that has only an email address."
+  },
+  "accountAddPhoneHint": "Confirm a phone number before you place your first order.",
+  "@accountAddPhoneHint": {
+    "description": "Hint under the add-a-phone-number button: a customer who signed up with an email must confirm a phone before the first order."
+  },
+  "addContactEmailTitle": "Add an email address",
+  "@addContactEmailTitle": {
+    "description": "Title of the page where the customer adds an email address."
+  },
+  "addContactPhoneTitle": "Add a phone number",
+  "@addContactPhoneTitle": {
+    "description": "Title of the page where the customer adds a phone number."
+  },
+  "addContactEmailLabel": "Email address",
+  "@addContactEmailLabel": {
+    "description": "Label above the field where the customer types the email address to add."
+  },
+  "addContactPhoneLabel": "Phone number",
+  "@addContactPhoneLabel": {
+    "description": "Label above the field where the customer types the phone number to add."
+  },
+  "addContactSubmit": "Send code",
+  "@addContactSubmit": {
+    "description": "Label of the button that sends the confirmation code to the contact being added."
+  },
+  "addContactTaken": "This email address or phone number is already used by another account.",
+  "@addContactTaken": {
+    "description": "Shown when the contact the customer is adding belongs to another account."
+  },
+  "addContactAlreadySet": "This kind of contact is already on your account.",
+  "@addContactAlreadySet": {
+    "description": "Shown when the account already has the kind of contact the customer is adding; a contact that is set is never replaced."
   }
 }

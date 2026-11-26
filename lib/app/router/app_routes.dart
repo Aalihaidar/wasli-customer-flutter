@@ -3,7 +3,7 @@ abstract final class AppRoutes {
   /// The start page.
   static const String home = '/';
 
-  /// The settings page, where the customer changes the language.
+  /// The settings page, where the customer manages the account and changes the language.
   static const String settings = '/settings';
 
   /// The sign-in page.
@@ -14,4 +14,10 @@ abstract final class AppRoutes {
 
   /// The page where the customer types the 6-digit code that was sent to them.
   static const String verify = '/verify';
+
+  /// The page where a signed-in customer adds an email address to the account.
+  static const String addEmail = '/settings/email';
+
+  /// The page where a signed-in customer adds a phone number to the account.
+  static const String addPhone = '/settings/phone';
 }

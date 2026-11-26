@@ -3,19 +3,26 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wasli_customer/core/error/failure.dart';
 import 'package:wasli_customer/core/l10n/app_locales.dart';
 import 'package:wasli_customer/core/l10n/locale_controller.dart';
+import 'package:wasli_customer/core/logging/app_logger.dart';
 import 'package:wasli_customer/core/session/session_controller.dart';
 import 'package:wasli_customer/core/session/session_state.dart';
 import 'package:wasli_customer/core/storage/token_store.dart';
 import 'package:wasli_customer/core/time/clock.dart';
 import 'package:wasli_customer/features/account/application/account_providers.dart';
+import 'package:wasli_customer/features/account/application/add_contact_flow.dart';
+import 'package:wasli_customer/features/account/application/customer_profile.dart';
 import 'package:wasli_customer/features/account/application/pending_verification.dart';
 import 'package:wasli_customer/features/account/application/resend_code_controller.dart';
+import 'package:wasli_customer/features/account/application/send_contact_code_controller.dart';
+import 'package:wasli_customer/features/account/application/sign_out_controller.dart';
 import 'package:wasli_customer/features/account/application/sign_up_controller.dart';
 import 'package:wasli_customer/features/account/application/verify_code_controller.dart';
+import 'package:wasli_customer/features/account/application/verify_contact_controller.dart';
 import 'package:wasli_customer/features/account/domain/account_contact.dart';
 import 'package:wasli_customer/features/account/domain/customer_language.dart';
 
 import '../../../support/fake_account_repository.dart';
+import '../../../support/network_harness.dart';
 
 void main() {
   late FakeAccountRepository repository;
@@ -124,6 +131,136 @@ void main() {
 
       expect(listener.read().error, isA<ThrottledFailure>());
       expect(container.read(pendingVerificationProvider), same(first));
+    });
+  });
+
+  group('SignOutController', () {
+    late RecordingLogger logger;
+
+    setUp(() {
+      logger = RecordingLogger();
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [
+          accountRepositoryProvider.overrideWithValue(repository),
+          tokenStoreProvider.overrideWithValue(store),
+          appLoggerProvider.overrideWithValue(logger),
+        ],
+      );
+      addTearDown(container.dispose);
+    });
+
+    Future<void> signedIn() async {
+      await container.read(sessionProvider.notifier).signIn('demo-token-not-a-real-token');
+    }
+
+    test('revokes the token on the server, forgets it here and moves to signed out', () async {
+      await signedIn();
+
+      await container.read(signOutControllerProvider.notifier).submit();
+
+      expect(repository.calls, ['logOut']);
+      expect(await store.read(), isNull);
+      expect(container.read(sessionProvider), isA<SignedOut>());
+      expect((container.read(sessionProvider) as SignedOut).expired, isFalse);
+    });
+
+    test('signs out here when the server could not be reached, and logs the kind of failure only', () async {
+      await signedIn();
+      repository.onLogOut = () async => throw const NetworkFailure(NetworkFailureKind.offline);
+
+      await container.read(signOutControllerProvider.notifier).submit();
+
+      expect(await store.read(), isNull);
+      expect(container.read(sessionProvider), isA<SignedOut>());
+      expect(logger.lines, ['warning: Sign-out was not confirmed by the server (NetworkFailure).']);
+      expect(logger.lines.join(), isNot(contains('demo-token')));
+    });
+
+    test('finishes even when nothing watches it any more', () async {
+      await signedIn();
+      final done = container.read(signOutControllerProvider.notifier).submit();
+
+      await done;
+
+      expect(container.read(signOutControllerProvider).hasError, isFalse);
+    });
+  });
+
+  group('adding a contact', () {
+    // The page keeps the flow alive while it is open; the tests do the same.
+    setUp(() => container.listen(addContactFlowProvider, (_, _) {}));
+
+    test('SendContactCodeController records the contact with the code that was sent and when', () async {
+      repository.onAddContact = (_) async => demoSentCode;
+
+      await container.read(sendContactCodeControllerProvider.notifier).submit(const PhoneContact('+971500000000'));
+
+      final flow = container.read(addContactFlowProvider)!;
+      expect(flow.contact.value, '+971500000000');
+      expect(flow.pending.sentAt, now);
+      expect(flow.pending.resendAvailableAt, now.add(const Duration(minutes: 1)));
+      expect(repository.lastAddedContact, isA<PhoneContact>());
+    });
+
+    test('SendContactCodeController keeps typing when the server refuses, and exposes the failure', () async {
+      repository.onAddContact = (_) async => throw const ThrottledFailure();
+      final listener = container.listen(sendContactCodeControllerProvider, (_, _) {});
+
+      await container.read(sendContactCodeControllerProvider.notifier).submit(const PhoneContact('+971500000000'));
+
+      expect(listener.read().error, isA<ThrottledFailure>());
+      expect(container.read(addContactFlowProvider), isNull);
+    });
+
+    test('a resend asks again for the same contact and restarts the countdowns', () async {
+      await container.read(sendContactCodeControllerProvider.notifier).submit(const EmailContact('sara@example.com'));
+      now = now.add(const Duration(minutes: 2));
+
+      await container.read(sendContactCodeControllerProvider.notifier).resend();
+
+      expect(repository.calls, ['addContact', 'addContact']);
+      expect(container.read(addContactFlowProvider)!.pending.sentAt, now);
+      expect(container.read(addContactFlowProvider)!.contact.value, 'sara@example.com');
+    });
+
+    test('a resend with nothing to confirm does nothing', () async {
+      await container.read(sendContactCodeControllerProvider.notifier).resend();
+
+      expect(repository.calls, isEmpty);
+    });
+
+    test('VerifyContactController saves the contact, ends the flow and drops the stale profile', () async {
+      var reads = 0;
+      repository.onCurrentCustomer = () async => reads++ == 0 ? demoCustomer : demoCustomerWithPhone;
+      final profile = container.listen(customerProfileProvider, (_, _) {});
+      expect((await container.read(customerProfileProvider.future)).phone, isNull);
+      await container.read(sendContactCodeControllerProvider.notifier).submit(const PhoneContact('+971500000000'));
+
+      await container.read(verifyContactControllerProvider.notifier).submit('123456');
+
+      expect(repository.lastContactCode, '123456');
+      expect(container.read(addContactFlowProvider), isNull);
+      expect((await container.read(customerProfileProvider.future)).phone, '+971500000000');
+      expect(reads, 2);
+      profile.close();
+    });
+
+    test('VerifyContactController keeps the flow and exposes the failure when the code is wrong', () async {
+      repository.onVerifyContact = (_) async => throw const ThrottledFailure(tooManyAttempts: true);
+      await container.read(sendContactCodeControllerProvider.notifier).submit(const PhoneContact('+971500000000'));
+      final listener = container.listen(verifyContactControllerProvider, (_, _) {});
+
+      await container.read(verifyContactControllerProvider.notifier).submit('000000');
+
+      expect(listener.read().error, isA<ThrottledFailure>());
+      expect(container.read(addContactFlowProvider), isNotNull);
+    });
+
+    test('VerifyContactController sends nothing when no contact is being confirmed', () async {
+      await container.read(verifyContactControllerProvider.notifier).submit('123456');
+
+      expect(repository.calls, isEmpty);
     });
   });
 }

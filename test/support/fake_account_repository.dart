@@ -28,11 +28,61 @@ const demoCustomer = Customer(
 /// A session for tests: an invented token and [demoCustomer].
 const demoSession = CustomerSession(token: 'demo-token-not-a-real-token', customer: demoCustomer);
 
+/// A customer who signed up with a phone and has no email yet.
+const demoPhoneCustomer = Customer(
+  id: '3f2b8c1e-7a4d-4e6b-9c1a-5d2e8f0b1a12',
+  fullName: 'Omar Demo',
+  language: CustomerLanguage.arabic,
+  email: null,
+  emailVerified: false,
+  phone: '+971500000000',
+  phoneVerified: true,
+);
+
+/// [demoCustomer] after the phone `+971500000000` was added and confirmed.
+const demoCustomerWithPhone = Customer(
+  id: '3f2b8c1e-7a4d-4e6b-9c1a-5d2e8f0b1a11',
+  fullName: 'Sara Demo',
+  language: CustomerLanguage.english,
+  email: 'sara@example.com',
+  emailVerified: true,
+  phone: '+971500000000',
+  phoneVerified: true,
+);
+
 /// An [AccountRepository] for tests. Each call is recorded in [calls] (names only, never values that would be personal
-/// data in a real app) and answers with what [onSignUp], [onVerify] and [onResend] do; every other call is not expected.
+/// data in a real app) and answers with what the `on...` callbacks do (the demo answers when one is not set); the
+/// password-reset calls are not expected.
 class FakeAccountRepository implements AccountRepository {
   /// Creates a repository that accepts every call with the demo answers.
-  new({this.onSignUp, this.onVerify, this.onResend, this.onLogIn});
+  new({
+    this.onSignUp,
+    this.onVerify,
+    this.onResend,
+    this.onLogIn,
+    this.onLogOut,
+    this.onCurrentCustomer,
+    this.onAddContact,
+    this.onVerifyContact,
+  });
+
+  /// What a sign-out does; nothing by default.
+  Future<void> Function()? onLogOut;
+
+  /// What reading the profile does; [demoCustomer] by default.
+  Future<Customer> Function()? onCurrentCustomer;
+
+  /// What adding a contact does; the demo code by default.
+  Future<SentCode> Function(AccountContact contact)? onAddContact;
+
+  /// What confirming a contact does; [demoCustomerWithPhone] by default.
+  Future<Customer> Function(String code)? onVerifyContact;
+
+  /// The contact of the last add-a-contact call.
+  AccountContact? lastAddedContact;
+
+  /// The code of the last confirm-a-contact call.
+  String? lastContactCode;
 
   /// What a sign-up does; the demo code by default.
   Future<SentCode> Function(AccountContact contact, CustomerLanguage language)? onSignUp;
@@ -95,16 +145,30 @@ class FakeAccountRepository implements AccountRepository {
   }
 
   @override
-  Future<void> logOut() => throw UnimplementedError();
+  Future<void> logOut() async {
+    calls.add('logOut');
+    await onLogOut?.call();
+  }
 
   @override
-  Future<Customer> currentCustomer() => throw UnimplementedError();
+  Future<Customer> currentCustomer() async {
+    calls.add('currentCustomer');
+    return onCurrentCustomer == null ? demoCustomer : await onCurrentCustomer!();
+  }
 
   @override
-  Future<SentCode> addContact(AccountContact contact) => throw UnimplementedError();
+  Future<SentCode> addContact(AccountContact contact) async {
+    calls.add('addContact');
+    lastAddedContact = contact;
+    return onAddContact == null ? demoSentCode : await onAddContact!(contact);
+  }
 
   @override
-  Future<Customer> verifyContact({required String code}) => throw UnimplementedError();
+  Future<Customer> verifyContact({required String code}) async {
+    calls.add('verifyContact');
+    lastContactCode = code;
+    return onVerifyContact == null ? demoCustomerWithPhone : await onVerifyContact!(code);
+  }
 
   @override
   Future<Duration> requestPasswordReset({required String identifier}) => throw UnimplementedError();

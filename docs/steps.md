@@ -387,7 +387,7 @@ same day with the settings block.
   also covers Cupertino, so Flutter does not warn about Arabic) and the per-language theme. Tests: both languages, RTL, 200 %
   text, the Arabic Material strings. The language is also saved with the account (`locale` of the profile) in Phase 6. The
   Arabic labels are a first translation and need the owner's review
-- [ ] First-load measurement: release web build `main.dart.js` 3.05 MB (894 KB gzip) with the network layer and the server settings (2.93 MB and 853 KB gzip before it, with the router and settings), 2.23 MB
+- [ ] First-load measurement: release web build `main.dart.js` 3.26 MB (949 KB gzip) with the account screens and the settings account section (3.05 MB and 894 KB gzip with the network layer and the server settings, 2.93 MB and 853 KB gzip before it, with the router and settings), 2.23 MB
   (652 KB gzip) with the localisation and 1.84 MB (549 KB gzip) with the theme only. The growth is Riverpod, `intl`, the
   Material strings that `flutter_localizations` ships for every language, `go_router` and more widgets. Find what weighs most
   (`--source-maps` and a size tool) and look again before the first-load gate (deferred loading, or fewer locales)
@@ -426,10 +426,16 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
 - [x] Sign-in (2026-11-25, `feat/account-signin`): email or phone and password at `/signin`; one message for any refused sign-in (a
   `401` or a `400`, never saying which part was wrong); an account that was never confirmed (`account_not_verified`) gets a new
   code and the code page; links between sign-in and sign-up; a signed-in customer is sent away from both pages
-- [ ] Logout (revokes this device's token, then clears the store): comes with the settings page
+- [x] Logout (2026-11-26, `feat/account-settings`): the "Sign out" button in the settings asks the server to revoke this device's
+  token and then forgets it here; when the server cannot be reached the customer is still signed out on this device (a warning
+  line without detail is logged), because a sign-out button must never leave the account open
 - [ ] Forgot password (code, then new password)
-- [ ] Settings: show contacts and verified flags, add the missing contact with a code (the language choice is already on the
-  settings page)
+- [x] Settings (2026-11-26, `feat/account-settings`): the language comes first, then an account section: signed out it offers
+  sign-in and sign-up; signed in it shows the name, the email and the phone with a "Verified" or "Not verified" badge (word and
+  icon), a "Try again" button when the profile cannot be read, and **Add an email address** or **Add a phone number** for the
+  one the account is missing (a contact that is set is never replaced). The add pages (`/settings/email`, `/settings/phone`,
+  signed-in customers only) ask for the contact, send a code, and confirm it with the same code form as the sign-up code page
+  (`CodeEntryForm`, shared); a phone-only or email-only customer sees the hint that a phone is confirmed before the first order
 - [x] A `401` on any customer call clears the session and routes to sign-in, once (the network layer clears the token, the session
   ends as `expired`, the router opens `/signin`; 2026-11-25)
 - [ ] Tests: notifiers with fakes, a widget test per screen, an integration test sign-up to verified, English and Arabic
