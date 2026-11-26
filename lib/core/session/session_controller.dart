@@ -14,11 +14,11 @@ final sessionProvider = NotifierProvider<SessionController, SessionState>(Sessio
 /// signs the customer out. When a persistent store arrives with the Android and iOS apps, the start-up code reads it
 /// before the first frame and the first state comes from there. A `401` on a call that carried the token clears the
 /// token (the network layer does that) and announces it through [sessionExpiredProvider]; this controller then moves
-/// to [SignedOut].
+/// to [SignedOut] with `expired` set.
 class SessionController extends Notifier<SessionState> {
   @override
   SessionState build() {
-    ref.listen(sessionExpiredProvider, (previous, next) => state = const SignedOut());
+    ref.listen(sessionExpiredProvider, (previous, next) => state = const SignedOut(expired: true));
     return const SignedOut();
   }
 

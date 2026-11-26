@@ -14,6 +14,7 @@ class PasswordField extends StatefulWidget {
     this.validator,
     this.onFieldSubmitted,
     this.textInputAction = TextInputAction.done,
+    this.autofillHint = AutofillHints.newPassword,
     super.key,
   });
 
@@ -31,6 +32,9 @@ class PasswordField extends StatefulWidget {
 
   /// The keyboard's action key.
   final TextInputAction textInputAction;
+
+  /// What a password manager should fill in: the saved password when signing in, a new one when signing up.
+  final String autofillHint;
 
   @override
   State<PasswordField> createState() => _PasswordFieldState();
@@ -54,7 +58,7 @@ class _PasswordFieldState extends State<PasswordField> {
         textDirection: TextDirection.ltr,
         keyboardType: TextInputType.visiblePassword,
         textInputAction: widget.textInputAction,
-        autofillHints: const [AutofillHints.newPassword],
+        autofillHints: [widget.autofillHint],
         validator: widget.validator,
         onFieldSubmitted: widget.onFieldSubmitted,
         decoration: InputDecoration(

@@ -21,14 +21,17 @@ const int _fullNameMaxLength = 150;
 /// is the language the app shows, so the page asks nothing about it.
 class SignUpPage extends ConsumerStatefulWidget {
   /// Creates the page. [onGoToStart] is the way back when the page was opened from its address; [onCodeSent] opens the
-  /// code page once the server has sent the code.
-  const new({required this.onGoToStart, required this.onCodeSent, super.key});
+  /// code page once the server has sent the code and [onGoToSignIn] opens the sign-in page.
+  const new({required this.onGoToStart, required this.onCodeSent, required this.onGoToSignIn, super.key});
 
   /// Opens the start page.
   final VoidCallback onGoToStart;
 
   /// Opens the page where the customer types the code.
   final VoidCallback onCodeSent;
+
+  /// Opens the sign-in page.
+  final VoidCallback onGoToSignIn;
 
   @override
   ConsumerState<SignUpPage> createState() => _SignUpPageState();
@@ -136,6 +139,8 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                         ? const SizedBox.square(dimension: WasliSpacing.space5, child: CircularProgressIndicator())
                         : Text(l10n.signUpSubmit),
                   ),
+                  const SizedBox(height: WasliSpacing.space2),
+                  TextButton(onPressed: widget.onGoToSignIn, child: Text(l10n.signUpGoToSignIn)),
                 ],
               ),
             ),

@@ -14,6 +14,16 @@ String signUpFailureText(AppLocalizations l10n, Object error) {
   return _generic(l10n, error);
 }
 
+/// What to tell the customer when signing in failed. A refused email, phone number or password is one message, so the
+/// page never reveals which of them was wrong or whether the account exists.
+String signInFailureText(AppLocalizations l10n, Object error) {
+  return switch (error) {
+    UnauthenticatedFailure() || ValidationFailure() || RequestRejectedFailure() => l10n.signInWrongCredentials,
+    PermissionDeniedFailure() => l10n.signInPermissionDenied,
+    _ => _generic(l10n, error),
+  };
+}
+
 /// What to tell the customer when confirming or resending a code failed.
 String codeFailureText(AppLocalizations l10n, Object error) {
   if (_has(error, ApiErrorCode.codeInvalid)) {

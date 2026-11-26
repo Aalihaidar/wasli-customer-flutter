@@ -64,7 +64,16 @@ void main() {
 
     container.read(sessionExpiredProvider.notifier).announce();
 
-    expect(container.read(sessionProvider), isA<SignedOut>());
+    expect(container.read(sessionProvider), isA<SignedOut>().having((state) => state.expired, 'expired', isTrue));
+  });
+
+  test('signing out or never signing in is not an expired session', () async {
+    expect((container.read(sessionProvider) as SignedOut).expired, isFalse);
+
+    await container.read(sessionProvider.notifier).signIn('token-1');
+    await container.read(sessionProvider.notifier).signOut();
+
+    expect((container.read(sessionProvider) as SignedOut).expired, isFalse);
   });
 
   test('signing in again after a 401 works', () async {

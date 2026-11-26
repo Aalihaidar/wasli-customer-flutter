@@ -32,13 +32,16 @@ const demoSession = CustomerSession(token: 'demo-token-not-a-real-token', custom
 /// data in a real app) and answers with what [onSignUp], [onVerify] and [onResend] do; every other call is not expected.
 class FakeAccountRepository implements AccountRepository {
   /// Creates a repository that accepts every call with the demo answers.
-  new({this.onSignUp, this.onVerify, this.onResend});
+  new({this.onSignUp, this.onVerify, this.onResend, this.onLogIn});
 
   /// What a sign-up does; the demo code by default.
   Future<SentCode> Function(AccountContact contact, CustomerLanguage language)? onSignUp;
 
   /// What a verify does; the demo session by default.
   Future<CustomerSession> Function(String identifier, String code)? onVerify;
+
+  /// What a sign-in does; the demo session by default.
+  Future<CustomerSession> Function(String identifier, String password)? onLogIn;
 
   /// What a resend does; the demo code by default.
   Future<SentCode> Function(String identifier)? onResend;
@@ -51,6 +54,9 @@ class FakeAccountRepository implements AccountRepository {
 
   /// The language of the last sign-up.
   CustomerLanguage? lastLanguage;
+
+  /// The identifier of the last sign-in.
+  String? lastIdentifier;
 
   /// The code of the last verify.
   String? lastCode;
@@ -82,7 +88,11 @@ class FakeAccountRepository implements AccountRepository {
   }
 
   @override
-  Future<CustomerSession> logIn({required String identifier, required String password}) => throw UnimplementedError();
+  Future<CustomerSession> logIn({required String identifier, required String password}) async {
+    calls.add('logIn');
+    lastIdentifier = identifier;
+    return onLogIn == null ? demoSession : await onLogIn!(identifier, password);
+  }
 
   @override
   Future<void> logOut() => throw UnimplementedError();

@@ -26,10 +26,12 @@ Failure failureFromResponse({required int statusCode, required Object? data, Dur
       requestId: requestId,
     );
   }
+  // The code names this failure whatever the status the server chose for it (the contract says 403 for sign-in).
+  if (statusCode < 500 && _hasCode(issues, ApiErrorCode.accountNotVerified)) {
+    return AccountNotVerifiedFailure(requestId: requestId);
+  }
   if (statusCode == 403) {
-    return _hasCode(issues, ApiErrorCode.accountNotVerified)
-        ? AccountNotVerifiedFailure(requestId: requestId)
-        : PermissionDeniedFailure(requestId: requestId);
+    return PermissionDeniedFailure(requestId: requestId);
   }
 
   if (issues != null) {

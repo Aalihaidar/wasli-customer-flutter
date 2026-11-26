@@ -42,9 +42,13 @@ class PlaceholderPage extends ConsumerWidget {
                 Text(l10n.appTitle, style: context.wasliText.display),
                 const SizedBox(height: WasliSpacing.space5),
                 switch (ref.watch(sessionProvider)) {
-                  SignedOut() => FilledButton(
-                    onPressed: () => context.push(AppRoutes.signUp),
-                    child: Text(l10n.signUpSubmit),
+                  SignedOut() => Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FilledButton(onPressed: () => context.push(AppRoutes.signUp), child: Text(l10n.signUpSubmit)),
+                      const SizedBox(height: WasliSpacing.space2),
+                      TextButton(onPressed: () => context.push(AppRoutes.signIn), child: Text(l10n.signInSubmit)),
+                    ],
                   ),
                   SignedIn() => Text(l10n.homeSignedIn, style: context.wasliText.body),
                 },

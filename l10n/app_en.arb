@@ -205,5 +205,37 @@
   "homeSignedIn": "You are signed in.",
   "@homeSignedIn": {
     "description": "Line on the placeholder start page when a customer is signed in."
+  },
+  "signInTitle": "Sign in",
+  "@signInTitle": {
+    "description": "Title of the sign-in page and its top bar."
+  },
+  "signInIdentifierLabel": "Email or phone number",
+  "@signInIdentifierLabel": {
+    "description": "Label above the field where the customer types the email address or phone number they signed up with."
+  },
+  "signInPasswordLabel": "Password",
+  "@signInPasswordLabel": {
+    "description": "Label above the password field on the sign-in page."
+  },
+  "signInSubmit": "Sign in",
+  "@signInSubmit": {
+    "description": "Label of the button that signs in, on the sign-in page and on the start page."
+  },
+  "signInWrongCredentials": "The email, phone number or password is not correct.",
+  "@signInWrongCredentials": {
+    "description": "Shown when the server refuses the sign-in. It does not say which part was wrong."
+  },
+  "signInPermissionDenied": "This account cannot be used to sign in.",
+  "@signInPermissionDenied": {
+    "description": "Shown when the server says the account is not allowed to sign in, for example a blocked account."
+  },
+  "signInGoToSignUp": "New here? Create an account",
+  "@signInGoToSignUp": {
+    "description": "Label of the link under the sign-in form that opens the sign-up page."
+  },
+  "signUpGoToSignIn": "Already have an account? Sign in",
+  "@signUpGoToSignIn": {
+    "description": "Label of the link under the sign-up form that opens the sign-in page."
   }
 }
