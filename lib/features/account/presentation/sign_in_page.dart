@@ -20,12 +20,13 @@ import 'package:wasli_customer/theme/theme.dart';
 /// An account that was never confirmed goes to the code page with a new code instead of showing an error.
 class SignInPage extends ConsumerStatefulWidget {
   /// Creates the page. [onGoToStart] is the way back when the page was opened from its address, [onSignedIn] opens the
-  /// start page once the customer is signed in, [onGoToSignUp] opens the sign-up page and [onCodeSent] opens the code
-  /// page.
+  /// start page once the customer is signed in, [onGoToSignUp] opens the sign-up page, [onForgotPassword] opens the
+  /// password reset and [onCodeSent] opens the code page.
   const new({
     required this.onGoToStart,
     required this.onSignedIn,
     required this.onGoToSignUp,
+    required this.onForgotPassword,
     required this.onCodeSent,
     super.key,
   });
@@ -38,6 +39,9 @@ class SignInPage extends ConsumerStatefulWidget {
 
   /// Opens the sign-up page.
   final VoidCallback onGoToSignUp;
+
+  /// Opens the page where the customer resets a forgotten password.
+  final VoidCallback onForgotPassword;
 
   /// Opens the page where the customer types the code.
   final VoidCallback onCodeSent;
@@ -135,6 +139,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                         : Text(l10n.signInSubmit),
                   ),
                   const SizedBox(height: WasliSpacing.space2),
+                  TextButton(onPressed: widget.onForgotPassword, child: Text(l10n.signInForgotPassword)),
                   TextButton(onPressed: widget.onGoToSignUp, child: Text(l10n.signInGoToSignUp)),
                 ],
               ),

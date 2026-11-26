@@ -12,6 +12,9 @@ abstract final class AppRoutes {
   /// The sign-up page.
   static const String signUp = '/signup';
 
+  /// The page where a customer resets a forgotten password.
+  static const String forgotPassword = '/forgot';
+
   /// The page where the customer types the 6-digit code that was sent to them.
   static const String verify = '/verify';
 

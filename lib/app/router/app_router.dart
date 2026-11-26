@@ -10,6 +10,7 @@ import 'package:wasli_customer/features/account/application/pending_verification
 import 'package:wasli_customer/features/account/domain/contact_kind.dart';
 import 'package:wasli_customer/features/account/presentation/account_section.dart';
 import 'package:wasli_customer/features/account/presentation/add_contact_page.dart';
+import 'package:wasli_customer/features/account/presentation/forgot_password_page.dart';
 import 'package:wasli_customer/features/account/presentation/sign_in_page.dart';
 import 'package:wasli_customer/features/account/presentation/sign_up_page.dart';
 import 'package:wasli_customer/features/account/presentation/verify_code_page.dart';
@@ -20,7 +21,7 @@ import 'package:wasli_customer/features/settings/presentation/settings_page.dart
 /// URLs are plain paths on the web (`usePathUrlStrategy` in `bootstrap`). An address that matches no route shows the
 /// page-not-found page. [initialLocation] lets a test start on another page. The code page has nothing to show without a
 /// code that was sent, so [hasPendingVerification] tells it when to send the customer back to the sign-up
-/// page, and [isSignedIn] sends a signed-in customer away from the sign-in and sign-up pages and a signed-out one away
+/// page, and [isSignedIn] sends a signed-in customer away from the sign-in, sign-up and password-reset pages and a signed-out one away
 /// from the pages that add a contact (they need an account).
 GoRouter createAppRouter({
   String initialLocation = AppRoutes.home,
@@ -29,11 +30,11 @@ GoRouter createAppRouter({
 }) {
   return GoRouter(
     initialLocation: initialLocation,
-    // A signed-in customer has nothing to do on the sign-in and sign-up pages; a signed-out one cannot add a contact.
+    // A signed-in customer has nothing to do on the sign-in, sign-up and password-reset pages; a signed-out one cannot add a contact.
     redirect: (context, state) {
       final path = state.uri.path;
       final signedIn = isSignedIn?.call() ?? false;
-      final onAccountEntry = path == AppRoutes.signIn || path == AppRoutes.signUp;
+      final onAccountEntry = path == AppRoutes.signIn || path == AppRoutes.signUp || path == AppRoutes.forgotPassword;
       final onContactPage = path == AppRoutes.addEmail || path == AppRoutes.addPhone;
       if (onAccountEntry && signedIn) {
         return AppRoutes.home;
@@ -64,8 +65,13 @@ GoRouter createAppRouter({
           onGoToStart: () => context.go(AppRoutes.home),
           onSignedIn: () => context.go(AppRoutes.home),
           onGoToSignUp: () => context.pushReplacement(AppRoutes.signUp),
+          onForgotPassword: () => context.push(AppRoutes.forgotPassword),
           onCodeSent: () => context.push(AppRoutes.verify),
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.forgotPassword,
+        builder: (context, state) => ForgotPasswordPage(onGoToSignIn: () => context.go(AppRoutes.signIn)),
       ),
       GoRoute(
         path: AppRoutes.signUp,

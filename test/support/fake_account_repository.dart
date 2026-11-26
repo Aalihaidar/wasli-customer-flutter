@@ -64,7 +64,24 @@ class FakeAccountRepository implements AccountRepository {
     this.onCurrentCustomer,
     this.onAddContact,
     this.onVerifyContact,
+    this.onRequestPasswordReset,
+    this.onResetPassword,
   });
+
+  /// What asking for a reset code does; a ten-minute code by default.
+  Future<Duration> Function(String identifier)? onRequestPasswordReset;
+
+  /// What setting the new password does; nothing by default.
+  Future<void> Function(String identifier, String code, String newPassword)? onResetPassword;
+
+  /// The identifier of the last reset request.
+  String? lastResetIdentifier;
+
+  /// The code of the last password reset.
+  String? lastResetCode;
+
+  /// The new password of the last password reset (an invented value in tests).
+  String? lastNewPassword;
 
   /// What a sign-out does; nothing by default.
   Future<void> Function()? onLogOut;
@@ -171,9 +188,18 @@ class FakeAccountRepository implements AccountRepository {
   }
 
   @override
-  Future<Duration> requestPasswordReset({required String identifier}) => throw UnimplementedError();
+  Future<Duration> requestPasswordReset({required String identifier}) async {
+    calls.add('requestPasswordReset');
+    lastResetIdentifier = identifier;
+    return onRequestPasswordReset == null ? const Duration(minutes: 10) : await onRequestPasswordReset!(identifier);
+  }
 
   @override
-  Future<void> resetPassword({required String identifier, required String code, required String newPassword}) =>
-      throw UnimplementedError();
+  Future<void> resetPassword({required String identifier, required String code, required String newPassword}) async {
+    calls.add('resetPassword');
+    lastResetIdentifier = identifier;
+    lastResetCode = code;
+    lastNewPassword = newPassword;
+    await onResetPassword?.call(identifier, code, newPassword);
+  }
 }

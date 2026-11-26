@@ -49,6 +49,23 @@ String contactCodeFailureText(AppLocalizations l10n, Object error) {
   return codeFailureText(l10n, error);
 }
 
+/// What to tell the customer when asking for a password-reset code failed. The server answers the same for a contact
+/// with an account and one without, so there is no "no such account" message.
+String requestResetFailureText(AppLocalizations l10n, Object error) {
+  if (error is ValidationFailure) {
+    return l10n.signUpCheckFields;
+  }
+  return _generic(l10n, error);
+}
+
+/// What to tell the customer when setting the new password failed: a password the rules refuse, or the code.
+String resetPasswordFailureText(AppLocalizations l10n, Object error) {
+  if (error is ValidationFailure && error.issues.any((issue) => issue.isPasswordRule)) {
+    return l10n.signUpPasswordRejected;
+  }
+  return codeFailureText(l10n, error);
+}
+
 /// What to tell the customer when confirming or resending a code failed.
 String codeFailureText(AppLocalizations l10n, Object error) {
   if (_has(error, ApiErrorCode.codeInvalid)) {

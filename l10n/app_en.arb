@@ -309,5 +309,47 @@
   "addContactAlreadySet": "This kind of contact is already on your account.",
   "@addContactAlreadySet": {
     "description": "Shown when the account already has the kind of contact the customer is adding; a contact that is set is never replaced."
+  },
+  "signInForgotPassword": "Forgot your password?",
+  "@signInForgotPassword": {
+    "description": "Label of the link under the sign-in form that opens the password reset."
+  },
+  "forgotTitle": "Reset your password",
+  "@forgotTitle": {
+    "description": "Title of the page where a customer resets a forgotten password."
+  },
+  "forgotBody": "Enter the email or phone number of your account. If there is an account for it, we send a 6-digit code.",
+  "@forgotBody": {
+    "description": "Explanation above the field where the customer types the email or phone number of the account whose password they forgot. It does not say whether the account exists."
+  },
+  "forgotSendCode": "Send code",
+  "@forgotSendCode": {
+    "description": "Label of the button that asks for a password-reset code."
+  },
+  "forgotCodeBody": "If there is an account for {identifier}, we sent it a 6-digit code. Enter the code and a new password.",
+  "@forgotCodeBody": {
+    "description": "Explanation above the code and new-password fields of the password reset. {identifier} is the email or phone number the customer typed; it does not say whether the account exists.",
+    "placeholders": {
+      "identifier": {
+        "type": "String",
+        "example": "sara@example.com"
+      }
+    }
+  },
+  "forgotNewPasswordLabel": "New password",
+  "@forgotNewPasswordLabel": {
+    "description": "Label above the field where the customer types the new password."
+  },
+  "forgotSubmit": "Change password",
+  "@forgotSubmit": {
+    "description": "Label of the button that sets the new password."
+  },
+  "forgotDoneTitle": "Your password was changed",
+  "@forgotDoneTitle": {
+    "description": "Heading shown when the password reset succeeded."
+  },
+  "forgotDoneBody": "You were signed out on every device. Sign in with your new password.",
+  "@forgotDoneBody": {
+    "description": "Text under the heading shown when the password reset succeeded; the server signs the customer out of every device."
   }
 }
