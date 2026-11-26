@@ -429,7 +429,11 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
 - [x] Logout (2026-11-26, `feat/account-settings`): the "Sign out" button in the settings asks the server to revoke this device's
   token and then forgets it here; when the server cannot be reached the customer is still signed out on this device (a warning
   line without detail is logged), because a sign-out button must never leave the account open
-- [ ] Forgot password (code, then new password)
+- [x] Forgot password (2026-11-26, `feat/account-forgot-password`): a "Forgot your password?" link on the sign-in page opens `/forgot`
+  (signed-in customers are sent away from it): the email or phone number, then one screen with the 6-digit code and the new
+  password; the page never says whether an account exists (the server answers the same either way); a password the rules refuse,
+  a wrong or expired code and too many attempts have their own messages; a new code can be asked for at any time (the server
+  throttles it); when the password is changed the page says the customer was signed out on every device and leads to sign-in
 - [x] Settings (2026-11-26, `feat/account-settings`): the language comes first, then an account section: signed out it offers
   sign-in and sign-up; signed in it shows the name, the email and the phone with a "Verified" or "Not verified" badge (word and
   icon), a "Try again" button when the profile cannot be read, and **Add an email address** or **Add a phone number** for the

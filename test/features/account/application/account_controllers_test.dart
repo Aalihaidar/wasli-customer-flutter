@@ -10,8 +10,11 @@ import 'package:wasli_customer/core/storage/token_store.dart';
 import 'package:wasli_customer/core/time/clock.dart';
 import 'package:wasli_customer/features/account/application/account_providers.dart';
 import 'package:wasli_customer/features/account/application/add_contact_flow.dart';
+import 'package:wasli_customer/features/account/application/confirm_password_reset_controller.dart';
 import 'package:wasli_customer/features/account/application/customer_profile.dart';
+import 'package:wasli_customer/features/account/application/password_reset_flow.dart';
 import 'package:wasli_customer/features/account/application/pending_verification.dart';
+import 'package:wasli_customer/features/account/application/request_password_reset_controller.dart';
 import 'package:wasli_customer/features/account/application/resend_code_controller.dart';
 import 'package:wasli_customer/features/account/application/send_contact_code_controller.dart';
 import 'package:wasli_customer/features/account/application/sign_out_controller.dart';
@@ -259,6 +262,88 @@ void main() {
 
     test('VerifyContactController sends nothing when no contact is being confirmed', () async {
       await container.read(verifyContactControllerProvider.notifier).submit('123456');
+
+      expect(repository.calls, isEmpty);
+    });
+  });
+
+  group('resetting a forgotten password', () {
+    // The page keeps the flow alive while it is open; the tests do the same.
+    setUp(() => container.listen(passwordResetFlowProvider, (_, _) {}));
+
+    Future<void> request([String identifier = 'sara@example.com']) =>
+        container.read(requestPasswordResetControllerProvider.notifier).submit(identifier);
+
+    test('starts at the contact field', () {
+      expect(container.read(passwordResetFlowProvider), isA<ResetEnteringContact>());
+    });
+
+    test('asking for a code moves to the code step and records when it stops working', () async {
+      await request();
+
+      final step = container.read(passwordResetFlowProvider) as ResetEnteringCode;
+      expect(step.identifier, 'sara@example.com');
+      expect(step.expiresAt, now.add(const Duration(minutes: 10)));
+    });
+
+    test('a refused request stays on the contact field and exposes the failure', () async {
+      repository.onRequestPasswordReset = (_) async => throw const ThrottledFailure();
+      final listener = container.listen(requestPasswordResetControllerProvider, (_, _) {});
+
+      await request();
+
+      expect(listener.read().error, isA<ThrottledFailure>());
+      expect(container.read(passwordResetFlowProvider), isA<ResetEnteringContact>());
+    });
+
+    test('a resend asks again for the same contact and restarts the expiry', () async {
+      await request('+971500000000');
+      now = now.add(const Duration(minutes: 3));
+
+      await container.read(requestPasswordResetControllerProvider.notifier).resend();
+
+      expect(repository.calls, ['requestPasswordReset', 'requestPasswordReset']);
+      final step = container.read(passwordResetFlowProvider) as ResetEnteringCode;
+      expect(step.identifier, '+971500000000');
+      expect(step.expiresAt, now.add(const Duration(minutes: 10)));
+    });
+
+    test('a resend before any request does nothing', () async {
+      await container.read(requestPasswordResetControllerProvider.notifier).resend();
+
+      expect(repository.calls, isEmpty);
+    });
+
+    test('confirming sends the contact, the code and the new password, and ends the flow', () async {
+      await request();
+
+      await container
+          .read(confirmPasswordResetControllerProvider.notifier)
+          .submit(code: '123456', newPassword: 'a-new-demo-password');
+
+      expect(repository.lastResetIdentifier, 'sara@example.com');
+      expect(repository.lastResetCode, '123456');
+      expect(repository.lastNewPassword, 'a-new-demo-password');
+      expect(container.read(passwordResetFlowProvider), isA<ResetDone>());
+    });
+
+    test('a refused confirmation stays on the code step and exposes the failure', () async {
+      repository.onResetPassword = (_, _, _) async => throw const ThrottledFailure(tooManyAttempts: true);
+      await request();
+      final listener = container.listen(confirmPasswordResetControllerProvider, (_, _) {});
+
+      await container
+          .read(confirmPasswordResetControllerProvider.notifier)
+          .submit(code: '000000', newPassword: 'a-new-demo-password');
+
+      expect(listener.read().error, isA<ThrottledFailure>());
+      expect(container.read(passwordResetFlowProvider), isA<ResetEnteringCode>());
+    });
+
+    test('confirming before any code was asked for sends nothing', () async {
+      await container
+          .read(confirmPasswordResetControllerProvider.notifier)
+          .submit(code: '123456', newPassword: 'a-new-demo-password');
 
       expect(repository.calls, isEmpty);
     });
