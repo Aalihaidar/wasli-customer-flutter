@@ -32,7 +32,7 @@ class Order$Response {
     /// The wait the restaurant gave when it accepted (5, 10 or 15), else null.
     required this.etaMinutes,
 
-    /// Why the restaurant rejected the order: `item_unavailable`, `too_busy`, `closing_soon`, `too_far`, `location_unclear` or `other`; null otherwise.
+    /// Why the restaurant rejected the order, else null. A list that can grow: treat a code you do not know as unknown.
     required this.rejectionReasonCode,
 
     /// The restaurant's note with a rejection (always there for `other`), else null.
@@ -100,7 +100,7 @@ class Order$Response {
   )
   final int? etaMinutes;
 
-  /// Why the restaurant rejected the order: `item_unavailable`, `too_busy`, `closing_soon`, `too_far`, `location_unclear` or `other`; null otherwise.
+  /// Why the restaurant rejected the order, else null. A list that can grow: treat a code you do not know as unknown.
   @JsonKey(name: "rejection_reason_code", required: true)
   final String? rejectionReasonCode;
 

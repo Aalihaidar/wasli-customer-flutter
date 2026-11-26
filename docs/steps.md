@@ -478,6 +478,12 @@ is a draft, pin the agreed backend commit (Phase 4).
   `GET /restaurants/{slug}` has a required nullable `image_url` (absolute URL or `null`); the regenerated `lib/api` and the
   restaurant fixture gain it, and nothing else changed. The app does not read it yet. Staging answers without the key until the owner
   redeploys it, so a menu read against staging fails until then (the generated model requires the key)
+- [x] Pin backend `develop` `4ed5f8ff94cc9b3099006b4c6575adca4d14d93c` (backend PR #98, 2026-11-26, round 30): the restaurant's answer to an
+  order is now posted into the chat as a `result` message (`payload`: `order_id`, `number`, `status`, `eta_minutes` when accepted,
+  `rejection_reason_code` and an optional `rejection_note` when rejected; a property that does not apply is absent, never `null`), and
+  `rejection_reason_code` of `GET /orders/{id}` is declared as an inline nullable string with `x-extensible-enum`. The only change
+  in `lib/api` is a doc comment (the field stays `String?`); the staff accept and reject paths are filtered out. The app does not
+  render the `result` message yet: it comes with the chat
 - [x] Pin backend `develop` `9b442cb109ac2aff32f4c99bb34f9618cdda7d03` (backend PR #97, 2026-11-26, round 28): the contract now declares the
   refusals of `POST /customers/login` (a wrong password and a contact with no account are the same `401 authentication_failed`,
   `403 account_not_verified` and `403 permission_denied` only after a right password, a blank field is a `400` naming it, `429`
