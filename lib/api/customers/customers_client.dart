@@ -59,7 +59,7 @@ abstract class CustomersClient {
 
   /// Sign in
   ///
-  /// Signs a customer in with an email address or a phone number and the password, and returns the customer token. `account_not_verified` until the sign-up code is verified (the app opens the code screen). Ten tries per contact in 15 minutes.
+  /// Signs a customer in with an email address or a phone number and the password, and returns the customer token. A wrong password and a contact with no account are the same `401 authentication_failed`, so the answer never says whether an account exists. Only a caller who gives the right password learns more: `403 account_not_verified` until the sign-up code is verified (the app opens the code screen), and `403 permission_denied` for a blocked or deactivated account. A missing or blank `identifier` or `password` is a `400` that names the field in `attr`. Ten tries per contact in 15 minutes (`429 throttled`).
   @POST('/api/v1/customers/login')
   @Headers({'Content-Type': 'application/json'})
   Future<Session$Response> customersLogin({
