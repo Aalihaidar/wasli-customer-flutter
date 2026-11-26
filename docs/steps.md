@@ -478,6 +478,11 @@ is a draft, pin the agreed backend commit (Phase 4).
   `GET /restaurants/{slug}` has a required nullable `image_url` (absolute URL or `null`); the regenerated `lib/api` and the
   restaurant fixture gain it, and nothing else changed. The app does not read it yet. Staging answers without the key until the owner
   redeploys it, so a menu read against staging fails until then (the generated model requires the key)
+- [x] Pin backend `develop` `9b442cb109ac2aff32f4c99bb34f9618cdda7d03` (backend PR #97, 2026-11-26, round 28): the contract now declares the
+  refusals of `POST /customers/login` (a wrong password and a contact with no account are the same `401 authentication_failed`,
+  `403 account_not_verified` and `403 permission_denied` only after a right password, a blank field is a `400` naming it, `429`
+  after ten tries in 15 minutes). The same range adds the staff sign-in and staff orders paths (backend PRs #95 and #96), which
+  `swagger_parser` filters out; the only change in `lib/api` is the login doc comment. No app change was needed
 - [ ] Pin `v0.2.0` (or its commit), regenerate `lib/api`, fix what the compiler reports. First commit pinned on
   2026-11-23 (`2f36d72`, the text chat) and 2026-11-24 (`ac4ab49`: voice, car, note, location, review, placed order,
   `GET /orders/{id}`; `a143e79`: the corrected voice wording; `be7d322`: the category `image_url`); the remaining slices (the item-by-item car fallback, the `result` message) come with their own commit
