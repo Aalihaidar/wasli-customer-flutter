@@ -43,5 +43,13 @@
   "verifyCodeInvalid": "الرمز غير صحيح. تحقق منه وحاول مرة أخرى.",
   "verifyCodeExpired": "انتهت صلاحية هذا الرمز. أرسل رمزًا جديدًا.",
   "verifyTooManyAttempts": "محاولات خاطئة كثيرة. أرسل رمزًا جديدًا.",
-  "homeSignedIn": "أنت مسجّل الدخول."
+  "homeSignedIn": "أنت مسجّل الدخول.",
+  "signInTitle": "تسجيل الدخول",
+  "signInIdentifierLabel": "البريد الإلكتروني أو رقم الهاتف",
+  "signInPasswordLabel": "كلمة المرور",
+  "signInSubmit": "تسجيل الدخول",
+  "signInWrongCredentials": "البريد الإلكتروني أو رقم الهاتف أو كلمة المرور غير صحيحة.",
+  "signInPermissionDenied": "لا يمكن استخدام هذا الحساب لتسجيل الدخول.",
+  "signInGoToSignUp": "جديد هنا؟ أنشئ حسابًا",
+  "signUpGoToSignIn": "لديك حساب بالفعل؟ سجّل الدخول"
 }

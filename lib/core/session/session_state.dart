@@ -8,8 +8,12 @@ sealed class SessionState {
 
 /// Nobody is signed in: no token is stored.
 final class SignedOut extends SessionState {
-  /// Creates the state.
-  const new();
+  /// Creates the state; [expired] is `true` when the server refused the token, so the customer has to sign in again.
+  const new({this.expired = false});
+
+  /// Whether the session ended because the server no longer accepts the token (a `401`), as opposed to the customer
+  /// signing out or never having signed in.
+  final bool expired;
 }
 
 /// A customer is signed in: a token is stored and the server has not refused it.

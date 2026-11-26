@@ -421,14 +421,17 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
   `resend_available_in_seconds`, the expiry from `code_expires_in_seconds`, `verify` signs in and stores the token through
   `TokenStore`; opens the start page, which shows "You are signed in." until the real start screen exists
 - [ ] Error handling: `account_exists` (offer sign-in, at sign-up only), `code_invalid`, `code_expired`,
-  `too_many_attempts`, `throttled`, `password_*` codes; unverified account goes to the code screen (done for sign-up and the
-  code screen; the "Sign in" offer and the unverified-account redirect come with the sign-in screen)
-- [ ] Sign-in with email or phone and password; logout (revokes this device's token and clears the store)
+  `too_many_attempts`, `throttled`, `password_*` codes; unverified account goes to the code screen (done for sign-up, the code
+  screen and sign-in: the "Sign in" link sits under the sign-up form and an unconfirmed account goes to the code page)
+- [x] Sign-in (2026-11-25, `feat/account-signin`): email or phone and password at `/signin`; one message for any refused sign-in (a
+  `401` or a `400`, never saying which part was wrong); an account that was never confirmed (`account_not_verified`) gets a new
+  code and the code page; links between sign-in and sign-up; a signed-in customer is sent away from both pages
+- [ ] Logout (revokes this device's token, then clears the store): comes with the settings page
 - [ ] Forgot password (code, then new password)
 - [ ] Settings: show contacts and verified flags, add the missing contact with a code (the language choice is already on the
   settings page)
-- [ ] A `401` on any customer call clears the session and routes to sign-in, once (clears the token and moves the session to
-  signed out since 2026-11-25; the route to sign-in comes with the sign-in screen)
+- [x] A `401` on any customer call clears the session and routes to sign-in, once (the network layer clears the token, the session
+  ends as `expired`, the router opens `/signin`; 2026-11-25)
 - [ ] Tests: notifiers with fakes, a widget test per screen, an integration test sign-up to verified, English and Arabic
   (RTL)
 

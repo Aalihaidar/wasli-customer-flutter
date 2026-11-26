@@ -11,7 +11,6 @@ import 'package:wasli_customer/core/l10n/locale_store.dart';
 import 'package:wasli_customer/core/storage/token_store.dart';
 import 'package:wasli_customer/core/time/clock.dart';
 import 'package:wasli_customer/features/account/application/account_providers.dart';
-import 'package:wasli_customer/features/account/application/pending_verification.dart';
 import 'package:wasli_customer/features/account/domain/account_repository.dart';
 import 'package:wasli_customer/features/server_config/application/server_config_providers.dart';
 import 'package:wasli_customer/features/server_config/domain/server_config_repository.dart';
@@ -23,8 +22,9 @@ AppEnvironment testEnvironment({String? appEnv}) =>
     AppEnvironment.parse(appEnv: appEnv, apiBaseUrl: 'https://api.example.test/api/v1');
 
 /// Starts the whole app on [initialLocation], in the language [savedLocale] (English when it is null), and lets it
-/// settle. [account] and [clock] replace the account calls and the time. [store] receives the language the customer chooses. The build is a staging one ([environment] changes it) and
-/// the server's settings come from [serverConfig] (a fake that answers at once by default): no test reaches a network.
+/// settle. [account] and [clock] replace the account calls and the time. [store] receives the language the customer
+/// chooses. The build is a staging one ([environment] changes it) and the server's settings come from [serverConfig]
+/// (a fake that answers at once by default): no test reaches a network.
 Future<void> pumpApp(
   WidgetTester tester, {
   String initialLocation = AppRoutes.home,
@@ -43,14 +43,7 @@ Future<void> pumpApp(
         if (account != null) accountRepositoryProvider.overrideWithValue(account),
         if (clock != null) clockProvider.overrideWithValue(clock),
         tokenStoreProvider.overrideWithValue(MemoryTokenStore()),
-        routerProvider.overrideWith((ref) {
-          final router = createAppRouter(
-            initialLocation: initialLocation,
-            hasPendingVerification: () => ref.read(pendingVerificationProvider) != null,
-          );
-          ref.onDispose(router.dispose);
-          return router;
-        }),
+        initialLocationProvider.overrideWithValue(initialLocation),
         if (store != null) localeStoreProvider.overrideWithValue(store),
         if (savedLocale != null) savedLocaleProvider.overrideWithValue(savedLocale),
       ],

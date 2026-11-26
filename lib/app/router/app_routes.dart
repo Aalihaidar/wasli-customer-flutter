@@ -6,6 +6,9 @@ abstract final class AppRoutes {
   /// The settings page, where the customer changes the language.
   static const String settings = '/settings';
 
+  /// The sign-in page.
+  static const String signIn = '/signin';
+
   /// The sign-up page.
   static const String signUp = '/signup';
 
