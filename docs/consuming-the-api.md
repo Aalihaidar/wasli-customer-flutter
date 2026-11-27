@@ -271,6 +271,10 @@ note.
   contract as `type: string, format: decimal`, so the generated model holds a `String`. Parse
   it into a decimal type (for example the `decimal` package) at the edge of the app, never into
   `double`, and format amounts for display only.
+- **An operation with two success codes.** When the contract lists more than one success status for one operation (opening a
+  conversation answers `200` for an existing one and `201` for a new one), the generated method may accept only the first: the
+  other status then arrives as a `DioException` that still carries the whole answer. Read it in the repository's `data/` layer
+  (`ChatRepositoryImpl.open` does) and keep a test with a fixture of that status; never edit `lib/api`.
 - **Tests and fixtures** use invented data only, never a copy of real responses.
 
 ## 7. Flutter web

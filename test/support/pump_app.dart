@@ -16,12 +16,15 @@ import 'package:wasli_customer/core/storage/token_store.dart';
 import 'package:wasli_customer/core/time/clock.dart';
 import 'package:wasli_customer/features/account/application/account_providers.dart';
 import 'package:wasli_customer/features/account/domain/account_repository.dart';
+import 'package:wasli_customer/features/chat/application/chat_providers.dart';
+import 'package:wasli_customer/features/chat/domain/chat_repository.dart';
 import 'package:wasli_customer/features/server_config/application/server_config_providers.dart';
 import 'package:wasli_customer/features/server_config/domain/server_config_repository.dart';
 import 'package:wasli_customer/features/start/application/start_providers.dart';
 import 'package:wasli_customer/features/start/domain/nearby_repository.dart';
 import 'package:wasli_customer/features/start/domain/restaurant_profile_repository.dart';
 
+import 'fake_chat_repository.dart';
 import 'fake_location_service.dart';
 import 'fake_nearby_repository.dart';
 import 'fake_restaurant_profile_repository.dart';
@@ -46,7 +49,7 @@ class _SignedInSession extends SessionController {
 /// chooses. The build is a staging one ([environment] changes it) and the server's settings come from [serverConfig]
 /// (a fake that answers at once by default). The start page asks [location] (a customer who has not decided yet by
 /// default, so it shows its explanation) and [nearby] (two restaurants by default): no test reaches a network or a
-/// platform plugin. A restaurant's own page asks [restaurants] (Demo Cafe by default). With [signedIn] a customer is signed in from the
+/// platform plugin. A restaurant's own page asks [restaurants] (Demo Cafe by default) and its chat [chat] (a welcome by default). With [signedIn] a customer is signed in from the
 /// first frame (the web keeps no token across a reload, so the real app never starts that way). With [settle] false it
 /// pumps one frame only, for a test that looks at something that keeps animating (a progress indicator).
 Future<void> pumpApp(
@@ -59,6 +62,7 @@ Future<void> pumpApp(
   LocationService? location,
   NearbyRepository? nearby,
   RestaurantProfileRepository? restaurants,
+  ChatRepository? chat,
   AccountRepository? account,
   Clock? clock,
   bool signedIn = false,
@@ -72,6 +76,7 @@ Future<void> pumpApp(
         locationServiceProvider.overrideWithValue(location ?? FakeLocationService()),
         nearbyRepositoryProvider.overrideWithValue(nearby ?? FakeNearbyRepository.listing()),
         restaurantProfileRepositoryProvider.overrideWithValue(restaurants ?? FakeRestaurantProfileRepository.value()),
+        chatRepositoryProvider.overrideWithValue(chat ?? FakeChatRepository()),
         if (account != null) accountRepositoryProvider.overrideWithValue(account),
         if (clock != null) clockProvider.overrideWithValue(clock),
         tokenStoreProvider.overrideWithValue(MemoryTokenStore()),

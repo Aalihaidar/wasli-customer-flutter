@@ -13,6 +13,7 @@ import 'package:wasli_customer/features/account/presentation/forgot_password_pag
 import 'package:wasli_customer/features/account/presentation/sign_in_page.dart';
 import 'package:wasli_customer/features/account/presentation/sign_up_page.dart';
 import 'package:wasli_customer/features/account/presentation/verify_code_page.dart';
+import 'package:wasli_customer/features/chat/presentation/chat_section.dart';
 import 'package:wasli_customer/features/server_config/presentation/server_status_line.dart';
 import 'package:wasli_customer/features/settings/presentation/settings_page.dart';
 import 'package:wasli_customer/features/start/domain/restaurant_slug.dart';
@@ -40,7 +41,7 @@ GoRouter createAppRouter({
       final onAccountEntry = path == AppRoutes.signIn || path == AppRoutes.signUp || path == AppRoutes.forgotPassword;
       final onContactPage = path == AppRoutes.addEmail || path == AppRoutes.addPhone;
       if (onAccountEntry && signedIn) {
-        return AppRoutes.home;
+        return _nextOf(state) ?? AppRoutes.home;
       }
       return onContactPage && !signedIn ? AppRoutes.signIn : null;
     },
@@ -73,9 +74,22 @@ GoRouter createAppRouter({
         // The slug comes from a link or a QR code: anything that is not shaped like one is "not found", with no request.
         builder: (context, state) {
           final slug = state.pathParameters['slug'] ?? '';
-          return isValidRestaurantSlug(slug)
-              ? RestaurantPage(slug: slug, onGoToStart: () => context.go(AppRoutes.home))
-              : const NotFoundPage();
+          if (!isValidRestaurantSlug(slug)) {
+            return const NotFoundPage();
+          }
+          // After signing in or up the customer comes back to this restaurant.
+          final here = AppRoutes.restaurantPath(slug);
+          return RestaurantPage(
+            slug: slug,
+            onGoToStart: () => context.go(AppRoutes.home),
+            chatBuilder: (restaurant) => ChatSection(
+              slug: slug,
+              restaurantPosition: restaurant.position,
+              onSignIn: () => context.push(_withNext(AppRoutes.signIn, here)),
+              onSignUp: () => context.push(_withNext(AppRoutes.signUp, here)),
+              onConfirmPhone: () => context.push(AppRoutes.addPhone),
+            ),
+          );
         },
       ),
       GoRoute(path: AppRoutes.addEmail, builder: (context, state) => _addContactPage(context, ContactKind.email)),
@@ -84,10 +98,10 @@ GoRouter createAppRouter({
         path: AppRoutes.signIn,
         builder: (context, state) => SignInPage(
           onGoToStart: () => context.go(AppRoutes.home),
-          onSignedIn: () => context.go(AppRoutes.home),
-          onGoToSignUp: () => context.pushReplacement(AppRoutes.signUp),
+          onSignedIn: () => context.go(_nextOf(state) ?? AppRoutes.home),
+          onGoToSignUp: () => context.pushReplacement(_withNext(AppRoutes.signUp, _nextOf(state))),
           onForgotPassword: () => context.push(AppRoutes.forgotPassword),
-          onCodeSent: () => context.push(AppRoutes.verify),
+          onCodeSent: () => context.push(_withNext(AppRoutes.verify, _nextOf(state))),
         ),
       ),
       GoRoute(
@@ -98,19 +112,32 @@ GoRouter createAppRouter({
         path: AppRoutes.signUp,
         builder: (context, state) => SignUpPage(
           onGoToStart: () => context.go(AppRoutes.home),
-          onCodeSent: () => context.push(AppRoutes.verify),
-          onGoToSignIn: () => context.pushReplacement(AppRoutes.signIn),
+          onCodeSent: () => context.push(_withNext(AppRoutes.verify, _nextOf(state))),
+          onGoToSignIn: () => context.pushReplacement(_withNext(AppRoutes.signIn, _nextOf(state))),
         ),
       ),
       GoRoute(
         path: AppRoutes.verify,
         redirect: (context, state) => (hasPendingVerification?.call() ?? false) ? null : AppRoutes.signUp,
-        builder: (context, state) => VerifyCodePage(onSignedIn: () => context.go(AppRoutes.home)),
+        builder: (context, state) => VerifyCodePage(onSignedIn: () => context.go(_nextOf(state) ?? AppRoutes.home)),
       ),
     ],
     errorBuilder: (context, state) => const NotFoundPage(),
   );
 }
+
+final RegExp _restaurantPath = RegExp(r'^/r/([A-Za-z0-9_-]+)$');
+
+/// Where to go after signing in, from the `next` query parameter, or `null`. Only the page of a restaurant is accepted
+/// (a slug of the right shape), so a crafted link cannot send the customer anywhere else.
+String? _nextOf(GoRouterState state) {
+  final next = state.uri.queryParameters['next'];
+  final slug = next == null ? null : _restaurantPath.firstMatch(next)?.group(1);
+  return slug != null && isValidRestaurantSlug(slug) ? next : null;
+}
+
+/// [path] with `next` added, so the sign-in and sign-up pages know where to lead back to.
+String _withNext(String path, String? next) => next == null ? path : '$path?next=${Uri.encodeQueryComponent(next)}';
 
 Widget _addContactPage(BuildContext context, ContactKind kind) => AddContactPage(
   kind: kind,

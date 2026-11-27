@@ -2,7 +2,13 @@ import 'package:wasli_customer/features/start/domain/restaurant_profile.dart';
 import 'package:wasli_customer/features/start/domain/restaurant_profile_repository.dart';
 
 /// An invented restaurant shaped like the `restaurants_retrieve_200` fixture.
-const demoCafeProfile = RestaurantProfile(slug: 'demo-cafe', nameEn: 'Demo Cafe', nameAr: 'مقهى تجريبي', logoUrl: null);
+const demoCafeProfile = RestaurantProfile(
+  slug: 'demo-cafe',
+  nameEn: 'Demo Cafe',
+  nameAr: 'مقهى تجريبي',
+  logoUrl: null,
+  position: (latitude: 25.2048, longitude: 55.2708),
+);
 
 /// A [RestaurantProfileRepository] for tests: [onRead] decides what each call does, and [slugs] records what was asked.
 class FakeRestaurantProfileRepository implements RestaurantProfileRepository {
