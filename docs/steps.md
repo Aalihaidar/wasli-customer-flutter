@@ -493,6 +493,11 @@ is a draft, pin the agreed backend commit (Phase 4).
   `GET /restaurants/{slug}` has a required nullable `image_url` (absolute URL or `null`); the regenerated `lib/api` and the
   restaurant fixture gain it, and nothing else changed. The app does not read it yet. Staging answers without the key until the owner
   redeploys it, so a menu read against staging fails until then (the generated model requires the key)
+- [x] Pin backend `develop` `31d2d1ce9051935890eaa22a14a107ac83712aeb` (backend PR #101, 2026-11-27, round 32): an accepted order can be
+  marked ready, and the customer's chat then gets one more `result` message (`sender: bot`, `kind: result`, `payload`: `order_id`,
+  `number` and `status: ready` only; no `eta_minutes`, no rejection fields; a property that does not apply is absent, never `null`).
+  The only schema change is the staff path `POST /staff/orders/{id}/ready`, which `swagger_parser` filters out, so `lib/api` is
+  unchanged. The app does not render `result` messages yet: it comes with the chat, with a dedicated card for `ready`
 - [x] Pin backend `develop` `4ed5f8ff94cc9b3099006b4c6575adca4d14d93c` (backend PR #98, 2026-11-26, round 30): the restaurant's answer to an
   order is now posted into the chat as a `result` message (`payload`: `order_id`, `number`, `status`, `eta_minutes` when accepted,
   `rejection_reason_code` and an optional `rejection_note` when rejected; a property that does not apply is absent, never `null`), and
