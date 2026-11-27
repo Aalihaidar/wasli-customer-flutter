@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wasli_customer/app/placeholder_page.dart';
 import 'package:wasli_customer/core/error/failure.dart';
 import 'package:wasli_customer/features/server_config/domain/server_config.dart';
+import 'package:wasli_customer/features/start/presentation/start_page.dart';
 
 import '../../../support/fake_server_config_repository.dart';
 import '../../../support/pump_app.dart';
@@ -89,7 +89,7 @@ void main() {
         serverConfig: repository,
       );
 
-      expect(find.byType(PlaceholderPage), findsOneWidget);
+      expect(find.byType(StartPage), findsOneWidget);
       expect(find.textContaining('Server connected'), findsNothing);
       expect(find.text('Contacting the server…'), findsNothing);
       expect(repository.loads, 0);

@@ -28,10 +28,10 @@ Future<void> _fill(
 
 void main() {
   group('the sign-up page', () {
-    testWidgets('is reached from the start page and asks for the name, the contact and the password', (tester) async {
-      await pumpApp(tester);
+    testWidgets('is reached from the settings and asks for the name, the contact and the password', (tester) async {
+      await pumpApp(tester, initialLocation: AppRoutes.settings);
 
-      await tester.tap(_createButton);
+      await tester.tap(find.widgetWithText(TextButton, 'Create account'));
       await tester.pumpAndSettle();
 
       expect(find.text('Create your account'), findsOneWidget);

@@ -318,11 +318,12 @@ Each block is its own small pull request (`feat/core-network`, `feat/theme`, …
 
 Packages (confirm each when adding): `material_ui` (added with Flutter 3.50, which deprecates
 `package:flutter/material.dart`), `flutter_riverpod`, `go_router`, `intl`, `uuid`, `flutter_localizations`. Later, only
-when their feature starts: `flutter_map`, `latlong2`, `geolocator`, `record`, `flutter_secure_storage`,
+when their feature starts: `flutter_map`, `latlong2`, `record`, `flutter_secure_storage`,
 `shared_preferences` (non-sensitive settings only, never tokens).
 `flutter_riverpod`, `go_router`, `intl`, `uuid` and `flutter_localizations` (SDK) were added on 2026-11-23, in the pull
 request of the theme block; the blocks that use them follow. `shared_preferences` (non-sensitive settings only) was added the
-same day with the settings block.
+same day with the settings block. `geolocator` was added on 2026-11-27 with the nearby list (the only location plugin; the map
+packages follow with the map).
 
 - [ ] `app/`: `bootstrap()`, `ProviderScope`, global error zone, `go_router` with path URLs and a `/r/<slug>` route (slug
   shape validated), app shell, session state (auth, locale, config). Done: `bootstrap()` (async, reads the saved language
@@ -371,8 +372,9 @@ same day with the settings block.
   again after a reload; owner, 2026-11-24)
 - [ ] `core/storage`: `flutter_secure_storage` implementation for Android and iOS when those targets start; the web cookie
   session when the backend and a custom domain exist; never `shared_preferences` for tokens
-- [ ] `core/platform`: interfaces (location, audio recorder, secure storage, wake lock, notifications) with web
-  implementations as each is needed; shared code never imports `dart:io`
+- [ ] `core/platform`: interfaces (audio recorder, secure storage, wake lock, notifications) with web
+  implementations as each is needed; shared code never imports `dart:io`. **Location is done (2026-11-27):** `LocationService`
+  (`access`, `requestAccess`, `currentPosition`, `openSettings`) with the `geolocator` implementation, which covers the browser too
 - [x] `core/format` (2026-11-25): money from integer fils (`AED 12.50` / `12.50 د.إ`, comma-grouped thousands), UTC to Asia/Dubai
   (fixed UTC+4; 24-hour time, date with the month written out), distance (`120 m`, `1.2 km` / `120 م`, `1.2 كم`), plates, Western
   digits always; Arabic money, distance and plates are wrapped in a left-to-right isolate; unit tested in both languages
@@ -419,7 +421,7 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
   empty" only; `account_exists` and `password_*` are told in the page's own words, other failures through the generic texts
 - [x] Code screen (2026-11-25): one six-digit field (Arabic digits become Western ones), a countdown for the resend from
   `resend_available_in_seconds`, the expiry from `code_expires_in_seconds`, `verify` signs in and stores the token through
-  `TokenStore`; opens the start page, which shows "You are signed in." until the real start screen exists
+  `TokenStore`; opens the start page
 - [ ] Error handling: `account_exists` (offer sign-in, at sign-up only), `code_invalid`, `code_expired`,
   `too_many_attempts`, `throttled`, `password_*` codes; unverified account goes to the code screen (done for sign-up, the code
   screen and sign-in: the "Sign in" link sits under the sign-up form and an unconfirmed account goes to the code page)
@@ -447,14 +449,20 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
 
 ## Phase 7: Start screen and restaurant page (D1)
 
-- [ ] Location permission flow: explain first (in-app sheet in the user's language), then the system prompt; handle denied
-  and permanently denied (system settings, QR hint, staging simulate button); never re-prompt in a loop
+- [x] Location permission flow (2026-11-27, `feat/start-nearby-list`): the start page explains first (an inline card, which becomes
+  the sheet with the map), then shows the system prompt only when the customer presses the button; an already allowed location is
+  read at once; refused (can ask again), blocked (open the phone settings where possible, else "Try again"), location off and no
+  position each have their own text; the QR hint is always shown; no loop of prompts, the position is never logged
+- [x] Nearby list (2026-11-27): `GET /restaurants/nearby` without a token (position in the query, never logged), nearest first,
+  logo, name in the active language, distance, Open/Closed pill, placeholder rows while loading, "Try again", a refresh button;
+  read once and on refresh (the lifecycle poller comes with the chat). The rows open nothing until `/r/<slug>` exists
 - [ ] Start screen: map (loaded on demand, deferred import) with the position and a marker per nearby restaurant, bottom
   sheet with logo, name, distance, nearest first; polled with the lifecycle-aware poller
-- [ ] Empty state from `nearest` (name and distance, and "serves cars within N m" only when `service_radius_m` is
+- [x] Empty state from `nearest` (name and distance, and "serves cars within N m" only when `service_radius_m` is
   present) or the message with the QR hint
-- [ ] Staging helper "Simulate: I'm at the restaurant" sends the restaurant's own latitude and longitude from `nearest`
-  (`source = simulated`), hidden in production
+- [x] Staging helper "Simulate: I'm at the restaurant" sends the restaurant's own latitude and longitude from `nearest`
+  (`source = simulated`), hidden in production (it changes the start position now; the `simulated` source is sent with the order
+  position in the chat block)
 - [ ] `/r/<slug>` route resolves through `GET /restaurants/{slug}`; `404` shows the not-found state
 - [ ] **Decide** the map tile provider (OpenStreetMap is for staging only; a keyed provider before the pilot)
 - [ ] Voice recording spike with `record` (WAV 16 kHz mono, 30 s): Chrome on Android and Safari on iPhone; report sizes

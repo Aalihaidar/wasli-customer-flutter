@@ -6,6 +6,7 @@ import 'package:wasli_customer/app/router/app_routes.dart';
 import 'package:wasli_customer/core/error/api_issue.dart';
 import 'package:wasli_customer/core/error/failure.dart';
 import 'package:wasli_customer/features/account/domain/sent_code.dart';
+import 'package:wasli_customer/features/start/presentation/start_page.dart';
 
 import '../../../support/fake_account_repository.dart';
 import '../../../support/pump_app.dart';
@@ -73,7 +74,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(account.lastCode, '123456');
-      expect(find.text('You are signed in.'), findsOneWidget);
+      expect(find.byType(StartPage), findsOneWidget);
       expect(find.text('Enter the code'), findsNothing);
     });
 

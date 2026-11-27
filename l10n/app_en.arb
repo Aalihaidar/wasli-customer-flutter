@@ -202,10 +202,6 @@
   "@verifyTooManyAttempts": {
     "description": "Shown when the server has stopped accepting guesses for this code."
   },
-  "homeSignedIn": "You are signed in.",
-  "@homeSignedIn": {
-    "description": "Line on the placeholder start page when a customer is signed in."
-  },
   "signInTitle": "Sign in",
   "@signInTitle": {
     "description": "Title of the sign-in page and its top bar."
@@ -351,5 +347,131 @@
   "forgotDoneBody": "You were signed out on every device. Sign in with your new password.",
   "@forgotDoneBody": {
     "description": "Text under the heading shown when the password reset succeeded; the server signs the customer out of every device."
+  },
+  "startLocationTitle": "Find restaurants near you",
+  "@startLocationTitle": {
+    "description": "Heading of the explanation on the start page, shown before the app asks for the customer's location."
+  },
+  "startLocationBody": "We use your location to show the restaurants around you, so you can order from your car. Your browser or phone will ask you to allow it.",
+  "@startLocationBody": {
+    "description": "Text under the heading of the location explanation on the start page. It explains why the app needs the position before the system asks."
+  },
+  "startLocationAllow": "Use my location",
+  "@startLocationAllow": {
+    "description": "Label of the button under the location explanation. Pressing it shows the system's permission prompt."
+  },
+  "startLocationQrHint": "At the restaurant? Scan its QR code to start your order without sharing your location.",
+  "@startLocationQrHint": {
+    "description": "Hint shown with the location explanation and with every location problem: a customer who is at the restaurant can scan its QR code instead of sharing the position. QR stays in Latin letters."
+  },
+  "startLocationFinding": "Finding your location…",
+  "@startLocationFinding": {
+    "description": "Message shown on the start page while the app reads what the customer decided about location and while it waits for the position."
+  },
+  "startProblemDeniedTitle": "Location is not allowed",
+  "@startProblemDeniedTitle": {
+    "description": "Heading shown on the start page when the customer refused to share their location."
+  },
+  "startProblemDeniedBody": "Without your location we cannot show the restaurants around you. You can try again, or scan the QR code at the restaurant.",
+  "@startProblemDeniedBody": {
+    "description": "Text under the heading when the customer refused location but the system can still ask again."
+  },
+  "startProblemBlockedBody": "Location is blocked for this app. Allow it in your browser or phone settings, then try again, or scan the QR code at the restaurant.",
+  "@startProblemBlockedBody": {
+    "description": "Text under the heading when the customer refused location for good, so only the browser or phone settings can change it."
+  },
+  "startProblemOffTitle": "Location is turned off",
+  "@startProblemOffTitle": {
+    "description": "Heading shown on the start page when location is turned off on the device."
+  },
+  "startProblemOffBody": "Turn on location on your device, then try again.",
+  "@startProblemOffBody": {
+    "description": "Text under the heading when location is turned off on the device."
+  },
+  "startProblemFailedTitle": "We could not find you",
+  "@startProblemFailedTitle": {
+    "description": "Heading shown on the start page when allowed location did not give a position (a weak signal, a platform error)."
+  },
+  "startProblemFailedBody": "Your position did not arrive in time. Move to a place with a better signal and try again.",
+  "@startProblemFailedBody": {
+    "description": "Text under the heading when the position could not be read."
+  },
+  "startTryAgain": "Try again",
+  "@startTryAgain": {
+    "description": "Label of the button on the start page that checks the location or loads the restaurants again."
+  },
+  "startOpenSettings": "Open settings",
+  "@startOpenSettings": {
+    "description": "Label of the button on the start page that opens the phone's settings for the app, where location can be allowed."
+  },
+  "startListTitle": "Restaurants near you",
+  "@startListTitle": {
+    "description": "Heading above the list of restaurants on the start page."
+  },
+  "startRefreshTooltip": "Refresh the list",
+  "@startRefreshTooltip": {
+    "description": "Tooltip and screen-reader label of the button that reads the position and the restaurants again."
+  },
+  "startRestaurantOpen": "Open",
+  "@startRestaurantOpen": {
+    "description": "Label of the pill on a restaurant that can take an order now."
+  },
+  "startRestaurantClosed": "Closed",
+  "@startRestaurantClosed": {
+    "description": "Label of the pill on a restaurant that cannot take an order now."
+  },
+  "startRestaurantDistance": "{distance} away",
+  "@startRestaurantDistance": {
+    "description": "Line on a restaurant that says how far it is from the customer. The distance is already formatted with its unit, such as 120 m or 1.2 km.",
+    "placeholders": {
+      "distance": {
+        "type": "String",
+        "example": "120 m"
+      }
+    }
+  },
+  "startLoadingRestaurants": "Loading restaurants",
+  "@startLoadingRestaurants": {
+    "description": "Screen-reader label of the placeholder rows shown while the list of restaurants loads."
+  },
+  "startEmptyNearest": "No restaurant serves your spot yet. The closest is {name}, {distance} away.",
+  "@startEmptyNearest": {
+    "description": "Shown instead of the list when no restaurant serves the customer's position but one exists further away. The distance is already formatted with its unit.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Demo Cafe"
+      },
+      "distance": {
+        "type": "String",
+        "example": "2.4 km"
+      }
+    }
+  },
+  "startEmptyNearestRadius": "It serves cars within {distance}.",
+  "@startEmptyNearestRadius": {
+    "description": "Second sentence of the empty state, shown only when the closest restaurant limits how far from it cars are served. The distance is already formatted with its unit.",
+    "placeholders": {
+      "distance": {
+        "type": "String",
+        "example": "500 m"
+      }
+    }
+  },
+  "startEmptyNone": "No restaurants are available near you yet.",
+  "@startEmptyNone": {
+    "description": "Shown instead of the list when no restaurant serves the customer's position and none is known at all."
+  },
+  "startSimulateAtRestaurant": "Simulate: I''m at the restaurant",
+  "@startSimulateAtRestaurant": {
+    "description": "Test-build button shown under the empty state. It looks for restaurants as if the customer stood at the closest one."
+  },
+  "startSimulatedNotice": "You are using a simulated position.",
+  "@startSimulatedNotice": {
+    "description": "Test-build notice shown above the list while the position is simulated."
+  },
+  "startUseRealLocation": "Use my real location",
+  "@startUseRealLocation": {
+    "description": "Test-build button that goes back from a simulated position to the device's own position."
   }
 }
