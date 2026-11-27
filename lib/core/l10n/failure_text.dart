@@ -13,6 +13,7 @@ String failureText(AppLocalizations l10n, Failure failure) {
     UnauthenticatedFailure() => l10n.failureSessionEnded,
     NetworkFailure() ||
     AccountNotVerifiedFailure() ||
+    PhoneNotVerifiedFailure() ||
     PermissionDeniedFailure() ||
     NotFoundFailure() ||
     ValidationFailure() ||

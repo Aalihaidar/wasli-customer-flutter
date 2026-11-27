@@ -46,6 +46,12 @@ final class AccountNotVerifiedFailure extends Failure {
   const new({super.requestId});
 }
 
+/// `403 phone_not_verified`: the customer must confirm a phone number before the first order. Nothing was stored.
+final class PhoneNotVerifiedFailure extends Failure {
+  /// Creates a phone-not-verified failure.
+  const new({super.requestId});
+}
+
 /// `403` for any other reason: not allowed (for example a blocked or deactivated account).
 final class PermissionDeniedFailure extends Failure {
   /// Creates a permission-denied failure.

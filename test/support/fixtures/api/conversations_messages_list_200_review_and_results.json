@@ -1,0 +1,190 @@
+{
+  "conversation": {
+    "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c10",
+    "restaurant_slug": "demo-cafe",
+    "state": "placed",
+    "locale": "en",
+    "order_type": "car",
+    "ai_available": true,
+    "expires_at": "2026-11-23T12:00:00.000Z",
+    "order": {
+      "id": "d1b90202-0000-4a5b-8c9d-0e1f2a3b4c30",
+      "number": 17,
+      "status": "ready"
+    }
+  },
+  "messages": [
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c10",
+      "seq": 10,
+      "sender": "bot",
+      "kind": "review",
+      "text": "Please check your order.",
+      "image_url": null,
+      "transcript": null,
+      "used_voice": false,
+      "payload": {
+        "summary": {
+          "lines": [
+            {
+              "line": 1,
+              "item_id": "a1b2c3d4-0002-4a5b-8c9d-0e1f2a3b4c02",
+              "name": "Latte",
+              "options": [
+                {
+                  "id": "a1b2c3d4-0005-4a5b-8c9d-0e1f2a3b4c05",
+                  "name": "Large",
+                  "price_delta_minor": 200
+                }
+              ],
+              "quantity": 2,
+              "note": "extra hot",
+              "unit_price_minor": 1450,
+              "line_total_minor": 2900
+            }
+          ],
+          "subtotal_minor": 2900,
+          "total_minor": 2900,
+          "currency": "AED"
+        },
+        "parking_note": "Level 2, near the lift",
+        "vehicle_plate": "A 12345",
+        "vehicle_model": "Toyota Corolla",
+        "vehicle_colour": "White",
+        "order_note": "",
+        "location_shared": true,
+        "location_source": "gps",
+        "quick_replies": [
+          {
+            "label": "Yes, send",
+            "action": "confirm"
+          },
+          {
+            "label": "Change something",
+            "action": "edit"
+          },
+          {
+            "label": "Change the car",
+            "action": "edit_field",
+            "field": "car"
+          },
+          {
+            "label": "Pick one",
+            "action": "choose",
+            "value": "opt-1"
+          },
+          {
+            "label": "Skip",
+            "action": "skip_note"
+          },
+          {
+            "label": "Start over",
+            "action": "restart"
+          },
+          {
+            "label": "Open the picker",
+            "action": "open_picker"
+          },
+          {
+            "label": "Broken choose",
+            "action": "choose"
+          }
+        ]
+      },
+      "created_at": "2026-11-23T09:10:00.000Z"
+    },
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c11",
+      "seq": 11,
+      "sender": "bot",
+      "kind": "result",
+      "text": "Your order #17 is confirmed. It will be ready in about 10 minutes.",
+      "image_url": null,
+      "transcript": null,
+      "used_voice": false,
+      "payload": {
+        "order_id": "d1b90202-0000-4a5b-8c9d-0e1f2a3b4c30",
+        "number": 17,
+        "status": "accepted",
+        "eta_minutes": 10
+      },
+      "created_at": "2026-11-23T09:11:00.000Z"
+    },
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c12",
+      "seq": 12,
+      "sender": "bot",
+      "kind": "result",
+      "text": "Sorry, we cannot take order #17 now.",
+      "image_url": null,
+      "transcript": null,
+      "used_voice": false,
+      "payload": {
+        "order_id": "d1b90202-0000-4a5b-8c9d-0e1f2a3b4c30",
+        "number": 17,
+        "status": "rejected",
+        "rejection_reason_code": "too_busy",
+        "rejection_note": "Back in an hour"
+      },
+      "created_at": "2026-11-23T09:12:00.000Z"
+    },
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c13",
+      "seq": 13,
+      "sender": "bot",
+      "kind": "result",
+      "text": "Your order #17 is ready. We are bringing it to your car.",
+      "image_url": null,
+      "transcript": null,
+      "used_voice": false,
+      "payload": {
+        "order_id": "d1b90202-0000-4a5b-8c9d-0e1f2a3b4c30",
+        "number": 17,
+        "status": "ready"
+      },
+      "created_at": "2026-11-23T09:13:00.000Z"
+    },
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c14",
+      "seq": 14,
+      "sender": "bot",
+      "kind": "result",
+      "text": "Your order #17 was delivered.",
+      "image_url": null,
+      "transcript": null,
+      "used_voice": false,
+      "payload": {
+        "order_id": "d1b90202-0000-4a5b-8c9d-0e1f2a3b4c30",
+        "number": 17,
+        "status": "delivered"
+      },
+      "created_at": "2026-11-23T09:14:00.000Z"
+    },
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c15",
+      "seq": 15,
+      "sender": "bot",
+      "kind": "carousel",
+      "text": "A kind this version does not know.",
+      "image_url": null,
+      "transcript": null,
+      "used_voice": false,
+      "payload": {
+        "anything": 1
+      },
+      "created_at": "2026-11-23T09:15:00.000Z"
+    },
+    {
+      "id": "c0a80101-0000-4a5b-8c9d-0e1f2a3b4c16",
+      "seq": 16,
+      "sender": "bot",
+      "kind": "image",
+      "text": "Hot drinks",
+      "image_url": "https://media.example.com/menus/demo-cafe-1.jpg",
+      "transcript": null,
+      "used_voice": false,
+      "payload": {},
+      "created_at": "2026-11-23T09:16:00.000Z"
+    }
+  ]
+}

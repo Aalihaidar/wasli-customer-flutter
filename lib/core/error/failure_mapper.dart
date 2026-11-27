@@ -30,6 +30,9 @@ Failure failureFromResponse({required int statusCode, required Object? data, Dur
   if (statusCode < 500 && _hasCode(issues, ApiErrorCode.accountNotVerified)) {
     return AccountNotVerifiedFailure(requestId: requestId);
   }
+  if (statusCode == 403 && _hasCode(issues, ApiErrorCode.phoneNotVerified)) {
+    return PhoneNotVerifiedFailure(requestId: requestId);
+  }
   if (statusCode == 403) {
     return PermissionDeniedFailure(requestId: requestId);
   }

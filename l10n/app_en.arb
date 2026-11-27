@@ -485,5 +485,159 @@
   "restaurantUnavailableBody": "The link may be old, or the restaurant is not taking orders right now.",
   "@restaurantUnavailableBody": {
     "description": "Text under the heading when a restaurant's page cannot be found, for example from an old link or QR code."
+  },
+  "chatSignInTitle": "Sign in to order",
+  "@chatSignInTitle": {
+    "description": "Heading of the card that replaces the chat for a customer who is not signed in."
+  },
+  "chatSignInBody": "An order needs an account, so the restaurant can reach you. Sign in or create one, then you come back here.",
+  "@chatSignInBody": {
+    "description": "Text under the heading of the sign-in card shown instead of the chat."
+  },
+  "chatComposerHint": "Type your order",
+  "@chatComposerHint": {
+    "description": "Placeholder of the text field where the customer types in the chat."
+  },
+  "chatSend": "Send",
+  "@chatSend": {
+    "description": "Tooltip and screen-reader label of the button that sends the typed message."
+  },
+  "chatSending": "Sending…",
+  "@chatSending": {
+    "description": "Small text under a message of the customer while it is being sent."
+  },
+  "chatNotSent": "Not sent",
+  "@chatNotSent": {
+    "description": "Small text under a message of the customer that could not be sent."
+  },
+  "chatRetry": "Retry",
+  "@chatRetry": {
+    "description": "Label of the button that sends a message again after it failed."
+  },
+  "chatOrderAgain": "Start a new order",
+  "@chatOrderAgain": {
+    "description": "Label of the button shown after the order was sent; it starts a new conversation with the restaurant."
+  },
+  "chatSummaryLine": "{quantity} × {name}",
+  "@chatSummaryLine": {
+    "description": "One line of an order: how many and the item's name. The multiplication sign stays between them in every language.",
+    "placeholders": {
+      "quantity": {
+        "type": "String",
+        "example": "2"
+      },
+      "name": {
+        "type": "String",
+        "example": "Latte"
+      }
+    }
+  },
+  "chatSummaryTotal": "Total",
+  "@chatSummaryTotal": {
+    "description": "Label of the total price of the order, VAT included, under the lines of the order."
+  },
+  "chatReviewParking": "Parking",
+  "@chatReviewParking": {
+    "description": "Label of the parking place in the final review of the order."
+  },
+  "chatReviewPlate": "Plate",
+  "@chatReviewPlate": {
+    "description": "Label of the car's plate number in the final review of the order."
+  },
+  "chatReviewModel": "Car",
+  "@chatReviewModel": {
+    "description": "Label of the car's model in the final review of the order."
+  },
+  "chatReviewColour": "Colour",
+  "@chatReviewColour": {
+    "description": "Label of the car's colour in the final review of the order."
+  },
+  "chatReviewNote": "Note",
+  "@chatReviewNote": {
+    "description": "Label of the customer's note for the restaurant in the final review of the order."
+  },
+  "chatReviewLocation": "Location",
+  "@chatReviewLocation": {
+    "description": "Label of whether the customer's position was shared, in the final review of the order."
+  },
+  "chatReviewLocationShared": "Shared",
+  "@chatReviewLocationShared": {
+    "description": "Value shown when the customer's position was shared with the restaurant."
+  },
+  "chatReviewLocationNotShared": "Not shared",
+  "@chatReviewLocationNotShared": {
+    "description": "Value shown when the customer's position was not shared; the restaurant decides without it."
+  },
+  "chatResultAccepted": "Confirmed",
+  "@chatResultAccepted": {
+    "description": "Heading of the banner that says the restaurant accepted the order."
+  },
+  "chatResultRejected": "Rejected",
+  "@chatResultRejected": {
+    "description": "Heading of the banner that says the restaurant rejected the order."
+  },
+  "chatResultReady": "Ready",
+  "@chatResultReady": {
+    "description": "Heading of the banner that says the restaurant has the order ready and is bringing it to the car."
+  },
+  "chatResultUpdate": "Order update",
+  "@chatResultUpdate": {
+    "description": "Heading of the banner for an answer about the order that this version of the app does not know; the server's sentence is shown under it."
+  },
+  "chatResultOrder": "Order #{number}",
+  "@chatResultOrder": {
+    "description": "The order's number, shown in the heading of the result banner. The number is written with Western digits.",
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "7"
+      }
+    }
+  },
+  "chatResultEta": "Ready in about {minutes} minutes",
+  "@chatResultEta": {
+    "description": "Wait time the restaurant gave when it accepted the order. The number is written with Western digits.",
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "10"
+      }
+    }
+  },
+  "chatLocationTitle": "Share your location",
+  "@chatLocationTitle": {
+    "description": "Heading of the question, at the car step, whether the restaurant may have the customer's position."
+  },
+  "chatLocationBody": "The restaurant uses it to find your car. It is sent once, with your order, and only the restaurant that gets your order can see it.",
+  "@chatLocationBody": {
+    "description": "Explanation under the heading of the location question at the car step. It says why the position is needed and who can see it."
+  },
+  "chatLocationShare": "Share my location",
+  "@chatLocationShare": {
+    "description": "Label of the button that shows the system's permission prompt and sends the position."
+  },
+  "chatLocationNotNow": "Not now",
+  "@chatLocationNotNow": {
+    "description": "Label of the button that skips sharing the position; the restaurant decides without it."
+  },
+  "chatLocationSharing": "Sharing your location…",
+  "@chatLocationSharing": {
+    "description": "Message shown while the position is being read and sent."
+  },
+  "chatNoticePhone": "Your order was not sent yet. Confirm a phone number first, then press Yes, send again.",
+  "@chatNoticePhone": {
+    "description": "Notice shown when the server refuses to place the order because the customer has no confirmed phone number. The button label in the quotes is the server's own, so it may differ."
+  },
+  "chatNoticePhoneAction": "Confirm my phone number",
+  "@chatNoticePhoneAction": {
+    "description": "Label of the button in the notice that opens the page where the customer adds and confirms a phone number."
+  },
+  "chatNoticeRestarted": "This conversation expired, so we started a new one. Please send your order again.",
+  "@chatNoticeRestarted": {
+    "description": "Notice shown when the conversation had expired and the server started a new one; the last message was not stored."
+  },
+  "chatNoticeDismiss": "Dismiss",
+  "@chatNoticeDismiss": {
+    "description": "Tooltip and screen-reader label of the button that closes a notice."
   }
 }

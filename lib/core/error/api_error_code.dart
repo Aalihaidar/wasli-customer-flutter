@@ -28,6 +28,15 @@ enum ApiErrorCode {
   /// `no_pending_contact` (409): there is no added contact waiting for a code.
   noPendingContact('no_pending_contact'),
 
+  /// `phone_not_verified` (403): the customer must confirm a phone number before the first order.
+  phoneNotVerified('phone_not_verified'),
+
+  /// `conversation_expired` (409): the conversation is closed (60 minutes since the last message); open a new one.
+  conversationExpired('conversation_expired'),
+
+  /// `invalid_action_for_state` (409): that button does not apply at this step of the conversation.
+  invalidActionForState('invalid_action_for_state'),
+
   /// `order_invalid_transition` (409): the order cannot move to that status.
   orderInvalidTransition('order_invalid_transition'),
 

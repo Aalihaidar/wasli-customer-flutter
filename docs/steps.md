@@ -378,7 +378,8 @@ packages follow with the map).
 - [x] `core/format` (2026-11-25): money from integer fils (`AED 12.50` / `12.50 د.إ`, comma-grouped thousands), UTC to Asia/Dubai
   (fixed UTC+4; 24-hour time, date with the month written out), distance (`120 m`, `1.2 km` / `120 م`, `1.2 كم`), plates, Western
   digits always; Arabic money, distance and plates are wrapped in a left-to-right isolate; unit tested in both languages
-- [ ] `core/polling`: lifecycle-aware `Poller` (visible, idle, back-off, `Retry-After`) with tests
+- [x] `core/polling` (2026-11-27): `Poller` (one tick at a time, a pause between ticks, back-off on failures, `Retry-After` honoured on a
+  `429`, stops itself on a `401`); the chat decides when it runs (visible, not idle) with tests
 - [x] `core/logging`: the `AppLogger` interface (no personal data; the console implementation is silent in release builds)
 - [ ] `core/logging`: the crash-report hook (the service is decided later)
 - [x] Localisation (`feat/localization`): ARB files `en` and `ar` in `l10n/` (a description on every message, Arabic keeps the
@@ -515,30 +516,31 @@ is a draft, pin the agreed backend commit (Phase 4).
   and their own pin pull request
 - [ ] Order channel modelled as a sealed domain type (`car` now; `dineIn` and `delivery` later); no "car" or "parking"
   words in shared code
-- [ ] Chat shell: open or resume a conversation (`start_new: false` returns the whole history, "Order again" is
+- [x] Chat shell (2026-11-27, `feat/chat`): open or resume a conversation (`start_new: false` returns the whole history, "Order again" is
   `start_new: true`), append messages by `seq`, poll `?after_seq=` only while visible, stop 10 minutes after the last
   message arrived (rounds 10-14)
-- [ ] One widget per message kind: `text`, `image`, `order_summary`, `review`, `result`; unknown kinds degrade safely
-- [ ] Quick replies: only those of the latest bot message are active
-- [ ] Composer: text (at most 500 code points as typed, blank refused), send, microphone (record our own mono 16 kHz WAV
+- [x] One widget per message kind: `text`, `image` (full-screen zoom), `order_summary`, `review`, `result` (accepted, rejected, ready and a plain
+  card for any other status); an unknown kind is shown as text
+- [x] Quick replies: only those of the latest bot message are active; a reply whose action the app cannot send is left out
+- [ ] Composer: **text done** (at most 500 code points as typed, blank refused, one send at a time, hidden once placed); microphone **not built**: (record our own mono 16 kHz WAV
   with a timer, send or cancel, 30 s and 5 MB max; never the browser recorder, the microphone shows as unavailable if the WAV
   cannot be made), disabled states (sending, placed, assistant unavailable)
-- [ ] Send with idempotency: `client_message_id` generated once per action, persisted until acknowledged, the same id on
+- [x] Send with idempotency: `client_message_id` generated once per action, persisted until acknowledged, the same id on
   retry
-- [ ] Position at `ask_car`, not earlier (QR arrivals ask for location here), `accuracy_m` optional, accuracy and range
+- [x] Position at `ask_car` (explanation first, the system prompt only on the button, "Not now", staging "Simulate: I'm at the restaurant" as `simulated` with 5 m accuracy), not earlier (QR arrivals ask for location here), `accuracy_m` optional, accuracy and range
   checks, `invalid_location` handling
-- [ ] Item picker for `ai_available: false` (built from the structured menu, sends item ids and quantities only; the app
+- [ ] **Not built yet:** item picker for `ai_available: false` (built from the structured menu, sends item ids and quantities only; the app
   never computes a price)
-- [ ] Review card and result cards (accepted with wait time, rejected with reason and note), "Order again"
+- [x] Review card and result cards (accepted with wait time, rejected with the server's sentence and note, ready), "Start a new order"
 - [ ] Order status from `GET /orders/{id}`; polling shows what the server decides, the app decides nothing
-- [ ] Phone-verification gate before the first order for an email-only customer (`403 phone_not_verified` is in the
+- [x] Phone-verification gate (the `403` fallback: a notice with a button to the add-phone page, the button to send again stays; the earlier check of `phone_verified` is not built) before the first order for an email-only customer (`403 phone_not_verified` is in the
   contract since the pin of 2026-11-23; the backend switches it on at staging)
-- [ ] Error mapping for the chat codes (`invalid_action_for_state`, `conversation_expired`, `unsupported_order_type`,
+- [x] Error mapping for the chat codes **in use** (`conversation_expired`: a new conversation and a notice; `phone_not_verified`; `invalid_action_for_state`: the button is dropped and the chat catches up; the others come with voice and the picker) (`invalid_action_for_state`, `conversation_expired`, `unsupported_order_type`,
   `phone_not_verified`, `max_length`, `audio_too_large`, `audio_too_long`, `unsupported_audio_format`,
   `item_unavailable`; `ai_unavailable` and `transcription_failed` are not HTTP codes, an assistant outage is
   `ai_available: false` and an unreadable clip is a bot message; no code for the distance in the first version, an order
   is never refused for it)
-- [ ] Tests: merge by `seq`, polling rules, retry with the same id, every message kind, composer states, recorder with a
+- [ ] Tests: **done for the text chat** (merge by `seq`, polling and idle rules, retry with the same id, every message kind, composer, RTL and 200 % text); still to come: recorder, item picker, an integration test sign-up to order placed. Merge by `seq`, polling rules, retry with the same id, every message kind, composer states, recorder with a
   fake, item picker, RTL smoke test, an integration test sign-up to order placed against a fake server
 
 ## Phase 10: Restaurant answers and polish (backend D3 and D4, releases v0.3.0 and v1.0.0)
