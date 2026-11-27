@@ -15,6 +15,8 @@ import 'package:wasli_customer/features/account/presentation/sign_up_page.dart';
 import 'package:wasli_customer/features/account/presentation/verify_code_page.dart';
 import 'package:wasli_customer/features/server_config/presentation/server_status_line.dart';
 import 'package:wasli_customer/features/settings/presentation/settings_page.dart';
+import 'package:wasli_customer/features/start/domain/restaurant_slug.dart';
+import 'package:wasli_customer/features/start/presentation/restaurant_page.dart';
 import 'package:wasli_customer/features/start/presentation/start_page.dart';
 
 /// Builds the router of the app.
@@ -48,6 +50,7 @@ GoRouter createAppRouter({
         builder: (context, state) => StartPage(
           onOpenSettings: () => context.push(AppRoutes.settings),
           onSignIn: () => context.push(AppRoutes.signIn),
+          onOpenRestaurant: (slug) => context.push(AppRoutes.restaurantPath(slug)),
           serverStatus: const ServerStatusLine(),
         ),
       ),
@@ -64,6 +67,16 @@ GoRouter createAppRouter({
             }),
           ),
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.restaurant,
+        // The slug comes from a link or a QR code: anything that is not shaped like one is "not found", with no request.
+        builder: (context, state) {
+          final slug = state.pathParameters['slug'] ?? '';
+          return isValidRestaurantSlug(slug)
+              ? RestaurantPage(slug: slug, onGoToStart: () => context.go(AppRoutes.home))
+              : const NotFoundPage();
+        },
       ),
       GoRoute(path: AppRoutes.addEmail, builder: (context, state) => _addContactPage(context, ContactKind.email)),
       GoRoute(path: AppRoutes.addPhone, builder: (context, state) => _addContactPage(context, ContactKind.phone)),

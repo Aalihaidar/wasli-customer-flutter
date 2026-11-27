@@ -17,15 +17,25 @@ import 'package:wasli_customer/theme/theme.dart';
 /// at once when the customer already allowed it). The settings and sign-in pages and the server status line belong to
 /// other features, so the router hands them in.
 class StartPage extends ConsumerWidget {
-  /// Creates the page. [onOpenSettings] and [onSignIn] open those pages; [serverStatus] is the line that shows whether
-  /// the server answered, shown outside production only.
-  const new({required this.onOpenSettings, required this.onSignIn, this.serverStatus, super.key});
+  /// Creates the page. [onOpenSettings] and [onSignIn] open those pages, [onOpenRestaurant] opens the page of the
+  /// restaurant with the given slug, and [serverStatus] is the line that shows whether the server answered, shown
+  /// outside production only.
+  const new({
+    required this.onOpenSettings,
+    required this.onSignIn,
+    required this.onOpenRestaurant,
+    this.serverStatus,
+    super.key,
+  });
 
   /// Opens the settings page.
   final VoidCallback onOpenSettings;
 
   /// Opens the sign-in page.
   final VoidCallback onSignIn;
+
+  /// Opens a restaurant's page, given its slug.
+  final ValueChanged<String> onOpenRestaurant;
 
   /// A diagnostic line for test builds, or `null`.
   final Widget? serverStatus;
@@ -61,7 +71,7 @@ class StartPage extends ConsumerWidget {
               switch (ref.watch(startLocationProvider)) {
                 LocationChecking() || LocationLocating() => const LocationFinding(),
                 LocationNeeded() => const LocationExplanation(),
-                final LocationFound found => NearbyList(found: found),
+                final LocationFound found => NearbyList(found: found, onOpenRestaurant: onOpenRestaurant),
                 final problem => LocationProblemView(state: problem),
               },
               if (!isProduction && status != null) ...[

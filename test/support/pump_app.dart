@@ -20,9 +20,11 @@ import 'package:wasli_customer/features/server_config/application/server_config_
 import 'package:wasli_customer/features/server_config/domain/server_config_repository.dart';
 import 'package:wasli_customer/features/start/application/start_providers.dart';
 import 'package:wasli_customer/features/start/domain/nearby_repository.dart';
+import 'package:wasli_customer/features/start/domain/restaurant_profile_repository.dart';
 
 import 'fake_location_service.dart';
 import 'fake_nearby_repository.dart';
+import 'fake_restaurant_profile_repository.dart';
 import 'fake_server_config_repository.dart';
 
 /// The build configuration most tests use: a staging build with invented addresses.
@@ -44,7 +46,7 @@ class _SignedInSession extends SessionController {
 /// chooses. The build is a staging one ([environment] changes it) and the server's settings come from [serverConfig]
 /// (a fake that answers at once by default). The start page asks [location] (a customer who has not decided yet by
 /// default, so it shows its explanation) and [nearby] (two restaurants by default): no test reaches a network or a
-/// platform plugin. With [signedIn] a customer is signed in from the
+/// platform plugin. A restaurant's own page asks [restaurants] (Demo Cafe by default). With [signedIn] a customer is signed in from the
 /// first frame (the web keeps no token across a reload, so the real app never starts that way). With [settle] false it
 /// pumps one frame only, for a test that looks at something that keeps animating (a progress indicator).
 Future<void> pumpApp(
@@ -56,6 +58,7 @@ Future<void> pumpApp(
   ServerConfigRepository? serverConfig,
   LocationService? location,
   NearbyRepository? nearby,
+  RestaurantProfileRepository? restaurants,
   AccountRepository? account,
   Clock? clock,
   bool signedIn = false,
@@ -68,6 +71,7 @@ Future<void> pumpApp(
         serverConfigRepositoryProvider.overrideWithValue(serverConfig ?? FakeServerConfigRepository.value()),
         locationServiceProvider.overrideWithValue(location ?? FakeLocationService()),
         nearbyRepositoryProvider.overrideWithValue(nearby ?? FakeNearbyRepository.listing()),
+        restaurantProfileRepositoryProvider.overrideWithValue(restaurants ?? FakeRestaurantProfileRepository.value()),
         if (account != null) accountRepositoryProvider.overrideWithValue(account),
         if (clock != null) clockProvider.overrideWithValue(clock),
         tokenStoreProvider.overrideWithValue(MemoryTokenStore()),

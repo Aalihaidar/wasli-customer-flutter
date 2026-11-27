@@ -16,11 +16,14 @@ import 'package:wasli_customer/theme/theme.dart';
 /// The restaurants around the position in [found], nearest first, with a button that reads the position and the list
 /// again. Loading shows placeholder rows; a failure says why and offers "Try again".
 class NearbyList extends ConsumerWidget {
-  /// Creates the list for the position in [found].
-  const new({required this.found, super.key});
+  /// Creates the list for the position in [found]; [onOpenRestaurant] opens the page of the restaurant with that slug.
+  const new({required this.found, required this.onOpenRestaurant, super.key});
 
   /// The known position.
   final LocationFound found;
+
+  /// Opens a restaurant's page, given its slug.
+  final ValueChanged<String> onOpenRestaurant;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -70,7 +73,11 @@ class NearbyList extends ConsumerWidget {
                   : Column(
                       children: [
                         for (final restaurant in result.restaurants)
-                          RestaurantCard(key: ValueKey(restaurant.slug), restaurant: restaurant),
+                          RestaurantCard(
+                            key: ValueKey(restaurant.slug),
+                            restaurant: restaurant,
+                            onTap: () => onOpenRestaurant(restaurant.slug),
+                          ),
                       ],
                     ),
             ),
