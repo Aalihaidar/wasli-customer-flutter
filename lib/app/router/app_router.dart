@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:wasli_customer/app/not_found_page.dart';
-import 'package:wasli_customer/app/placeholder_page.dart';
 import 'package:wasli_customer/app/router/app_routes.dart';
 import 'package:wasli_customer/core/session/session_controller.dart';
 import 'package:wasli_customer/core/session/session_state.dart';
@@ -14,7 +13,9 @@ import 'package:wasli_customer/features/account/presentation/forgot_password_pag
 import 'package:wasli_customer/features/account/presentation/sign_in_page.dart';
 import 'package:wasli_customer/features/account/presentation/sign_up_page.dart';
 import 'package:wasli_customer/features/account/presentation/verify_code_page.dart';
+import 'package:wasli_customer/features/server_config/presentation/server_status_line.dart';
 import 'package:wasli_customer/features/settings/presentation/settings_page.dart';
+import 'package:wasli_customer/features/start/presentation/start_page.dart';
 
 /// Builds the router of the app.
 ///
@@ -42,7 +43,14 @@ GoRouter createAppRouter({
       return onContactPage && !signedIn ? AppRoutes.signIn : null;
     },
     routes: [
-      GoRoute(path: AppRoutes.home, builder: (context, state) => const PlaceholderPage()),
+      GoRoute(
+        path: AppRoutes.home,
+        builder: (context, state) => StartPage(
+          onOpenSettings: () => context.push(AppRoutes.settings),
+          onSignIn: () => context.push(AppRoutes.signIn),
+          serverStatus: const ServerStatusLine(),
+        ),
+      ),
       GoRoute(
         path: AppRoutes.settings,
         builder: (context, state) => SettingsPage(

@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:wasli_customer/app/placeholder_page.dart';
+import 'package:wasli_customer/features/start/presentation/start_page.dart';
 import 'package:wasli_customer/theme/theme.dart';
 
 import '../support/pump_app.dart';
 
-BuildContext _pageContext(WidgetTester tester) => tester.element(find.byType(PlaceholderPage));
+BuildContext _pageContext(WidgetTester tester) => tester.element(find.byType(StartPage));
 
 void main() {
   group('the start page', () {
@@ -13,7 +13,7 @@ void main() {
       await pumpApp(tester);
 
       final context = _pageContext(tester);
-      expect(find.text('Wasli'), findsNWidgets(2)); // the top bar and the page
+      expect(find.text('Wasli'), findsOneWidget); // the top bar
       expect(Directionality.of(context), TextDirection.ltr);
       expect(Localizations.localeOf(context), const Locale('en'));
       expect(Theme.of(context).scaffoldBackgroundColor, WasliColors.light.background);
@@ -41,7 +41,10 @@ void main() {
       await pumpApp(tester);
 
       expect(find.bySemanticsLabel('Settings'), findsOneWidget);
-      expect(tester.getSize(find.byType(IconButton)).shortestSide, greaterThanOrEqualTo(48));
+      expect(find.bySemanticsLabel('Sign in'), findsOneWidget);
+      for (final button in tester.widgetList(find.byType(IconButton)).indexed) {
+        expect(tester.getSize(find.byType(IconButton).at(button.$1)).shortestSide, greaterThanOrEqualTo(48));
+      }
 
       await tester.tap(find.byTooltip('Settings'));
       await tester.pumpAndSettle();

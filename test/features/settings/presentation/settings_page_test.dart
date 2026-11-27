@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:wasli_customer/app/placeholder_page.dart';
 import 'package:wasli_customer/app/router/app_routes.dart';
 import 'package:wasli_customer/core/l10n/locale_store.dart';
 import 'package:wasli_customer/features/settings/presentation/settings_page.dart';
+import 'package:wasli_customer/features/start/presentation/start_page.dart';
 import 'package:wasli_customer/theme/theme.dart';
 
 import '../../../support/pump_app.dart';
@@ -73,8 +73,8 @@ void main() {
       await tester.tap(find.byType(BackButton));
       await tester.pumpAndSettle();
 
-      expect(find.byType(PlaceholderPage), findsOneWidget);
-      expect(Directionality.of(tester.element(find.byType(PlaceholderPage))), TextDirection.rtl);
+      expect(find.byType(StartPage), findsOneWidget);
+      expect(Directionality.of(tester.element(find.byType(StartPage))), TextDirection.rtl);
     });
 
     testWidgets('has radio buttons for screen readers, each at least 48 high, with the chosen one checked', (
@@ -107,7 +107,7 @@ void main() {
       await tester.tap(find.byType(BackButton));
       await tester.pumpAndSettle();
 
-      expect(find.byType(PlaceholderPage), findsOneWidget);
+      expect(find.byType(StartPage), findsOneWidget);
     });
 
     testWidgets('offers a way to the start page when it was opened from its address', (tester) async {
@@ -117,7 +117,7 @@ void main() {
       await tester.tap(find.byTooltip('Back'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(PlaceholderPage), findsOneWidget);
+      expect(find.byType(StartPage), findsOneWidget);
     });
   });
 

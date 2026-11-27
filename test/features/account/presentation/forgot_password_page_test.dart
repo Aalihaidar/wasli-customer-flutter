@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:wasli_customer/app/router/app_routes.dart';
 import 'package:wasli_customer/core/error/api_issue.dart';
 import 'package:wasli_customer/core/error/failure.dart';
+import 'package:wasli_customer/features/start/presentation/start_page.dart';
 
 import '../../../support/bidi.dart';
 import '../../../support/fake_account_repository.dart';
@@ -245,7 +246,7 @@ void main() {
       await pumpApp(tester, initialLocation: AppRoutes.forgotPassword, account: account, signedIn: true);
 
       expect(find.text('Reset your password'), findsNothing);
-      expect(find.text('You are signed in.'), findsOneWidget);
+      expect(find.byType(StartPage), findsOneWidget);
     });
 
     testWidgets('works right to left in Arabic and keeps the contact left to right', (tester) async {

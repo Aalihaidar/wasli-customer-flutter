@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:wasli_customer/app/not_found_page.dart';
-import 'package:wasli_customer/app/placeholder_page.dart';
 import 'package:wasli_customer/app/router/app_routes.dart';
 import 'package:wasli_customer/features/settings/presentation/settings_page.dart';
+import 'package:wasli_customer/features/start/presentation/start_page.dart';
 
 import '../support/pump_app.dart';
 
@@ -17,14 +17,14 @@ void main() {
     testWidgets('open the start page at /', (tester) async {
       await pumpApp(tester);
 
-      expect(find.byType(PlaceholderPage), findsOneWidget);
+      expect(find.byType(StartPage), findsOneWidget);
     });
 
     testWidgets('open the settings page at /settings', (tester) async {
       await pumpApp(tester, initialLocation: AppRoutes.settings);
 
       expect(find.byType(SettingsPage), findsOneWidget);
-      expect(find.byType(PlaceholderPage), findsNothing);
+      expect(find.byType(StartPage), findsNothing);
     });
 
     testWidgets('show the page-not-found page for an address that matches nothing', (tester) async {
@@ -41,7 +41,7 @@ void main() {
       await tester.tap(find.text('Go to the start page'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(PlaceholderPage), findsOneWidget);
+      expect(find.byType(StartPage), findsOneWidget);
       expect(find.byType(NotFoundPage), findsNothing);
     });
 

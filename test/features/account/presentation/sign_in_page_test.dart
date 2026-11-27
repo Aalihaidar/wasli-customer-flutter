@@ -11,6 +11,7 @@ import 'package:wasli_customer/core/error/failure.dart';
 import 'package:wasli_customer/core/network/network_providers.dart';
 import 'package:wasli_customer/core/session/session_controller.dart';
 import 'package:wasli_customer/features/account/domain/customer_session.dart';
+import 'package:wasli_customer/features/start/presentation/start_page.dart';
 
 import '../../../support/fake_account_repository.dart';
 import '../../../support/pump_app.dart';
@@ -31,7 +32,7 @@ void main() {
     testWidgets('is reached from the start page', (tester) async {
       await pumpApp(tester);
 
-      await tester.tap(find.widgetWithText(TextButton, 'Sign in'));
+      await tester.tap(find.byTooltip('Sign in'));
       await tester.pumpAndSettle();
 
       expect(find.text('Email or phone number'), findsOneWidget);
@@ -59,7 +60,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(account.lastIdentifier, '+971500000000');
-      expect(find.text('You are signed in.'), findsOneWidget);
+      expect(find.byType(StartPage), findsOneWidget);
     });
 
     testWidgets('a refused sign-in says one thing whatever was wrong, for a 401 and a 400 alike', (tester) async {
@@ -75,7 +76,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('The email, phone number or password is not correct.'), findsOneWidget, reason: '$failure');
-        expect(find.text('You are signed in.'), findsNothing);
+        expect(find.byType(StartPage), findsNothing);
       }
     });
 
@@ -153,7 +154,7 @@ void main() {
       await tester.tap(find.widgetWithText(FilledButton, 'تسجيل الدخول'));
       await tester.pumpAndSettle();
 
-      expect(find.text('أنت مسجّل الدخول.'), findsOneWidget);
+      expect(find.byType(StartPage), findsOneWidget);
     });
   });
 
@@ -169,7 +170,7 @@ void main() {
         GoRouter.of(tester.element(find.byType(Scaffold).first)).go(path);
         await tester.pumpAndSettle();
 
-        expect(find.text('You are signed in.'), findsOneWidget, reason: path);
+        expect(find.byType(StartPage), findsOneWidget, reason: path);
       }
     });
 
@@ -178,7 +179,7 @@ void main() {
       final container = containerOf(tester);
       await container.read(sessionProvider.notifier).signIn('demo-token-not-a-real-token');
       await tester.pumpAndSettle();
-      expect(find.text('You are signed in.'), findsOneWidget);
+      expect(find.byType(StartPage), findsOneWidget);
 
       container.read(sessionExpiredProvider.notifier).announce();
       await tester.pumpAndSettle();
