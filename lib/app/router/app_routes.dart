@@ -18,6 +18,12 @@ abstract final class AppRoutes {
   /// The page where the customer types the 6-digit code that was sent to them.
   static const String verify = '/verify';
 
+  /// The page of one restaurant, opened from the list or from its QR code. `:slug` is the restaurant's address name.
+  static const String restaurant = '/r/:slug';
+
+  /// The address of the page of the restaurant named [slug] (encoded, so the path stays one segment).
+  static String restaurantPath(String slug) => '/r/${Uri.encodeComponent(slug)}';
+
   /// The page where a signed-in customer adds an email address to the account.
   static const String addEmail = '/settings/email';
 

@@ -455,7 +455,7 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
   position each have their own text; the QR hint is always shown; no loop of prompts, the position is never logged
 - [x] Nearby list (2026-11-27): `GET /restaurants/nearby` without a token (position in the query, never logged), nearest first,
   logo, name in the active language, distance, Open/Closed pill, placeholder rows while loading, "Try again", a refresh button;
-  read once and on refresh (the lifecycle poller comes with the chat). The rows open nothing until `/r/<slug>` exists
+  read once and on refresh (the lifecycle poller comes with the chat). A row opens the restaurant's page
 - [ ] Start screen: map (loaded on demand, deferred import) with the position and a marker per nearby restaurant, bottom
   sheet with logo, name, distance, nearest first; polled with the lifecycle-aware poller
 - [x] Empty state from `nearest` (name and distance, and "serves cars within N m" only when `service_radius_m` is
@@ -463,7 +463,10 @@ Branch per screen group (`feat/account-signup`, …). Domain, data, application 
 - [x] Staging helper "Simulate: I'm at the restaurant" sends the restaurant's own latitude and longitude from `nearest`
   (`source = simulated`), hidden in production (it changes the start position now; the `simulated` source is sent with the order
   position in the chat block)
-- [ ] `/r/<slug>` route resolves through `GET /restaurants/{slug}`; `404` shows the not-found state
+- [x] `/r/<slug>` route (2026-11-27, `feat/start-restaurant-route`): the slug is untrusted input and must be letters, digits, `-` and `_`
+  (at most 100, not the reserved `nearby`), otherwise the not-found page shows with no request; a valid one resolves through
+  `GET /restaurants/{slug}` without a token: the restaurant's logo and name, "not available" on a `404`, "Try again" on any other
+  failure. A link has no page to go back to, so the bar offers the start page. The chat takes this page over
 - [ ] **Decide** the map tile provider (OpenStreetMap is for staging only; a keyed provider before the pilot)
 - [ ] Voice recording spike with `record` (WAV 16 kHz mono, 30 s): Chrome on Android and Safari on iPhone; report sizes
   and browser problems to the backend

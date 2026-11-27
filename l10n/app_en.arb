@@ -473,5 +473,17 @@
   "startUseRealLocation": "Use my real location",
   "@startUseRealLocation": {
     "description": "Test-build button that goes back from a simulated position to the device's own position."
+  },
+  "restaurantLoading": "Loading the restaurant",
+  "@restaurantLoading": {
+    "description": "Screen-reader label of the spinner shown while the page of a restaurant loads."
+  },
+  "restaurantUnavailableTitle": "This restaurant is not available",
+  "@restaurantUnavailableTitle": {
+    "description": "Heading shown on the page of a restaurant that does not exist or is not active."
+  },
+  "restaurantUnavailableBody": "The link may be old, or the restaurant is not taking orders right now.",
+  "@restaurantUnavailableBody": {
+    "description": "Text under the heading when a restaurant's page cannot be found, for example from an old link or QR code."
   }
 }

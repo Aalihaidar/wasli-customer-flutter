@@ -103,5 +103,8 @@
   "startEmptyNone": "لا توجد مطاعم متاحة قربك بعد.",
   "startSimulateAtRestaurant": "محاكاة: أنا عند المطعم",
   "startSimulatedNotice": "أنت تستخدم موقعًا تجريبيًا.",
-  "startUseRealLocation": "استخدم موقعي الحقيقي"
+  "startUseRealLocation": "استخدم موقعي الحقيقي",
+  "restaurantLoading": "جارٍ تحميل المطعم",
+  "restaurantUnavailableTitle": "هذا المطعم غير متاح",
+  "restaurantUnavailableBody": "قد يكون الرابط قديمًا، أو أن المطعم لا يستقبل الطلبات حاليًا."
 }
